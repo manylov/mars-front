@@ -12,35 +12,35 @@ const SocialIconsBar = () => {
       }}
     >
       <a
-        href="https://twitter.com/colonylab"
+        href="https://x.com/marscolonyio"
         target="_blank"
         rel="noopener noreferrer"
       >
         <img src="/icons/x.svg" alt="X (Twitter)" />
       </a>
-      <a
+      {/* <a
         href="https://docs.colonylab.io"
         target="_blank"
         rel="noopener noreferrer"
       >
         <img src="/icons/docs.svg" alt="Documentation" />
-      </a>
+      </a> */}
       <a
-        href="https://github.com/colonylab"
+        href="https://github.com/marscolony-io"
         target="_blank"
         rel="noopener noreferrer"
       >
         <img src="/icons/github.svg" alt="GitHub" />
       </a>
-      <a
+      {/* <a
         href="https://discord.gg/colonylab"
         target="_blank"
         rel="noopener noreferrer"
       >
         <img src="/icons/discord.svg" alt="Discord" />
-      </a>
+      </a> */}
       <a
-        href="https://t.me/colonylab"
+        href="https://t.me/marscolonychannel"
         target="_blank"
         rel="noopener noreferrer"
       >
