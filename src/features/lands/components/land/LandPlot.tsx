@@ -199,16 +199,16 @@ export const LandPlot: React.FC<Props> = ({
     ]
   );
 
-  if (isGamePage) {
-    return (
-      <GameLandPlot
-        id={id}
-        earningSpeed={earningSpeed}
-        earned={earned}
-        enhancements={enhancementsItemsList}
-      />
-    );
-  }
+  // if (isGamePage) {
+  return (
+    <GameLandPlot
+      id={id}
+      earningSpeed={earningSpeed}
+      earned={earned}
+      enhancements={enhancementsItemsList}
+    />
+  );
+  // }
 
   return (
     <LandPlotNew

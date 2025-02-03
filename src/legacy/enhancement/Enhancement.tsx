@@ -114,44 +114,44 @@ export const Enhancement: React.FC<Props> = ({
     );
   };
 
-  if (!isGamePage) {
-    return (
-      <EnhBlockMinifiedWrapper>
-        <EnhImageWrapper
-          minified={!NETWORK_DATA.IS_SIDEBAR_UPDATE}
-          isActive={isActive ?? false}
-        >
-          <Image />
-          <CounterBlockWrapper>
-            {new Array(levelsCount).fill('').map((item, idx) => {
-              return (
-                <CounterBlock
-                  key={`${idx}-${idx}`}
-                  isActive={level >= idx + 1}
-                />
-              );
-            })}
-          </CounterBlockWrapper>
-        </EnhImageWrapper>
-        {NETWORK_DATA.IS_SIDEBAR_UPDATE && (
-          <EhchSidebarWrapper>
-            {Boolean(finalText) && <Ticked text={String(finalText)} />}
+  // if (!isGamePage) {
+  //   return (
+  //     <EnhBlockMinifiedWrapper>
+  //       <EnhImageWrapper
+  //         minified={!NETWORK_DATA.IS_SIDEBAR_UPDATE}
+  //         isActive={isActive ?? false}
+  //       >
+  //         <Image />
+  //         <CounterBlockWrapper>
+  //           {new Array(levelsCount).fill('').map((item, idx) => {
+  //             return (
+  //               <CounterBlock
+  //                 key={`${idx}-${idx}`}
+  //                 isActive={level >= idx + 1}
+  //               />
+  //             );
+  //           })}
+  //         </CounterBlockWrapper>
+  //       </EnhImageWrapper>
+  //       {NETWORK_DATA.IS_SIDEBAR_UPDATE && (
+  //         <EhchSidebarWrapper>
+  //           {Boolean(finalText) && <Ticked text={String(finalText)} />}
 
-            {!finalText && (
-              <EnhButton
-                isGamePage={isGamePage}
-                getWhat={getWhat}
-                handler={handler}
-                price={price}
-                disabled={price > CLNYBalance}
-                isPending={isPending || isInitialLoad}
-              />
-            )}
-          </EhchSidebarWrapper>
-        )}
-      </EnhBlockMinifiedWrapper>
-    );
-  }
+  //           {!finalText && (
+  //             <EnhButton
+  //               isGamePage={isGamePage}
+  //               getWhat={getWhat}
+  //               handler={handler}
+  //               price={price}
+  //               disabled={price > CLNYBalance}
+  //               isPending={isPending || isInitialLoad}
+  //             />
+  //           )}
+  //         </EhchSidebarWrapper>
+  //       )}
+  //     </EnhBlockMinifiedWrapper>
+  //   );
+  // }
 
   return (
     <EnhancementItemWrapper isMobileView={isMobileView}>

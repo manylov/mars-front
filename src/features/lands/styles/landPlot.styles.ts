@@ -270,19 +270,19 @@ const EnhancementsListWrapper = styled.div<{
 `;
 
 const MainDetailedPlotWrapper = styled.div`
-  width: 100vw;
+  // width: 100vw;
   display: flex;
   justify-content: center;
   margin-bottom: 20px;
-  position: fixed;
-  bottom: 20px;
+  // position: fixed;
+  bottom: 100px;
 `;
 
 const GamePageDetailedPlotWrapper = styled.div<{ isOpened?: boolean }>`
   position: relative;
   box-sizing: border-box;
   gap: 10px;
-  padding: 10px 70px;
+  padding: 10px 10px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -290,6 +290,8 @@ const GamePageDetailedPlotWrapper = styled.div<{ isOpened?: boolean }>`
   backdrop-filter: blur(10px);
   border-radius: 4px;
   min-width: 567px;
+  display: flex;
+  flex-direction: column;
 
   ${({ isOpened }) => {
     if (isOpened) {
@@ -320,6 +322,12 @@ const GamePageDetailedStats = styled.div`
   gap: 6px;
 `;
 
+const GamePageInfoButtonContainer = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 20px;
+`;
+
 const GamePageDetailedButton = styled.div`
   width: 167px;
   height: 30px;
@@ -333,8 +341,8 @@ const GamePageDetailedButton = styled.div`
 `;
 
 const GamePageEnhancementsOverlay = styled.div<{ isMobile?: boolean }>`
-  position: absolute;
-  top: -150px;
+  position: relative;
+  // top: -150px;
   left: 0;
   padding: 12px 32px 20px;
   width: inherit;
@@ -401,5 +409,6 @@ export {
   NewDexTitle,
   NewDexWrapper,
   NewPoolListWrapper,
-  XchangeWrapper
+  XchangeWrapper,
+  GamePageInfoButtonContainer
 };
