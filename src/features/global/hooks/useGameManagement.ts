@@ -164,11 +164,6 @@ const useGameManagement = () => {
       transport: transportCoords
     } = data;
 
-    console.log('baseCoords', baseCoords);
-    console.log('robotCoords', robotCoords);
-    console.log('powerCoords', powerCoords);
-    console.log('transportCoords', transportCoords);
-
     const mockedCoords = {
       x: 100,
       y: 100

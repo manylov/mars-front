@@ -90,68 +90,13 @@ export const Enhancement: React.FC<Props> = ({
   const isFirstUpdate = isAvailable === '0';
 
   const getClnySpeedLabel = (val: string | number) => {
-    if (NETWORK_DATA.ECONOMY !== 'fixed') {
-      return `+ ${Number(val)} ${Number(val) > 1 ? 'shares' : 'share'}`;
-    }
-    return NETWORK_DATA.REVSHARE
-      ? `Max + ${val} ${NETWORK_DATA.TOKEN_NAME}/day`
-      : `+ ${val} ${NETWORK_DATA.TOKEN_NAME}/day`;
+    if (val == 0) return '';
+    return `+ ${val} ${NETWORK_DATA.TOKEN_NAME}/day`;
   };
 
   const getClnySpeedLevel = (val: string | number) => {
-    if (NETWORK_DATA.ECONOMY !== 'fixed') {
-      return `${val} ${Number(val) > 1 ? 'shares' : 'share'}`;
-    }
-
-    return NETWORK_DATA.REVSHARE ? (
-      <>
-        Max
-        <br />
-        {val} {NETWORK_DATA.TOKEN_NAME}/day
-      </>
-    ) : (
-      `${val} ${NETWORK_DATA.TOKEN_NAME}/day`
-    );
+    return `${val} ${NETWORK_DATA.TOKEN_NAME}/day`;
   };
-
-  // if (!isGamePage) {
-  //   return (
-  //     <EnhBlockMinifiedWrapper>
-  //       <EnhImageWrapper
-  //         minified={!NETWORK_DATA.IS_SIDEBAR_UPDATE}
-  //         isActive={isActive ?? false}
-  //       >
-  //         <Image />
-  //         <CounterBlockWrapper>
-  //           {new Array(levelsCount).fill('').map((item, idx) => {
-  //             return (
-  //               <CounterBlock
-  //                 key={`${idx}-${idx}`}
-  //                 isActive={level >= idx + 1}
-  //               />
-  //             );
-  //           })}
-  //         </CounterBlockWrapper>
-  //       </EnhImageWrapper>
-  //       {NETWORK_DATA.IS_SIDEBAR_UPDATE && (
-  //         <EhchSidebarWrapper>
-  //           {Boolean(finalText) && <Ticked text={String(finalText)} />}
-
-  //           {!finalText && (
-  //             <EnhButton
-  //               isGamePage={isGamePage}
-  //               getWhat={getWhat}
-  //               handler={handler}
-  //               price={price}
-  //               disabled={price > CLNYBalance}
-  //               isPending={isPending || isInitialLoad}
-  //             />
-  //           )}
-  //         </EhchSidebarWrapper>
-  //       )}
-  //     </EnhBlockMinifiedWrapper>
-  //   );
-  // }
 
   return (
     <EnhancementItemWrapper isMobileView={isMobileView}>
@@ -161,7 +106,7 @@ export const Enhancement: React.FC<Props> = ({
       </EnhImageWrapper>
       <EnhTitle>{title}</EnhTitle>
       <div className="enh_speed">
-        <>{getClnySpeedLevel(oldNew?.[0] ?? 0)}</>
+        <>{getClnySpeedLevel(oldNew?.[0] ?? 3)}</>
       </div>
       {availableButNotPlaced && (
         <LandPlotEarnedButton
@@ -214,7 +159,7 @@ export const Enhancement: React.FC<Props> = ({
         {Boolean(finalText) && isPlacedAndAvailable && (
           <Ticked text={String(finalText)} />
         )}
-        {!finalText && !isFirstUpdate && !availableButNotPlaced && (
+        {!finalText && (
           <EnhButton
             isGamePage={isGamePage}
             getWhat={getWhat}
