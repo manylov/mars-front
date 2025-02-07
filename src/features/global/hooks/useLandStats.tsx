@@ -85,6 +85,7 @@ const useLandStats = (isCartItem: boolean = false, id?: number) => {
               data[0]['4'],
               data[0]['5']
             ];
+
             setHasBaseStation(!!parseInt(bs));
             setTransportLevel(parseInt(transport));
             setRobotAssemblyLevel(parseInt(ra));

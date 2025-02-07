@@ -75,15 +75,15 @@ export const Enhancement: React.FC<Props> = ({
   const isReplaceMode = useSelector(isReplaceModeSelector);
 
   const availableButNotPlaced = useMemo(
-    () => isGamePage && !!parseInt(isAvailable ?? '0') && !isPlaced,
+    () => !!parseInt(isAvailable ?? '0') && !isPlaced,
     [isAvailable, isPlaced, isGamePage]
   );
   const notAvailableButNotPlaced = useMemo(
-    () => isGamePage && !parseInt(isAvailable ?? '0') && !isPlaced,
+    () => !parseInt(isAvailable ?? '0') && !isPlaced,
     [isAvailable, isPlaced, isGamePage]
   );
   const isPlacedAndAvailable = useMemo(
-    () => isGamePage && !!parseInt(isAvailable ?? '0') && isPlaced,
+    () => !!parseInt(isAvailable ?? '0') && isPlaced,
     [isAvailable, isPlaced, isGamePage]
   );
 
@@ -91,7 +91,7 @@ export const Enhancement: React.FC<Props> = ({
 
   const getClnySpeedLabel = (val: string | number) => {
     if (NETWORK_DATA.ECONOMY !== 'fixed') {
-      return `+ ${val} ${val > 1 ? 'shares' : 'share'}`;
+      return `+ ${Number(val)} ${Number(val) > 1 ? 'shares' : 'share'}`;
     }
     return NETWORK_DATA.REVSHARE
       ? `Max + ${val} ${NETWORK_DATA.TOKEN_NAME}/day`
@@ -100,7 +100,7 @@ export const Enhancement: React.FC<Props> = ({
 
   const getClnySpeedLevel = (val: string | number) => {
     if (NETWORK_DATA.ECONOMY !== 'fixed') {
-      return `${val} ${val > 1 ? 'shares' : 'share'}`;
+      return `${val} ${Number(val) > 1 ? 'shares' : 'share'}`;
     }
 
     return NETWORK_DATA.REVSHARE ? (

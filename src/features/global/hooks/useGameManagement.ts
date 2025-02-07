@@ -151,6 +151,8 @@ const useGameManagement = () => {
 
     const data = await getObjectsCoords(tokenId);
 
+    console.log('getObjectsCoords', data);
+
     if (!data) {
       return;
     }
@@ -162,9 +164,20 @@ const useGameManagement = () => {
       transport: transportCoords
     } = data;
 
+    console.log('baseCoords', baseCoords);
+    console.log('robotCoords', robotCoords);
+    console.log('powerCoords', powerCoords);
+    console.log('transportCoords', transportCoords);
+
+    const mockedCoords = {
+      x: 100,
+      y: 100
+    };
+
     dispatch(
       setLandInfoPart({
-        value: extractCoords(baseCoords),
+        value: extractCoords(mockedCoords),
+        // value: extractCoords(baseCoords),
         availability: bs,
         field: 'base'
       })
@@ -172,21 +185,24 @@ const useGameManagement = () => {
 
     dispatch(
       setLandInfoPart({
-        value: extractCoords(transportCoords),
+        // value: extractCoords(transportCoords),
+        value: extractCoords(mockedCoords),
         availability: transport,
         field: 'transport'
       })
     );
     dispatch(
       setLandInfoPart({
-        value: extractCoords(robotCoords),
+        //value: extractCoords(robotCoords),
+        value: extractCoords(mockedCoords),
         availability: ra,
         field: 'robot'
       })
     );
     dispatch(
       setLandInfoPart({
-        value: extractCoords(powerCoords),
+        // value: extractCoords(powerCoords),
+        value: extractCoords(mockedCoords),
         availability: pp,
         field: 'powerplant'
       })
