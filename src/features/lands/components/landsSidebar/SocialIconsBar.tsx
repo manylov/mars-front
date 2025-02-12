@@ -12,7 +12,7 @@ const SocialIconsBar = () => {
       }}
     >
       <a
-        href="https://x.com/marscolonyio"
+        href="https://x.com/zero_colony_fun"
         target="_blank"
         rel="noopener noreferrer"
       >
@@ -40,7 +40,7 @@ const SocialIconsBar = () => {
         <img src="/icons/discord.svg" alt="Discord" />
       </a> */}
       <a
-        href="https://t.me/marscolonychannel"
+        href="https://t.me/zerocolonychannel"
         target="_blank"
         rel="noopener noreferrer"
       >

@@ -91,7 +91,7 @@ export const ConnectionZone = ({
       return `${+balance.toFixed(2)}k`;
     } else {
       setContentSpace('space-around');
-      return +balance.toFixed(2);
+      return +balance.toFixed(4);
     }
   }, [balance]);
 
@@ -148,7 +148,7 @@ export const ConnectionZone = ({
               }
               dimension="14px"
             />
-            {balance === -1 ? '---' : +balance.toFixed(1)}{' '}
+            {balance === -1 ? '---' : +balance.toFixed(4)}{' '}
             {CURRENT_CHAIN.ticker}
           </NewHeaderStatWrapper>
           <NewHeaderStatWrapper>
@@ -179,7 +179,7 @@ export const ConnectionZone = ({
             <MobileTableBlock>
               <ImageIconWrapper
                 src={
-                  CURRENT_CHAIN.ticker === 'MATIC' ? PolygonIconImg : OneIconImg
+                  CURRENT_CHAIN.ticker === 'MATIC' ? PolygonIconImg : EthIconImg
                 }
                 dimension="14px"
               />

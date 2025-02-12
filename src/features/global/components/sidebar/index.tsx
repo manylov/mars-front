@@ -263,14 +263,14 @@ const Sidebar = ({ isMobile }: { isMobile: boolean }) => {
     <>
       {isHidden && (
         <SidebarMobileControl>
-          <SidebarTitle>MarsColony</SidebarTitle>
+          <SidebarTitle>ZeroColony</SidebarTitle>
           <SidebarOpenIcon onClick={() => setIsOpen(!isOpen)} />
         </SidebarMobileControl>
       )}
       {isMobileOverlay && <SidebarBackOverlay />}
       <SidebarWrapper isHidden={isHidden} ref={sidebarRef}>
         <SidebarTitle>
-          MarsColony
+          ZeroColony
           {isMobile && <CloseIcon onClick={() => setIsOpen(false)} />}
         </SidebarTitle>
         <SidebarItemsList>

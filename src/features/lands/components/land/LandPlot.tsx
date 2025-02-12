@@ -79,7 +79,7 @@ export const LandPlot: React.FC<Props> = ({
         <Enhancement
           isInitialLoad={isInitialLoad}
           Image={BaseStationIcon}
-          title="Base Station"
+          title="Electricity"
           speed={hasBaseStation ? 1 : undefined}
           finalText={hasBaseStation ? 'Claimed' : undefined}
           getWhat=""
@@ -106,7 +106,7 @@ export const LandPlot: React.FC<Props> = ({
         <Enhancement
           isInitialLoad={isInitialLoad}
           Image={RobotAssembly}
-          title="Robot Assembly"
+          title="Data Centre"
           aux={`lvl${robotAssemblyLevel}/3`}
           speed={robotAssemblyLevel ? robotAssemblyLevel + 1 : undefined}
           finalText={robotAssemblyLevel === 3 ? 'Max LVL' : undefined}
@@ -130,7 +130,7 @@ export const LandPlot: React.FC<Props> = ({
         <Enhancement
           isInitialLoad={isInitialLoad}
           Image={Transport}
-          title="Transport"
+          title="Blockchain Node"
           aux={`lvl${transportLevel}/3`}
           speed={transportLevel ? transportLevel + 1 : undefined}
           finalText={transportLevel === 3 ? 'Max LVL' : undefined}
@@ -154,7 +154,7 @@ export const LandPlot: React.FC<Props> = ({
         <Enhancement
           isInitialLoad={isInitialLoad}
           Image={Power}
-          title="Power Production"
+          title="AI Lab"
           aux={`lvl${powerProductionLevel}/3`}
           speed={powerProductionLevel ? powerProductionLevel + 1 : undefined}
           finalText={powerProductionLevel === 3 ? 'Max LVL' : undefined}

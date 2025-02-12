@@ -6,7 +6,8 @@ const COLORS: Record<string, [string, string, string, string]> = {
   mumbai: ['#803bd4', '#b176ea', '#413f67', '^&'],
   polygon: ['#803bd4', '#b176ea', '#413f67', '^&'],
   fuji: ['#dd4', '#745', '#d23', ''],
-  'zero-testnet': ['#b243a6', '#fe5161', '#3f4057', '^&']
+  'zero-testnet': ['#b243a6', '#fe5161', '#3f4057', '^&'],
+  zero: ['#b243a6', '#fe5161', '#3f4057', '^&']
 };
 
 export const generateBlockie = (id: number, network?: string) => {
