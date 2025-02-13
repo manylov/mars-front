@@ -37,7 +37,7 @@ const Layout: FC = ({ children }) => {
     dispatch(toggleMyLandPopup('cart'));
   };
 
-  const isCartButtonShown = isLandsPage && !isHarmonyChains;
+  const isCartButtonShown = false; // isLandsPage && !isHarmonyChains;
 
   return (
     <LayoutWrapper ref={wrapperRef}>
