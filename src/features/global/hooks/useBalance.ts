@@ -275,6 +275,8 @@ export const useBalance = () => {
 
           dispatch(resetCart());
           dispatch(setClaimingCartStatus(false));
+          // @ts-ignore
+          window.openLinksPopup();
         },
         onError: () => {
           trackGoogleAnalyticsEvent('cart.error', {
