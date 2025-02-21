@@ -24,7 +24,7 @@ ReactDOM.render(
       <Fragment>
         <AppRouter />
         <GlobalStyle />
-        <Music />
+        {/* <Music /> */}
       </Fragment>
     </Provider>
   </ToastProvider>,
