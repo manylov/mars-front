@@ -195,11 +195,7 @@ const Sidebar = ({ isMobile }: { isMobile: boolean }) => {
         name: SIDEBAR_ROUTES_NAMES.aiTrade,
         trackEvent: 'DEX page clicked (harmony only)',
         onClick: () => {
-          if (isHarmonyChains) {
-            window.open(LINKS.harmony.dex, '_blank');
-          } else {
-            window.open(LINKS.polygon.dex, '_blank');
-          }
+          window.open(LINKS.zero.dex, '_blank');
         }
       }
       // {

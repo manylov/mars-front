@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useToasts } from 'react-toast-notifications';
-import PolygonBackend from '@api/polygonBackend';
+import ZeroBackend from '@api/polygonBackend';
 import {
   StatsBarWrapper,
   StatsItem,
@@ -19,22 +19,22 @@ export const StatsBar = () => {
   const [stats, setStats] = useState({
     minted: '...',
     burned: '...',
-    avg: '...',
-    max: '...'
+    priceInUsd: '...',
+    marketCap: '...'
   });
 
   useEffect(() => {
     const updateStats = async () => {
       try {
         const [statsData, landData] = await Promise.all([
-          PolygonBackend.getHeaderStats(),
-          PolygonBackend.getLandStats()
+          ZeroBackend.getHeaderStats(),
+          ZeroBackend.getLandStats()
         ]);
         setStats(statsData);
         setPlotsInfo(landData);
       } catch (err) {
         addToast('Stats fetching failed', { appearance: 'error' });
-        setStats({ burned: '0', avg: '0', minted: '0', max: '0' });
+        setStats({ burned: '0', priceInUsd: '0', marketCap: '0', minted: '0' });
         setPlotsInfo({ available: '...', claimed: '...' });
       }
     };
@@ -187,6 +187,82 @@ export const StatsBar = () => {
         <StatsText>
           <StatsValue>{stats.burned}</StatsValue>
           <StatsLabel>CLNY burned</StatsLabel>
+        </StatsText>
+      </StatsItem>
+
+      <StatsItem>
+        <StatsIcon>
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M12 1V23"
+              stroke="white"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+            <path
+              d="M17 5H9.5C8.57174 5 7.6815 5.36875 7.02513 6.02513C6.36875 6.6815 6 7.57174 6 8.5C6 9.42826 6.36875 10.3185 7.02513 10.9749C7.6815 11.6313 8.57174 12 9.5 12H14.5C15.4283 12 16.3185 12.3687 16.9749 13.0251C17.6313 13.6815 18 14.5717 18 15.5C18 16.4283 17.6313 17.3185 16.9749 17.9749C16.3185 18.6313 15.4283 19 14.5 19H6"
+              stroke="white"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </StatsIcon>
+        <StatsText>
+          <StatsValue>${stats.priceInUsd}</StatsValue>
+          <StatsLabel>CLNY price</StatsLabel>
+        </StatsText>
+      </StatsItem>
+
+      <StatsItem>
+        <StatsIcon>
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M16 8V16"
+              stroke="white"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+            <path
+              d="M12 11V16"
+              stroke="white"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+            <path
+              d="M8 14V16"
+              stroke="white"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+            <path
+              d="M20 18H4C3.44772 18 3 17.5523 3 17V7C3 6.44772 3.44772 6 4 6H20C20.5523 6 21 6.44772 21 7V17C21 17.5523 20.5523 18 20 18Z"
+              stroke="white"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </StatsIcon>
+        <StatsText>
+          <StatsValue>${stats.marketCap}</StatsValue>
+          <StatsLabel>Market Cap</StatsLabel>
         </StatsText>
       </StatsItem>
     </StatsBarWrapper>

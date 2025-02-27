@@ -58,6 +58,12 @@ export const LINKS = {
     nftKey: 'https://nftkey.app/collections/martiancolonists/',
     governance: 'https://snapshot.org/#/marscolonyio.eth',
     dex: 'https://dex.marscolony.io/'
+  },
+  zero: {
+    colonyGuide: 'https://guide.marscolony.io/get-started/what-is-mars-colony',
+    nftKey: 'https://nftkey.app/collections/martiancolonists/',
+    governance: 'https://snapshot.org/#/xclny.eth',
+    dex: 'https://app.zerion.io/tokens/CLNY-4727f689-b592-4fe8-8299-d80cf5ff786c'
   }
 };
 
