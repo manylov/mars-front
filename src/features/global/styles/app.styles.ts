@@ -231,7 +231,7 @@ const NoAddressChangeWrapper = styled.div`
 const ParagraphQuests = styled.p<{
   fontSize?: string;
 }>`
-  font-size: ${({ fontSize }) => `${fontSize}` ?? ''};
+  font-size: ${({ fontSize }) => fontSize || ''};
 `;
 
 const GameRootWrapper = styled.div`
@@ -392,14 +392,17 @@ const MobileTableWalletBlock = styled.div`
 `;
 
 const StatsBarWrapper = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+  display: flex;
+  flex-wrap: wrap;
   gap: 14px;
-  padding: 5px 0 10px 0;
+  padding: 10px;
   backdrop-filter: blur(10px);
   width: calc(100% - 32px);
   max-width: 460px;
   box-sizing: border-box;
+  justify-content: space-evenly;
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
 
   @media screen and (max-width: 480px) {
     width: calc(100% - 16px);
@@ -411,24 +414,22 @@ const StatsBarWrapper = styled.div`
 const StatsItem = styled.div`
   display: flex;
   align-items: center;
+  width: fit-content;
+  flex-grow: 0;
+  flex-shrink: 1;
   gap: 8px;
   color: #fff;
   font-family: 'Play', sans-serif;
   min-width: 120px;
-  justify-content: center;
 
-  &:nth-child(2) {
-    grid-row: 2;
-    grid-column: 1;
-  }
-
-  &:nth-child(4) {
-    grid-row: 2;
-    grid-column: 2;
-  }
+  justify-content: flex-start;
+  box-sizing: border-box;
+  height: 40px;
 
   @media screen and (max-width: 480px) {
-    min-width: 100px;
+    width: calc(40%);
+
+    height: 36px;
   }
 `;
 
