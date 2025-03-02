@@ -1,13 +1,8 @@
 import { configureStore } from '@reduxjs/toolkit';
 import appPartsReducer from '@slices/appPartsSlice';
-import avatarsReducer from '@slices/avatarsSlice';
 import cartReducer from '@slices/cartSlice';
 import commonStateReducer from '@slices/commonAppStateSlice';
-import cryoReducer from '@slices/cryochambersSlice';
-import decryptReducer from '@slices/decryptSlice';
 import gameManagementReducer from '@slices/gameManagementSlice';
-import lootboxesReducer from '@slices/lootboxesSlice';
-import questReducer from '@slices/questSlice';
 import balanceStatsReducer from '@slices/userStatsSlice';
 
 export const store = configureStore({
@@ -16,12 +11,7 @@ export const store = configureStore({
     balanceStats: balanceStatsReducer,
     common: commonStateReducer,
     game: gameManagementReducer,
-    avatars: avatarsReducer,
-    quests: questReducer,
-    cart: cartReducer,
-    lootboxes: lootboxesReducer,
-    cryo: cryoReducer,
-    decrypt: decryptReducer
+    cart: cartReducer
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({ serializableCheck: false })

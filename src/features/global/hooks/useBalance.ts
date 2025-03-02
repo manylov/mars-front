@@ -1,7 +1,6 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useToasts } from 'react-toast-notifications';
-import { useAvatars } from '@avatars/hooks/useAvatars';
 import { freeReserve } from '@features/globus/utils/reserveHelper';
 import {
   BUNCH_SIZE,
@@ -29,7 +28,6 @@ import {
   isLoadingTokensSelector
 } from '@redux/selectors/commonAppSelectors';
 import Ethereum from '@root/api/etheriumWeb3';
-import QuestsBackend from '@root/api/questsBackend';
 import { NETWORK_DATA } from '@root/settings';
 import { CURRENT_CHAIN } from '@root/settings/chains';
 import { cartItemsSelector } from '@selectors/cartSliceSelectors';
@@ -42,12 +40,6 @@ import {
   tokensSelector,
   userBalanceSelector
 } from '@selectors/userStatsSelectors';
-import {
-  setAvatarsNamesList,
-  setAvatarsXPList,
-  setSelectedAvatar,
-  setUserAvatarsList
-} from '@slices/avatarsSlice';
 import { resetCart, setClaimingCartStatus } from '@slices/cartSlice';
 import {
   setGameManager,
@@ -103,10 +95,6 @@ export const useBalance = () => {
   const userAddress = useSelector(addressSelector);
   const isCartOpened = useSelector(cartItemsSelector);
   const isCollectInProgress = useSelector(isCollectingSelector);
-
-  // FEATURES
-  const { getUserAvatars, getAvatarsXP, getAvatarsNames, calculateAvatarsXP } =
-    useAvatars();
 
   // UTILS
   const dispatch = useDispatch();
@@ -462,36 +450,6 @@ export const useBalance = () => {
               dispatch(resetMintedTokens(allData));
               dispatch(setInitialized(true));
               dispatch(setIsLoading({ field: 'tokensLoading', value: false }));
-
-              if (isAvatarsAvailable) {
-                const userAvatars = await getUserAvatars();
-                const avatarsNames = await getAvatarsNames(userAvatars);
-                const xp = await getAvatarsXP(userAvatars);
-
-                dispatch(setUserAvatarsList(userAvatars));
-                dispatch(setAvatarsNamesList(avatarsNames));
-                dispatch(setAvatarsXPList(calculateAvatarsXP(userAvatars, xp)));
-
-                if (!isSelectedAvatar) {
-                  const lastMinted = userAvatars[userAvatars?.length - 1] ?? '';
-                  dispatch(setSelectedAvatar(lastMinted));
-                  localStorage.setItem(
-                    LOCAL_STORAGE_KEYS.selectedAvatar,
-                    lastMinted
-                  );
-                }
-
-                if (isMissionsAvailable) {
-                  const missions = await QuestsBackend.getLimits({
-                    landIds: _tokens,
-                    avatarIds: userAvatars
-                  });
-
-                  dispatch(setLandsMissionsLimits(missions?.lands));
-                  dispatch(setAvatarsMissionsLimits(missions?.avatars));
-                }
-                dispatch(setRepaintMode(true));
-              }
             }
           });
         }

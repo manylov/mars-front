@@ -1,6 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { useToasts } from 'react-toast-notifications';
-import QuestsBackend from '@api/questsBackend';
 import { trackUserEvent } from '@global/utils/analytics';
 import { formatRequestWrapperPayload } from '@global/utils/gas';
 import { txWrapper } from '@global/utils/tx-wrapper';
@@ -114,13 +113,6 @@ const useGameManagement = () => {
           dispatch(selectObjectToSet(null));
         });
 
-        const limits = await QuestsBackend.getLimits({
-          // @ts-ignore
-          landIds: tokens,
-          avatarIds: []
-        });
-
-        dispatch(setLandsMissionsLimits(limits?.lands));
         dispatch(changeGameMode(GAME_VIEW_MODES.navigation));
         await window.updateCLNY?.(window.address);
         await onSuccess();

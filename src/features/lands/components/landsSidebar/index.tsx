@@ -20,8 +20,6 @@ import {
 } from '@features/lands/styles/landPlotNew.styles';
 import { getClnySpeedLabel } from '@features/lands/utils/formating';
 import { navigateToGlobeLand } from '@features/lands/utils/globusNavigation';
-import { useRevshare } from '@features/revshare/hooks/useRevshare';
-import useSharing from '@features/sharing/hooks/useSharing';
 import Button from '@global/components/button';
 import { Loader } from '@global/components/loader/loader';
 import { GAP_TEXT, LINKS, MOBILE_BREAKPOINT } from '@global/constants';
@@ -189,15 +187,8 @@ export const ActiveLandsSidebarView = () => {
   const { address, web3Instance } = usePersonalInfo();
   const { isMissionsAvailable, isRevShareAvailable, isFixedEconomy } =
     useFlags();
-  const { personalRevshare, getPersonalRevshare } = useRevshare();
-  const { isAccountPrivate, onPrivacyToggleChange, isTogglerPending } =
-    useSharing();
   const { currentLandsPage } = useAppParts();
   const { landsMissionsLimits } = useLands(tokens, web3Instance);
-
-  useEffect(() => {
-    if (isRevShareAvailable) getPersonalRevshare();
-  }, []);
 
   const title = useMemo(
     () =>
@@ -212,20 +203,6 @@ export const ActiveLandsSidebarView = () => {
 
   const getMissionsLimit = (token: string) =>
     landsMissionsLimits?.[`${token}`] ?? '...';
-
-  const revshareBlock = useMemo(() => {
-    if (!isRevShareAvailable || isAccountPrivate) return null;
-    return (
-      <RevenuButtonWrapper
-        onClick={() => dispatch(setRevshareModalState(true))}
-      >
-        <span>Revenue share</span>
-        <span className="counter">
-          {`${personalRevshare}${personalRevshare !== '...' ? '%' : ''}`}
-        </span>
-      </RevenuButtonWrapper>
-    );
-  }, [personalRevshare, dispatch, isRevShareAvailable, isAccountPrivate]);
 
   const allTimeStats = useMemo(() => {
     const earned = Boolean(earnedAmount)
@@ -251,19 +228,7 @@ export const ActiveLandsSidebarView = () => {
         <ActiveLandsFirstLine withRevshare={isRevShareAvailable}>
           <ActiveLandsControlWrapper>
             <ActiveLandsTitle>{title}</ActiveLandsTitle>
-            {revshareBlock}
           </ActiveLandsControlWrapper>
-          {/* Initial value is null */}
-          {isMissionsAvailable && typeof isAccountPrivate !== 'object' && (
-            <div className="mt-10">
-              <ToggleSwitch
-                label="Sharing"
-                isDisabled={isTogglerPending}
-                value={!isAccountPrivate}
-                onChange={onPrivacyToggleChange}
-              />
-            </div>
-          )}
         </ActiveLandsFirstLine>
         {isCollectAvailable && (
           <Button

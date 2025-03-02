@@ -7,7 +7,6 @@ import React, {
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useAvatars } from '@avatars/hooks/useAvatars';
 import {
   SidebarAvatarWrapper,
   SidebarBackOverlay,
@@ -23,7 +22,6 @@ import {
 import { LINKS } from '@global/constants';
 import useAppParts from '@global/hooks/useAppParts';
 import useFlags from '@global/hooks/useFlags';
-import useOutsideClick from '@global/hooks/useOutsideClick';
 import usePersonalInfo from '@global/hooks/usePersonalInfo';
 import useNavigationRoutes from '@global/hooks/useRoutes';
 import { LIGHT_GREY, TOXIC_GREEN, WHITE } from '@global/styles/variables';
@@ -31,13 +29,7 @@ import { SIDEBAR_ROUTES_NAMES } from '@global/types';
 import { trackUserEvent } from '@global/utils/analytics';
 import { CloseIcon } from '@images/icons/CloseIcon';
 import { DexIcon } from '@images/icons/sidebarIcons/DexIcon';
-import { GovernanceIcon } from '@images/icons/sidebarIcons/GovernanceIcon';
-import { HomeIcon } from '@images/icons/sidebarIcons/HomeIcon';
 import { LandsIcon } from '@images/icons/sidebarIcons/LandsIcon';
-import { MarketIcon } from '@images/icons/sidebarIcons/MarketIcon';
-import { PlayIcon } from '@images/icons/sidebarIcons/PlayIcon';
-import { ProfileIcons } from '@images/icons/sidebarIcons/ProfileIcons';
-import { ReferralIcon } from '@images/icons/sidebarIcons/ReferralIcon';
 import { SidebarOpenIcon } from '@images/icons/sidebarIcons/SidebarOpenIcon';
 import { landsMissionsLimitsSelector } from '@selectors/userStatsSelectors';
 import { toggleMyLandPopup } from '@slices/appPartsSlice';
@@ -124,7 +116,6 @@ const Sidebar = ({ isMobile }: { isMobile: boolean }) => {
   const { address } = usePersonalInfo();
   const { isLandsPage, isGamePage } = useNavigationRoutes();
   const { isLandsSidebarOpened } = useAppParts();
-  const { selectedAvatar, generateAvatarUrl } = useAvatars();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -247,12 +238,6 @@ const Sidebar = ({ isMobile }: { isMobile: boolean }) => {
   const isHidden = !isOpen && isMobile;
   const isMobileOverlay = isOpen && isMobile;
 
-  useOutsideClick(sidebarRef, () => {
-    if (isMobileOverlay) {
-      setIsOpen(false);
-    }
-  });
-
   if (isGamePage) return null;
 
   return (
@@ -297,15 +282,6 @@ const Sidebar = ({ isMobile }: { isMobile: boolean }) => {
                   address={address}
                 />
               )
-            )}
-            {selectedAvatar && (
-              <SidebarAvatarWrapper
-                url={generateAvatarUrl(selectedAvatar)}
-                onClick={() => {
-                  const id = 1;
-                  navigate(`/play/${id}`);
-                }}
-              />
             )}
           </SidebarItemsListInner>
         </SidebarItemsList>

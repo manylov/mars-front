@@ -1,5 +1,3 @@
-import { polygonGas } from '@root/settings/gas';
-
 export const contracts: Record<
   string,
   {

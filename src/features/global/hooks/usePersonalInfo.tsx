@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import { useToasts } from 'react-toast-notifications';
-import { transformReferralAddress } from '@features/revshare/utils/referralProgram';
 import { ADD_ETH_REQUEST_PAYLOAD } from '@global/constants';
 import { useBalance } from '@global/hooks/useBalance';
 import useContracts from '@global/hooks/useContracts';
@@ -21,7 +20,6 @@ import {
   trackUserEvent
 } from '@global/utils/analytics';
 import { getProviderOptions } from '@global/utils/cryptoHelpers';
-import { extractURLParam } from '@global/utils/urlParams';
 import { wrongChainToast } from '@global/utils/utilModals';
 import {
   isConnecting,
@@ -47,8 +45,6 @@ import {
 import { NETWORK_DATA } from '@root/settings';
 import { CURRENT_CHAIN, CURRENT_NET } from '@root/settings/chains';
 import { addressSelector } from '@selectors/userStatsSelectors';
-import { dropAvatarsInfo } from '@slices/avatarsSlice';
-import { setChambersState } from '@slices/cryochambersSlice';
 import Web3 from 'web3';
 import Web3Modal from 'web3modal';
 
@@ -129,14 +125,6 @@ const usePersonalInfo = (withInitialize = false) => {
 
   const toastData = React.useMemo(() => ({ id: '' }), []);
 
-  useEffect(() => {
-    const referralAddress = extractURLParam(location, 'from');
-
-    if (referralAddress?.length) {
-      transformReferralAddress(referralAddress);
-    }
-  }, [location]);
-
   const disconnect = (window.disconnect = React.useCallback(
     async (event: React.MouseEvent<HTMLElement> | null = null) => {
       event?.preventDefault?.();
@@ -147,9 +135,6 @@ const usePersonalInfo = (withInitialize = false) => {
       dispatch(resetInitializationOnDisconnect());
       dispatch(toggleMyLandPopup(null));
       dispatch(toggleConnectionPopup(false));
-      dispatch(setChambersState(null));
-
-      if (isAvatarsAvailable) dispatch(dropAvatarsInfo());
 
       logDevInfo('DISCONNECT');
       trackGoogleAnalyticsEvent('disconnect');
@@ -213,12 +198,6 @@ const usePersonalInfo = (withInitialize = false) => {
 
       setUserIdentities(addressRef.current);
 
-      const referralAddress = extractURLParam(location, 'from');
-
-      if (referralAddress?.length) {
-        transformReferralAddress(referralAddress);
-      }
-
       let chainId: number = 0;
       try {
         chainId = await web3.current.eth.getChainId();
@@ -266,7 +245,6 @@ const usePersonalInfo = (withInitialize = false) => {
       provider.on(
         PROVIDER_EVENTS.accountsChanged,
         async (accounts: string[]) => {
-          dispatch(dropAvatarsInfo());
           const oldAddress = addressRef.current;
           await updateAddress(accounts[0]);
           await getAccountAssets(addressRef, web3.current);

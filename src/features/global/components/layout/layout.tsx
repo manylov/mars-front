@@ -1,7 +1,6 @@
 import React, { FC } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { ConnectionZone } from '@features/global/components/connectionZone/connectionZone';
-import useMining from '@features/play/hooks/useMining';
 import {
   ConnectionZoneWrapper,
   LayoutWrapper
@@ -26,7 +25,6 @@ const Layout: FC = ({ children }) => {
   const { address, connect } = usePersonalInfo();
   const { ref: wrapperRef, width: containerWidth } = useResizeObserver();
   const { isLandsPage, isPlayPage, isProfilePage } = useRoutes();
-  const { isMiningPrepareScreen: isHiddenUI } = useMining();
   const { isHarmonyChains } = useFlags();
   const { isCartOpened } = useAppParts();
 
@@ -51,11 +49,9 @@ const Layout: FC = ({ children }) => {
             <CartIcon />
           </MyAccountIconWrapper>
         )}
-        {!isHiddenUI && (
-          <ConnectionZone address={address} onConnect={connect} />
-        )}
+        <ConnectionZone address={address} onConnect={connect} />
       </ConnectionZoneWrapper>
-      {!isHiddenUI && <Sidebar isMobile={isMobile} />}
+      <Sidebar isMobile={isMobile} />
       {children}
     </LayoutWrapper>
   );
