@@ -73,14 +73,14 @@ export const contracts: Record<
     TOKEN_NAME: 'CLNY',
     ID: 4457845,
     RPC: 'https://rpc.zerion.io/v1/zero-sepolia',
-    MC: '0x1DFdfF98e9A46AF0a9F99c32655023bA679473B4',
-    CLNY: '0xbEC8B717e5C20A68B1Db0BcEdC99e7423995dd1E',
-    GM: '0xCDA72A6770E58FE26Fb26577Aee101749b22F0F1',
-    AM: '0x1C525A371dBe6De99FB52D1ec57431Ad6630d870', // collection manager
-    MM: '0x09c73e79d088E995845C2f48ab9eFc47795f4092', // martian colonists
-    LB: '0x249FDFf95790af025710BA27088B6081966e6b67',
-    CH: '0x3c5CC652Ab145bb1D14f32AD8556111EaAB87C7a', // cryo chamber
-    REPLACE: '0x3a98C9764d5097a99597088713bb45Cb935d9345',
+    MC: '0x2a21120C88bC3c9858cd48e203eC060690236a55',
+    CLNY: '0xeCf9bBAE610Df94B2bC60cde6daB73e83593a4de',
+    GM: '0x463631F5c3B2fa2c4aE0A7E6363A74418585c487',
+    AM: '0xC596C4a9Bc7c86D4070eDC3a0701f8d078315716', // collection manager
+    MM: '0xB2b90d07bbeB5F1a11D6E44D112F1287F4a36461', // martian colonists
+    LB: '0x50307a4Dbc147A3Fe18075E6DC99e3D6FE4697e0',
+    CH: '0xc0590fA450eeaF1F8551ff0d0Ac50CA18b4287A0', // cryo chamber
+    REPLACE: '0x388E6B141fE2141F2b55368af9C6507C5Fc479E8',
     MINING_POOLS: [],
     BACKEND: 'https://backend-harmony.marscolony.io',
     LAND_META: 'https://meta.zerocolony.fun/tokens',
@@ -114,7 +114,7 @@ export const contracts: Record<
     MINT_PRICE: 30,
     CRYO_GAS_PRICE: 10,
     LOOTBOXES_META_LINK: 'https://lootboxes-harmony.marscolony.io',
-    GEARS: '0xc909dbAFf39b0DfD35F398459335aD98B7A0f3AE',
+    GEARS: '0x2d2C6Fb3C1DcBDAADd46b8EF313A08d7B44995eD',
     LOOTBOX_OPEN_PRICE: { '0': 2, '1': 4, '2': 8 },
     GEAR_META_LINK: 'https://gears-harmony.marscolony.io',
     ORACLE: '',
