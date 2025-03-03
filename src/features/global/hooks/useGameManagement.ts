@@ -1,9 +1,4 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { useToasts } from 'react-toast-notifications';
-import { trackUserEvent } from '@global/utils/analytics';
-import { formatRequestWrapperPayload } from '@global/utils/gas';
-import { txWrapper } from '@global/utils/tx-wrapper';
-import { CURRENT_CHAIN } from '@root/settings/chains';
 import {
   baseAvailabilitySelector,
   basePlacementSelector,
@@ -16,25 +11,15 @@ import {
   transportAvailabilitySelector,
   transportPlacementSelector
 } from '@selectors/gameManagerSelectors';
-import { tokensSelector } from '@selectors/userStatsSelectors';
-import {
-  changeGameMode,
-  GAME_VIEW_MODES,
-  selectObjectToSet,
-  setBuildPending,
-  setLandInfoPart
-} from '@slices/gameManagementSlice';
-import { setLandsMissionsLimits } from '@slices/userStatsSlice';
+import { setLandInfoPart } from '@slices/gameManagementSlice';
 import { CONTRACT_METHODS } from '../types';
 import useMetamask from './useMetamask';
 
 const useGameManagement = () => {
   const dispatch = useDispatch();
-  const { addToast } = useToasts();
 
   const { makeCallRequest } = useMetamask();
 
-  const tokens = useSelector(tokensSelector);
   const isBuildPending = useSelector(isBuildPendingSelector);
   const isGameRepaintMode = useSelector(isReplaceModeSelector);
 
@@ -88,50 +73,6 @@ const useGameManagement = () => {
     };
   };
 
-  const buildBasicCall = async (
-    tokenId: string,
-    objType: string,
-    method: string,
-    { withBuild, x, y, free, onSuccess, onFail }: Record<string, any>
-  ) => {
-    const args = withBuild ? [tokenId, x, y] : [tokenId, x, y, free];
-    dispatch(setBuildPending(objType));
-
-    const payload = await formatRequestWrapperPayload();
-
-    trackUserEvent(`${free ? 'Move' : 'Place'} ${objType} clicked`);
-
-    txWrapper(window.GM.methods[method](...args).send(payload), {
-      addToast,
-      eventName: `${!free ? 'Replacing' : 'Placing'} ${objType}`,
-      chainData: CURRENT_CHAIN,
-      onConfirm: async () => {
-        trackUserEvent(`${free ? 'Move' : 'Place'} ${objType} succeed`);
-
-        await collectAllLandInfo(tokenId).then(() => {
-          dispatch(changeGameMode(GAME_VIEW_MODES.navigation));
-          dispatch(selectObjectToSet(null));
-        });
-
-        dispatch(changeGameMode(GAME_VIEW_MODES.navigation));
-        await window.updateCLNY?.(window.address);
-        await onSuccess();
-        dispatch(setBuildPending(''));
-      },
-      onFail: async () => {
-        trackUserEvent(`${free ? 'Move' : 'Place'} ${objType} failed`);
-
-        dispatch(changeGameMode(GAME_VIEW_MODES.navigation));
-        await window.updateCLNY?.(window.address);
-        onFail();
-        dispatch(setBuildPending(''));
-      },
-      onPending: () => {
-        dispatch(changeGameMode(GAME_VIEW_MODES.navigation));
-      }
-    });
-  };
-
   const collectAllLandInfo = async (tokenId: string) => {
     const availData = await getObjectsAvailability(tokenId);
 
@@ -148,13 +89,6 @@ const useGameManagement = () => {
     if (!data) {
       return;
     }
-
-    const {
-      base: baseCoords,
-      robot: robotCoords,
-      power: powerCoords,
-      transport: transportCoords
-    } = data;
 
     const mockedCoords = {
       x: 100,
@@ -196,127 +130,6 @@ const useGameManagement = () => {
     );
   };
 
-  const placeBaseObject = async (
-    objType: string,
-    tokenId: string,
-    x: number,
-    y: number,
-    free: boolean = true,
-    onSuccess: () => void,
-    onFail: () => void,
-    withBuild: boolean
-  ) => {
-    const method = withBuild ? 'buildAndPlaceBaseStation' : 'placeBaseStation';
-
-    try {
-      buildBasicCall(tokenId, objType, method, {
-        withBuild,
-        x,
-        y,
-        free,
-        onSuccess,
-        onFail
-      });
-    } catch (err) {
-      onFail();
-      dispatch(changeGameMode(GAME_VIEW_MODES.navigation));
-      dispatch(setBuildPending(''));
-    }
-  };
-
-  const placeTransportObject = async (
-    objType: string,
-    tokenId: string,
-    x: number,
-    y: number,
-    free: boolean = true,
-    onSuccess: () => void,
-    onFail: () => void,
-    withBuild: boolean
-  ) => {
-    const method = withBuild ? 'buildAndPlaceTransport' : 'placeTransport';
-
-    try {
-      buildBasicCall(tokenId, objType, method, {
-        withBuild,
-        x,
-        y,
-        free,
-        onSuccess,
-        onFail
-      });
-    } catch (err) {
-      onFail();
-      dispatch(changeGameMode(GAME_VIEW_MODES.navigation));
-      dispatch(setBuildPending(''));
-    }
-  };
-
-  const placePowerplantObject = async (
-    objType: string,
-    tokenId: string,
-    x: number,
-    y: number,
-    free: boolean = true,
-    onSuccess: () => void,
-    onFail: () => void,
-    withBuild: boolean
-  ) => {
-    const method = withBuild
-      ? 'buildAndPlacePowerProduction'
-      : 'placePowerProduction';
-
-    try {
-      buildBasicCall(tokenId, objType, method, {
-        withBuild,
-        x,
-        y,
-        free,
-        onSuccess,
-        onFail
-      });
-    } catch (err) {
-      onFail();
-      dispatch(changeGameMode(GAME_VIEW_MODES.navigation));
-      dispatch(setBuildPending(''));
-    }
-  };
-
-  const placeRobotsObject = async (
-    objType: string,
-    tokenId: string,
-    x: number,
-    y: number,
-    free: boolean = true,
-    onSuccess: () => void,
-    onFail: () => void,
-    withBuild: boolean
-  ) => {
-    const method = withBuild
-      ? 'buildAndPlaceRobotAssembly'
-      : 'placeRobotAssembly';
-
-    try {
-      buildBasicCall(tokenId, objType, method, {
-        withBuild,
-        x,
-        y,
-        free,
-        onSuccess,
-        onFail
-      });
-    } catch (err) {
-      onFail();
-      dispatch(changeGameMode(GAME_VIEW_MODES.navigation));
-      dispatch(setBuildPending(''));
-    }
-  };
-
-  window.placeBaseObject = placeBaseObject;
-  window.placePowerplantObject = placePowerplantObject;
-  window.placeTransportObject = placeTransportObject;
-  window.placeRobotsObject = placeRobotsObject;
-
   const isBaseAvailable = useSelector(baseAvailabilitySelector);
   const isBasePlaced = useSelector(basePlacementSelector);
 
@@ -331,10 +144,6 @@ const useGameManagement = () => {
 
   return {
     collectAllLandInfo,
-    placeBaseObject,
-    placePowerplantObject,
-    placeTransportObject,
-    placeRobotsObject,
     isBaseAvailable,
     isBasePlaced,
     isPowerplantPlaced,

@@ -1,8 +1,7 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useToasts } from 'react-toast-notifications';
 import PolygonBackend from '@api/polygonBackend';
-import ToggleSwitch from '@features/global/components/toggler/toggleButton';
 import { freeReserve } from '@features/globus/utils/reserveHelper';
 import { LandPlot } from '@features/lands/components/land/LandPlot';
 import { CartContent } from '@features/lands/components/landsSidebar/cartContent/cartContent';
@@ -34,16 +33,9 @@ import { fromWeiValue } from '@global/utils/fromWei';
 import { ArrowLeft, ArrowRight } from '@images/icons/ArrowDown';
 import { CloseIcon } from '@images/icons/CloseIcon';
 import { LandPinIcon } from '@images/icons/LandPinIcon';
-import {
-  CartCloseIconWrapper,
-  RevenuButtonWrapper
-} from '@root/legacy/navbar.styles';
+import { CartCloseIconWrapper } from '@root/legacy/navbar.styles';
 import { NETWORK_DATA } from '@root/settings';
-import {
-  setLandPageNumber,
-  setRevshareModalState,
-  toggleMyLandPopup
-} from '@slices/appPartsSlice';
+import { setLandPageNumber, toggleMyLandPopup } from '@slices/appPartsSlice';
 import { deleteItemFromChart, toggleCartSidebar } from '@slices/cartSlice';
 import { StatsBar } from '@features/global/components/statsBar';
 
@@ -173,7 +165,6 @@ export const NoLandsSidebarView = () => {
 };
 
 export const ActiveLandsSidebarView = () => {
-  const dispatch = useDispatch();
   const {
     tokens,
     earnedAmount,
@@ -185,8 +176,7 @@ export const ActiveLandsSidebarView = () => {
   } = useBalance();
 
   const { address, web3Instance } = usePersonalInfo();
-  const { isMissionsAvailable, isRevShareAvailable, isFixedEconomy } =
-    useFlags();
+  const { isRevShareAvailable, isFixedEconomy } = useFlags();
   const { currentLandsPage } = useAppParts();
   const { landsMissionsLimits } = useLands(tokens, web3Instance);
 

@@ -1,11 +1,9 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useLocation } from 'react-router-dom';
 import { useToasts } from 'react-toast-notifications';
 import { ADD_ETH_REQUEST_PAYLOAD } from '@global/constants';
 import { useBalance } from '@global/hooks/useBalance';
 import useContracts from '@global/hooks/useContracts';
-import useFlags from '@global/hooks/useFlags';
 import {
   CONNECT_EVENTS,
   ConnectEventsType,
@@ -115,13 +113,11 @@ const usePersonalInfo = (withInitialize = false) => {
 
   // UTILS
   const dispatch = useDispatch();
-  const location = useLocation();
   const { addToast, removeToast } = useToasts();
 
   // FEATURES
   const { initializeContracts } = useContracts();
   const { getAccountAssets } = useBalance();
-  const { isAvatarsAvailable } = useFlags();
 
   const toastData = React.useMemo(() => ({ id: '' }), []);
 

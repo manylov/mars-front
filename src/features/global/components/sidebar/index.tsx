@@ -8,7 +8,6 @@ import React, {
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
 import {
-  SidebarAvatarWrapper,
   SidebarBackOverlay,
   SidebarItemCounter,
   SidebarItemName,
@@ -110,11 +109,10 @@ const Sidebar = ({ isMobile }: { isMobile: boolean }) => {
     isMissionsAvailable,
     isChangePageAvailable,
     isRefPageAvailable,
-    isPlaySection,
     isHarmonyChains
   } = useFlags();
   const { address } = usePersonalInfo();
-  const { isLandsPage, isGamePage } = useNavigationRoutes();
+  const { isGamePage } = useNavigationRoutes();
   const { isLandsSidebarOpened } = useAppParts();
   const navigate = useNavigate();
   const location = useLocation();

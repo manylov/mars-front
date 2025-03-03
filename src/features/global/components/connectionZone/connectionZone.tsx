@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useToasts } from 'react-toast-notifications';
 import useMediaQuery from '@features/global/hooks/useMediaQuery';
@@ -26,7 +26,6 @@ import {
   NewHeaderStatWrapper
 } from '@global/styles/app.styles';
 import MarsIconImg from '@images/photo/connection-zone-icons/MarsIcon.png';
-import OneIconImg from '@images/photo/connection-zone-icons/OneIcon.png';
 import EthIconImg from '@images/photo/connection-zone-icons/eth.png';
 import PolygonIconImg from '@images/photo/connection-zone-icons/PolygonIcon.png';
 import { Copy } from '@root/images/icons/Copy';

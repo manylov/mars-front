@@ -1,22 +1,17 @@
 import React, { useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { KEY_OBJECTS } from '@features/game/constants/gameObjects';
 import { GameLandPlot } from '@features/lands/components/gameLand/GameLandPlot';
 import { OLD_NEW, PRICES } from '@features/lands/constants';
 import { EnhancementsListWrapper } from '@features/lands/styles/landPlot.styles';
-import { navigateToGlobeLand } from '@features/lands/utils/globusNavigation';
 import useGameManagement from '@global/hooks/useGameManagement';
 import useLandStats from '@global/hooks/useLandStats';
 import useMediaQuery from '@global/hooks/useMediaQuery';
 import useRoutes from '@global/hooks/useRoutes';
-import { trackUserEvent } from '@global/utils/analytics';
 import { BaseStationIcon } from '@images/icons/BaseStationIcon';
 import { Power } from '@images/icons/Power';
 import { RobotAssembly } from '@images/icons/RobotAssembly';
 import { Transport } from '@images/icons/Transport';
 import { Enhancement } from '@root/legacy/enhancement/Enhancement';
-
-import { LandPlotNew } from './LandPlotNew';
 
 type Props = {
   id: number;
@@ -32,11 +27,8 @@ export const LandPlot: React.FC<Props> = ({
   id,
   CLNYBalance,
   trigger,
-  missionsLimit,
-  isCartItem,
-  onCartItemRemove
+  isCartItem
 }) => {
-  const navigator = useNavigate();
   const isMobile = useMediaQuery('(max-width: 1200px)');
   const { isGamePage } = useRoutes();
 
@@ -199,37 +191,12 @@ export const LandPlot: React.FC<Props> = ({
     ]
   );
 
-  // if (isGamePage) {
   return (
     <GameLandPlot
       id={id}
       earningSpeed={earningSpeed}
       earned={earned}
       enhancements={enhancementsItemsList}
-    />
-  );
-  // }
-
-  return (
-    <LandPlotNew
-      hasBaseStation={hasBaseStation}
-      powerProductionLevel={powerProductionLevel}
-      transportLevel={transportLevel}
-      id={id}
-      onCartItemRemove={onCartItemRemove}
-      isCartItem={isCartItem}
-      enhancements={enhancementsItemsList}
-      missions={missionsLimit}
-      clny={earned}
-      earningSpeed={earningSpeed}
-      onLandNavigate={() => {
-        trackUserEvent('Enter the landscape clicked', { landId: id });
-        navigator(`/game?id=${id}`);
-      }}
-      onMapSearch={(event: MouseEvent) => {
-        trackUserEvent('Land point on globe clicked');
-        navigateToGlobeLand(event, id);
-      }}
     />
   );
 };

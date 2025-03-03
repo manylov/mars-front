@@ -11,17 +11,11 @@ import {
   selectObjectToSet
 } from '@slices/gameManagementSlice';
 
-import {
-  EhchSidebarWrapper,
-  EnhButtonError
-} from '../buttons/enhButton/enhButton.styles';
+import { EnhButtonError } from '../buttons/enhButton/enhButton.styles';
 
 import {
-  CounterBlock,
-  CounterBlockWrapper,
   EnhancementItemWrapper,
   EnhAux,
-  EnhBlockMinifiedWrapper,
   EnhButtonOuterWrapper,
   EnhImageWrapper,
   EnhOldNew,
@@ -87,10 +81,8 @@ export const Enhancement: React.FC<Props> = ({
     [isAvailable, isPlaced, isGamePage]
   );
 
-  const isFirstUpdate = isAvailable === '0';
-
   const getClnySpeedLabel = (val: string | number) => {
-    if (val == 0) return '';
+    if (Number(val) === 0) return '';
     return `+ ${val} ${NETWORK_DATA.TOKEN_NAME}/day`;
   };
 

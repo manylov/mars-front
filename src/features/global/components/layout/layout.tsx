@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import { FC } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { ConnectionZone } from '@features/global/components/connectionZone/connectionZone';
 import {
@@ -8,7 +8,6 @@ import {
 import Sidebar from '@global/components/sidebar';
 import { MOBILE_BREAKPOINT } from '@global/constants';
 import useAppParts from '@global/hooks/useAppParts';
-import useFlags from '@global/hooks/useFlags';
 import usePersonalInfo from '@global/hooks/usePersonalInfo';
 import useRoutes from '@global/hooks/useRoutes';
 import { CartIcon } from '@images/icons/CartIcon';
@@ -24,8 +23,7 @@ const Layout: FC = ({ children }) => {
   const dispatch = useDispatch();
   const { address, connect } = usePersonalInfo();
   const { ref: wrapperRef, width: containerWidth } = useResizeObserver();
-  const { isLandsPage, isPlayPage, isProfilePage } = useRoutes();
-  const { isHarmonyChains } = useFlags();
+  const { isPlayPage, isProfilePage } = useRoutes();
   const { isCartOpened } = useAppParts();
 
   const isMobile = (containerWidth ?? 0) < MOBILE_BREAKPOINT;

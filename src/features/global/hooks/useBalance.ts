@@ -5,7 +5,6 @@ import { freeReserve } from '@features/globus/utils/reserveHelper';
 import {
   BUNCH_SIZE,
   EARNED_AMOUNT_CHECK_TICK,
-  LOCAL_STORAGE_KEYS,
   METHODS_LABELS
 } from '@global/constants';
 import useContracts from '@global/hooks/useContracts';
@@ -47,15 +46,12 @@ import {
   setIsCollecting,
   setIsLoading
 } from '@slices/commonAppStateSlice';
-import { setRepaintMode } from '@slices/gameManagementSlice';
 import {
   resetMintedTokens,
   setAddress,
-  setAvatarsMissionsLimits,
   setColonyBalance,
   setEarnedAmount,
   setEarnSpeed,
-  setLandsMissionsLimits,
   setMintedTokens,
   setUserBalance,
   setUserTokens
@@ -65,8 +61,7 @@ import { fromWei } from 'web3-utils';
 
 export const useBalance = () => {
   const { makeRequest, makeSendRequest } = useMetamask();
-  const { isMissionsAvailable, isAvatarsAvailable, isSelectedAvatar } =
-    useFlags();
+  const { isMissionsAvailable, isSelectedAvatar } = useFlags();
   const {
     getCLNYManager,
     clnyManager,
@@ -138,6 +133,7 @@ export const useBalance = () => {
           method: CONTRACT_METHODS.getEarningData,
           params: [bunch],
           contract: gameManager,
+          // eslint-disable-next-line no-loop-func
           onSuccess: (earningData) => {
             if (earningData) {
               const { '0': earned, '1': speed } = earningData;
