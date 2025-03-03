@@ -208,10 +208,7 @@ export const useBalance = () => {
 
       const feeValue = await makeRequest({
         method: CONTRACT_METHODS.getFee,
-        params: [
-          tokenNumbers.length,
-          localStorage.getItem('referralAddress') ?? EMPTY_ADDRESS
-        ],
+        params: [tokenNumbers.length],
         address,
         type: METAMASK_EVENTS.call,
         contract: gameManager ?? getGameManager()
@@ -221,10 +218,7 @@ export const useBalance = () => {
         type: METAMASK_EVENTS.send,
         method: CONTRACT_METHODS.claim,
         contract: gameManager ?? getGameManager(),
-        params: [
-          tokenNumbers,
-          localStorage.getItem('referralAddress') ?? EMPTY_ADDRESS
-        ],
+        params: [tokenNumbers],
         onLoad: (hash: string) => {
           trackGoogleAnalyticsEvent('cart.pending', {
             tokens: tokenNumbers,

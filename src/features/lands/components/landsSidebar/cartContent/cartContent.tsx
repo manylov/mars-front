@@ -100,10 +100,7 @@ export const CartContent = ({ itemsCount }: { itemsCount: number }) => {
         contract: gm,
         method: 'getFee',
         errorText: 'Fail getting claiming fees',
-        params: [
-          itemsCount,
-          localStorage.getItem('referralAddress') ?? EMPTY_ADDRESS
-        ],
+        params: [itemsCount],
         address
       });
       setFinalPrice((parseInt(value ?? '0') * 1e-18).toFixed(2));

@@ -95,7 +95,7 @@ export const OpenGlobus = ({ height, allTokens, myTokens }: Props) => {
       contract: gm,
       method: 'getFee',
       errorText: 'Fail getting claiming fees',
-      params: [1, localStorage.getItem('referralAddress') ?? EMPTY_ADDRESS],
+      params: [1],
       address: window.address
     }).then((value) => {
       console.log({ value, address: window.address });

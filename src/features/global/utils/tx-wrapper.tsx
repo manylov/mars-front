@@ -47,7 +47,7 @@ export const callWrapper = async function <T = string | BN>(
       increaseCallCounter();
       return await contract.methods[method](...params).call({ from, type });
     } catch (error) {
-      console.error(error, method, '!!!', params);
+      console.error(contract.options.address, method, '!!!', params);
       await new Promise((rs) => setTimeout(rs, 666));
     }
   }

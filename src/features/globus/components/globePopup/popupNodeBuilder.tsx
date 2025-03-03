@@ -45,10 +45,11 @@ const PopupFeesSection: React.FC<Props> = ({
         method: 'getFee',
         addToast: () => {},
         errorText: 'Fail getting claiming fees',
-        params: [1, localStorage.getItem('referralAddress') ?? EMPTY_ADDRESS],
+        params: [1],
         from: address,
         type: CURRENT_CHAIN.x2
       }).then((_fee) => {
+        console.log('fee', _fee);
         if (_fee && +_fee) {
           externalState.fee = +Web3.utils.fromWei(_fee, 'ether');
           setFee(externalState.fee);
