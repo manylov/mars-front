@@ -25,7 +25,7 @@ Your app is ready to be deployed!
 
 See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
 
-# Mars Colony WebApp Notes
+# Zero WebApp Notes
 
 Project based on Create-react-app React template. «Inject» command not needed. All required properties for webpack can be written in `config-overrides.js` file.
 

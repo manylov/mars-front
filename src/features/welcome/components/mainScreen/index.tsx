@@ -35,12 +35,12 @@ export const MainScreen = () => {
     <WelcomeScreenMainWrapper id="mainScreen">
       <WelcomeModalWrapper>
         <WelcomeModalTitleBlock>
-          <p>Welcome to mars colony</p>
+          <p>Welcome to Zero Colony</p>
           <p>
-            What is marscolony{' '}
+            What is Zero Colony{' '}
             <LinkIcon
               onClick={() => {
-                trackUserEvent('What is marscolony clicked', { address });
+                trackUserEvent('What is Zero Colony clicked', { address });
                 openLink(LINKS[chainKey].colonyGuide);
               }}
             />
