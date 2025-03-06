@@ -1,6 +1,6 @@
 import { commonFlexColumn, commonFlexLine } from '@global/styles/app.styles';
 import { fontProperty } from '@global/styles/fonts.styles';
-import { RGB_BLACK, WHITE } from '@global/styles/variables';
+import { RGB_BLACK, WHITE, TOXIC_GREEN } from '@global/styles/variables';
 import styled, { css } from 'styled-components';
 
 const LandsSidebarWrapper = styled.div<{
@@ -71,10 +71,11 @@ const NoLandsTitle = styled.div`
 const LandsSidebarHeaderWrapper = styled.header<{ isMobile?: boolean }>`
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
   justify-content: flex-start;
   color: ${WHITE};
   padding-top: 0;
+  width: 100%;
   ${({ isMobile }) => {
     if (isMobile) {
       return css`
@@ -88,6 +89,59 @@ const LandsSidebarHeaderWrapper = styled.header<{ isMobile?: boolean }>`
   }};
 `;
 
+const LandsContentWrapper = styled.div`
+  position: relative;
+  display: flex;
+  width: 100%;
+  margin-top: 20px;
+  gap: 20px;
+`;
+
+const LandsSection = styled.div`
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+`;
+
+const BorderedDiv = styled.div`
+  width: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  height: 140px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+`;
+
+const SpanWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+  align-items: center;
+`;
+
+const LandsSpan = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+`;
+
+const CollectSpan = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+`;
+
 const LandsBlock = styled.div`
   margin-top: 40px;
 `;
@@ -98,7 +152,7 @@ const ButtonSubText = styled.p<{ withRevshare?: boolean }>`
   font-weight: 400;
   font-size: 10px;
   line-height: 11px;
-  margin: 6px 0 0 0;
+  margin: 0;
   text-align: center;
 
   ${({ withRevshare }) => {
@@ -118,17 +172,68 @@ const ActiveLandsTitle = styled.p`
   line-height: 48px;
   text-transform: uppercase;
   margin: 0;
+  text-align: center;
 `;
 
 const ActiveLandsFirstLine = styled.div<{ withRevshare?: boolean }>`
   ${commonFlexLine};
-  align-items: flex-start;
+  align-items: center;
+  justify-content: center;
   gap: 20px;
-  margin-bottom: ${({ withRevshare }) => (withRevshare ? '40px' : '20px')};
+  margin: 0;
+  width: 100%;
 `;
 
 const ActiveLandsControlWrapper = styled.div`
   ${commonFlexColumn};
+  align-items: center;
+`;
+
+const PrizeSpanWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  align-items: center;
+`;
+
+const PrizeSpan = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+`;
+
+const PrizePoolText = styled.div`
+  ${fontProperty};
+  font-weight: 700;
+  font-size: 24px;
+  line-height: 28px;
+  text-transform: uppercase;
+  color: ${WHITE};
+  text-align: center;
+  margin: 0;
+`;
+
+const PrizeAmountText = styled(PrizePoolText)`
+  margin-top: 4px;
+`;
+
+const LearnMoreLink = styled.a`
+  font-family: 'Helvetica', sans-serif;
+  font-size: 14px;
+  line-height: 16px;
+  font-weight: 700;
+  color: #fe5161;
+  text-decoration: underline;
+  cursor: pointer;
+  text-align: center;
+  margin-top: 8px;
+
+  &:hover {
+    opacity: 0.8;
+  }
 `;
 
 export {
@@ -139,5 +244,16 @@ export {
   LandsBlock,
   LandsSidebarHeaderWrapper,
   LandsSidebarWrapper,
-  NoLandsTitle
+  NoLandsTitle,
+  BorderedDiv,
+  LandsContentWrapper,
+  LandsSection,
+  SpanWrapper,
+  LandsSpan,
+  CollectSpan,
+  PrizeSpanWrapper,
+  PrizeSpan,
+  PrizePoolText,
+  PrizeAmountText,
+  LearnMoreLink
 };

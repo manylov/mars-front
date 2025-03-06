@@ -43,11 +43,22 @@ import {
   ActiveLandsControlWrapper,
   ActiveLandsFirstLine,
   ActiveLandsTitle,
+  BorderedDiv,
   ButtonSubText,
   LandsBlock,
   LandsSidebarHeaderWrapper,
   LandsSidebarWrapper,
-  NoLandsTitle
+  NoLandsTitle,
+  LandsContentWrapper,
+  LandsSection,
+  SpanWrapper,
+  LandsSpan,
+  CollectSpan,
+  PrizeSpanWrapper,
+  PrizeSpan,
+  PrizePoolText,
+  PrizeAmountText,
+  LearnMoreLink
 } from './landsSidebar.styles';
 
 export const LandsSidebar = () => {
@@ -215,23 +226,46 @@ export const ActiveLandsSidebarView = () => {
       <LandsSidebarHeaderWrapper isMobile={isMobile}>
         <SocialIconsBar />
         <StatsBar />
-        <ActiveLandsFirstLine withRevshare={isRevShareAvailable}>
-          <ActiveLandsControlWrapper>
-            <ActiveLandsTitle>{title}</ActiveLandsTitle>
-          </ActiveLandsControlWrapper>
-        </ActiveLandsFirstLine>
-        {isCollectAvailable && (
-          <Button
-            disabled={isCollectInProgress}
-            onClick={() => collectAllStats(address, web3Instance)}
-            text="COLLECT ALL"
-            variant="common"
-            disabledText="Collecting..."
-          />
-        )}
-        <ButtonSubText withRevshare={isRevShareAvailable}>
-          {allTimeStats}
-        </ButtonSubText>
+        <LandsContentWrapper>
+          <LandsSection>
+            <SpanWrapper>
+              <LandsSpan>
+                <ActiveLandsFirstLine withRevshare={isRevShareAvailable}>
+                  <ActiveLandsControlWrapper>
+                    <ActiveLandsTitle>{title}</ActiveLandsTitle>
+                  </ActiveLandsControlWrapper>
+                </ActiveLandsFirstLine>
+              </LandsSpan>
+              <CollectSpan>
+                {isCollectAvailable && (
+                  <Button
+                    disabled={isCollectInProgress}
+                    onClick={() => collectAllStats(address, web3Instance)}
+                    text="COLLECT ALL"
+                    variant="common"
+                    disabledText="Collecting..."
+                  />
+                )}
+                <ButtonSubText withRevshare={isRevShareAvailable}>
+                  {allTimeStats}
+                </ButtonSubText>
+              </CollectSpan>
+            </SpanWrapper>
+          </LandsSection>
+          <BorderedDiv>
+            <PrizeSpanWrapper>
+              <PrizeSpan>
+                <PrizePoolText>Prize pool</PrizePoolText>
+                <PrizeAmountText>4.52 ETH ($12456)</PrizeAmountText>
+              </PrizeSpan>
+              <PrizeSpan>
+                <LearnMoreLink href="#" onClick={(e) => e.preventDefault()}>
+                  Learn more
+                </LearnMoreLink>
+              </PrizeSpan>
+            </PrizeSpanWrapper>
+          </BorderedDiv>
+        </LandsContentWrapper>
       </LandsSidebarHeaderWrapper>
       <LandsBlock>
         {isLoadingTokens && <Loader />}
