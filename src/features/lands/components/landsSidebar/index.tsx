@@ -185,6 +185,22 @@ export const ActiveLandsSidebarView = () => {
     clnyBalance,
     isLoadingTokens
   } = useBalance();
+  const [prizeStats, setPrizeStats] = useState({ prizeEth: 0, prizeUsd: 0 });
+
+  useEffect(() => {
+    const fetchPrizeStats = async () => {
+      try {
+        const stats = await PolygonBackend.getLandStats();
+        setPrizeStats({
+          prizeEth: stats.prizeEth || 0,
+          prizeUsd: stats.prizeUsd || 0
+        });
+      } catch (error) {
+        console.error('Failed to fetch prize stats:', error);
+      }
+    };
+    fetchPrizeStats();
+  }, []);
 
   const { address, web3Instance } = usePersonalInfo();
   const { isRevShareAvailable, isFixedEconomy } = useFlags();
@@ -256,10 +272,17 @@ export const ActiveLandsSidebarView = () => {
             <PrizeSpanWrapper>
               <PrizeSpan>
                 <PrizePoolText>Prize pool</PrizePoolText>
-                <PrizeAmountText>4.52 ETH ($12456)</PrizeAmountText>
+                <PrizeAmountText>
+                  {prizeStats.prizeEth.toFixed(2)} ETH ($
+                  {prizeStats.prizeUsd.toLocaleString()})
+                </PrizeAmountText>
               </PrizeSpan>
               <PrizeSpan>
-                <LearnMoreLink href="#" onClick={(e) => e.preventDefault()}>
+                <LearnMoreLink
+                  href="https://zerocolony.notion.site/SPACE-RACE-A-Social-Experiment-1acd49cbead98046b271ea87fc98bea2"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   Learn more
                 </LearnMoreLink>
               </PrizeSpan>
