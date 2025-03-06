@@ -109,12 +109,12 @@ const BorderedDiv = styled.div`
   width: 50%;
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 8px;
-  height: 140px;
+  height: 100px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding: 20px;
+  padding: 12px;
 `;
 
 const SpanWrapper = styled.div`
@@ -225,7 +225,7 @@ const LearnMoreLink = styled.a`
   font-size: 14px;
   line-height: 16px;
   font-weight: 700;
-  color: #fe5161;
+  color: ${WHITE};
   text-decoration: underline;
   cursor: pointer;
   text-align: center;
