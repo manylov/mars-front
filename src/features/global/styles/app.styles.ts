@@ -397,15 +397,14 @@ const StatsBarWrapper = styled.div`
   gap: 14px;
   padding: 10px;
   backdrop-filter: blur(10px);
-  width: calc(100% - 32px);
-  max-width: 460px;
+  width: 100%;
   box-sizing: border-box;
   justify-content: space-evenly;
   background-color: rgba(0, 0, 0, 0.2);
   border-radius: 4px;
 
   @media screen and (max-width: 480px) {
-    width: calc(100% - 16px);
+    width: 100%;
     padding: 12px;
     gap: 12px;
   }
