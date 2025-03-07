@@ -1,6 +1,6 @@
 import { commonFlexColumn, commonFlexLine } from '@global/styles/app.styles';
 import { fontProperty } from '@global/styles/fonts.styles';
-import { RGB_BLACK, WHITE, TOXIC_GREEN } from '@global/styles/variables';
+import { RGB_BLACK, WHITE } from '@global/styles/variables';
 import styled, { css } from 'styled-components';
 
 const LandsSidebarWrapper = styled.div<{
@@ -65,7 +65,7 @@ const NoLandsTitle = styled.div`
   line-height: 28px;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  margin-bottom: 30px;
+  margin-bottom: 10px;
 `;
 
 const LandsSidebarHeaderWrapper = styled.header<{ isMobile?: boolean }>`
@@ -165,6 +165,17 @@ const ButtonSubText = styled.p<{ withRevshare?: boolean }>`
   }}
 `;
 
+const ButtonNoLandsSubText = styled.p`
+  font-family: 'Helvetica', sans-serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 10px;
+  line-height: 11px;
+  margin: 0;
+  text-align: center;
+  margin-top: 10px;
+`;
+
 const ActiveLandsTitle = styled.p`
   ${fontProperty};
   font-weight: 700;
@@ -255,5 +266,6 @@ export {
   PrizeSpan,
   PrizePoolText,
   PrizeAmountText,
-  LearnMoreLink
+  LearnMoreLink,
+  ButtonNoLandsSubText
 };

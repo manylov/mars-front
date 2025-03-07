@@ -58,7 +58,8 @@ import {
   PrizeSpan,
   PrizePoolText,
   PrizeAmountText,
-  LearnMoreLink
+  LearnMoreLink,
+  ButtonNoLandsSubText
 } from './landsSidebar.styles';
 
 export const LandsSidebar = () => {
@@ -144,33 +145,83 @@ export const NoLandsSidebarView = () => {
     }
   }, [tokens, isInitialized]);
 
+  const [prizeStats, setPrizeStats] = useState({ prizeEth: 0, prizeUsd: 0 });
+
+  useEffect(() => {
+    const fetchPrizeStats = async () => {
+      try {
+        const stats = await PolygonBackend.getLandStats();
+        setPrizeStats({
+          prizeEth: stats.prizeEth || 0,
+          prizeUsd: stats.prizeUsd || 0
+        });
+      } catch (error) {
+        console.error('Failed to fetch prize stats:', error);
+      }
+    };
+    fetchPrizeStats();
+  }, []);
+
   return (
     <LandsSidebarHeaderWrapper>
       <SocialIconsBar />
       <StatsBar />
 
-      <NoLandsTitle>
-        {isLoadingTokens || isLocalLoading ? (
-          'Loading...'
-        ) : (
-          <>
-            You do not <br /> have lands
-          </>
-        )}
-      </NoLandsTitle>
-      {(isLoadingTokens || isLocalLoading) && <Loader />}
-      {!isLoadingTokens && !isLocalLoading && (
-        <>
-          <Button onClick={onBuyLandClick} text="Claim land" variant="common" />
-          <ButtonSubText>
-            {NETWORK_DATA.ECONOMY === 'fixed'
-              ? 'Earn up to 14 CLNY/day from a land'
-              : `Earn up to ${fromWeiValue(
-                  maxClnyIncome ?? '...'
-                )} CLNY/day from a land`}
-          </ButtonSubText>
-        </>
-      )}
+      <LandsContentWrapper>
+        <LandsSection>
+          <SpanWrapper>
+            <LandsSpan>
+              <NoLandsTitle>
+                {isLoadingTokens || isLocalLoading ? (
+                  'Loading...'
+                ) : (
+                  <>
+                    You do not <br /> have lands
+                  </>
+                )}
+              </NoLandsTitle>
+              {(isLoadingTokens || isLocalLoading) && <Loader />}
+              {!isLoadingTokens && !isLocalLoading && (
+                <>
+                  <Button
+                    onClick={onBuyLandClick}
+                    text="Claim land"
+                    variant="common"
+                  />
+                  <ButtonNoLandsSubText>
+                    {NETWORK_DATA.ECONOMY === 'fixed'
+                      ? 'Earn up to 14 CLNY/day from a land'
+                      : `Earn up to ${fromWeiValue(
+                          maxClnyIncome ?? '...'
+                        )} CLNY/day from a land`}
+                  </ButtonNoLandsSubText>
+                </>
+              )}
+            </LandsSpan>
+          </SpanWrapper>
+        </LandsSection>
+
+        <BorderedDiv>
+          <PrizeSpanWrapper>
+            <PrizeSpan>
+              <PrizePoolText>Prize pool</PrizePoolText>
+              <PrizeAmountText>
+                {prizeStats.prizeEth.toFixed(2)} ETH ($
+                {prizeStats.prizeUsd.toLocaleString()})
+              </PrizeAmountText>
+            </PrizeSpan>
+            <PrizeSpan>
+              <LearnMoreLink
+                href="https://zerocolony.notion.site/SPACE-RACE-A-Social-Experiment-1acd49cbead98046b271ea87fc98bea2"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Learn more
+              </LearnMoreLink>
+            </PrizeSpan>
+          </PrizeSpanWrapper>
+        </BorderedDiv>
+      </LandsContentWrapper>
     </LandsSidebarHeaderWrapper>
   );
 };
