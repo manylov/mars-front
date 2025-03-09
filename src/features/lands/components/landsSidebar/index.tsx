@@ -224,12 +224,12 @@ export const NoLandsSidebarView = () => {
               >
                 Learn more
               </LearnMoreLink>
-              <LearnMoreLink
+              {/* <LearnMoreLink
                 onClick={() => setIsLeaderboardOpen(true)}
                 style={{ cursor: 'pointer' }}
               >
                 Leaderboard
-              </LearnMoreLink>
+              </LearnMoreLink> */}
             </PrizeLinksSpan>
           </PrizeSpanWrapper>
         </BorderedDiv>
