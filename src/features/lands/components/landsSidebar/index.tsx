@@ -38,6 +38,7 @@ import { NETWORK_DATA } from '@root/settings';
 import { setLandPageNumber, toggleMyLandPopup } from '@slices/appPartsSlice';
 import { deleteItemFromChart, toggleCartSidebar } from '@slices/cartSlice';
 import { StatsBar } from '@features/global/components/statsBar';
+import { Leaderboard } from '@global/components/leaderboard';
 
 import {
   ActiveLandsControlWrapper,
@@ -59,7 +60,8 @@ import {
   PrizePoolText,
   PrizeAmountText,
   LearnMoreLink,
-  ButtonNoLandsSubText
+  ButtonNoLandsSubText,
+  PrizeLinksSpan
 } from './landsSidebar.styles';
 
 export const LandsSidebar = () => {
@@ -113,7 +115,7 @@ export const NoLandsSidebarView = () => {
   const { isHarmonyChains } = useFlags();
   const { isInitialized } = usePersonalInfo();
   const [maxClnyIncome, setMaxClnyIncome] = useState<string | null>(null);
-
+  const [isLeaderboardOpen, setIsLeaderboardOpen] = useState(false);
   const [isLocalLoading, setIsLocalLoading] = useState(true);
 
   const onBuyLandClick = () => {
@@ -166,6 +168,10 @@ export const NoLandsSidebarView = () => {
     <LandsSidebarHeaderWrapper>
       <SocialIconsBar />
       <StatsBar />
+      <Leaderboard
+        isOpen={isLeaderboardOpen}
+        onClose={() => setIsLeaderboardOpen(false)}
+      />
 
       <LandsContentWrapper>
         <LandsSection>
@@ -210,7 +216,7 @@ export const NoLandsSidebarView = () => {
                 {prizeStats.prizeUsd.toLocaleString()})
               </PrizeAmountText>
             </PrizeSpan>
-            <PrizeSpan>
+            <PrizeLinksSpan>
               <LearnMoreLink
                 href="https://zerocolony.notion.site/SPACE-RACE-A-Social-Experiment-1acd49cbead98046b271ea87fc98bea2"
                 target="_blank"
@@ -218,7 +224,13 @@ export const NoLandsSidebarView = () => {
               >
                 Learn more
               </LearnMoreLink>
-            </PrizeSpan>
+              <LearnMoreLink
+                onClick={() => setIsLeaderboardOpen(true)}
+                style={{ cursor: 'pointer' }}
+              >
+                Leaderboard
+              </LearnMoreLink>
+            </PrizeLinksSpan>
           </PrizeSpanWrapper>
         </BorderedDiv>
       </LandsContentWrapper>
@@ -237,21 +249,7 @@ export const ActiveLandsSidebarView = () => {
     isLoadingTokens
   } = useBalance();
   const [prizeStats, setPrizeStats] = useState({ prizeEth: 0, prizeUsd: 0 });
-
-  useEffect(() => {
-    const fetchPrizeStats = async () => {
-      try {
-        const stats = await PolygonBackend.getLandStats();
-        setPrizeStats({
-          prizeEth: stats.prizeEth || 0,
-          prizeUsd: stats.prizeUsd || 0
-        });
-      } catch (error) {
-        console.error('Failed to fetch prize stats:', error);
-      }
-    };
-    fetchPrizeStats();
-  }, []);
+  const [isLeaderboardOpen, setIsLeaderboardOpen] = useState(false);
 
   const { address, web3Instance } = usePersonalInfo();
   const { isRevShareAvailable, isFixedEconomy } = useFlags();
@@ -288,11 +286,30 @@ export const ActiveLandsSidebarView = () => {
     return `${earned} | ${speed()}`;
   }, [earnedAmount, dailySpeed]);
 
+  useEffect(() => {
+    const fetchPrizeStats = async () => {
+      try {
+        const stats = await PolygonBackend.getLandStats();
+        setPrizeStats({
+          prizeEth: stats.prizeEth || 0,
+          prizeUsd: stats.prizeUsd || 0
+        });
+      } catch (error) {
+        console.error('Failed to fetch prize stats:', error);
+      }
+    };
+    fetchPrizeStats();
+  }, []);
+
   return (
     <div>
       <LandsSidebarHeaderWrapper isMobile={isMobile}>
         <SocialIconsBar />
         <StatsBar />
+        <Leaderboard
+          isOpen={isLeaderboardOpen}
+          onClose={() => setIsLeaderboardOpen(false)}
+        />
         <LandsContentWrapper>
           <LandsSection>
             <SpanWrapper>
@@ -328,7 +345,7 @@ export const ActiveLandsSidebarView = () => {
                   {prizeStats.prizeUsd.toLocaleString()})
                 </PrizeAmountText>
               </PrizeSpan>
-              <PrizeSpan>
+              <PrizeLinksSpan>
                 <LearnMoreLink
                   href="https://zerocolony.notion.site/SPACE-RACE-A-Social-Experiment-1acd49cbead98046b271ea87fc98bea2"
                   target="_blank"
@@ -336,7 +353,13 @@ export const ActiveLandsSidebarView = () => {
                 >
                   Learn more
                 </LearnMoreLink>
-              </PrizeSpan>
+                <LearnMoreLink
+                  onClick={() => setIsLeaderboardOpen(true)}
+                  style={{ cursor: 'pointer' }}
+                >
+                  Leaderboard
+                </LearnMoreLink>
+              </PrizeLinksSpan>
             </PrizeSpanWrapper>
           </BorderedDiv>
         </LandsContentWrapper>

@@ -203,12 +203,19 @@ const ActiveLandsControlWrapper = styled.div`
 const PrizeSpanWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 8px;
   width: 100%;
   align-items: center;
 `;
 
 const PrizeSpan = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+`;
+
+const PrizeLinksSpan = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -223,12 +230,12 @@ const PrizePoolText = styled.div`
   line-height: 28px;
   text-transform: uppercase;
   color: ${WHITE};
-  text-align: center;
   margin: 0;
 `;
 
 const PrizeAmountText = styled(PrizePoolText)`
   margin-top: 4px;
+  text-align: left;
 `;
 
 const LearnMoreLink = styled.a`
@@ -239,7 +246,7 @@ const LearnMoreLink = styled.a`
   color: ${WHITE};
   text-decoration: underline;
   cursor: pointer;
-  text-align: center;
+  text-align: left;
   margin-top: 8px;
 
   &:hover {
@@ -267,5 +274,6 @@ export {
   PrizePoolText,
   PrizeAmountText,
   LearnMoreLink,
-  ButtonNoLandsSubText
+  ButtonNoLandsSubText,
+  PrizeLinksSpan
 };
