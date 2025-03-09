@@ -95,6 +95,10 @@ const LandsContentWrapper = styled.div`
   width: 100%;
   margin-top: 20px;
   gap: 20px;
+
+  @media (max-width: 768px) {
+    justify-content: flex-end;
+  }
 `;
 
 const LandsSection = styled.div`
@@ -109,12 +113,18 @@ const BorderedDiv = styled.div`
   width: 50%;
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 8px;
-  height: 100px;
+  min-height: 100px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   padding: 12px;
+
+  @media (max-width: 768px) {
+    width: 50%;
+    min-height: unset;
+    padding: 8px;
+  }
 `;
 
 const SpanWrapper = styled.div`
@@ -231,11 +241,22 @@ const PrizePoolText = styled.div`
   text-transform: uppercase;
   color: ${WHITE};
   margin: 0;
+  text-align: center;
+
+  @media (max-width: 768px) {
+    font-size: 20px;
+    line-height: 24px;
+  }
 `;
 
 const PrizeAmountText = styled(PrizePoolText)`
   margin-top: 4px;
-  text-align: left;
+  text-align: center;
+
+  @media (max-width: 768px) {
+    font-size: 16px;
+    line-height: 20px;
+  }
 `;
 
 const LearnMoreLink = styled.a`
@@ -246,7 +267,7 @@ const LearnMoreLink = styled.a`
   color: ${WHITE};
   text-decoration: underline;
   cursor: pointer;
-  text-align: left;
+  text-align: center;
   margin-top: 8px;
 
   &:hover {
