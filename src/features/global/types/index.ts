@@ -77,6 +77,7 @@ export enum SIDEBAR_ROUTES_NAMES {
   play = 'Play',
   missions = 'Missions',
   aiTrade = 'Trade CLNY',
+  leaderboard = 'Leaderboard',
   market = 'Market',
   governance = 'Governance',
   referral = 'Referral',

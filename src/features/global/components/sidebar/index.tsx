@@ -32,6 +32,8 @@ import { LandsIcon } from '@images/icons/sidebarIcons/LandsIcon';
 import { SidebarOpenIcon } from '@images/icons/sidebarIcons/SidebarOpenIcon';
 import { landsMissionsLimitsSelector } from '@selectors/userStatsSelectors';
 import { toggleMyLandPopup } from '@slices/appPartsSlice';
+import { LeaderboardIcon } from '@root/images/icons/sidebarIcons/LeaderboardIcon';
+import { Leaderboard } from '@global/components/leaderboard';
 
 type SideBarItemType = {
   route: string;
@@ -116,6 +118,7 @@ const Sidebar = ({ isMobile }: { isMobile: boolean }) => {
   const { isLandsSidebarOpened } = useAppParts();
   const navigate = useNavigate();
   const location = useLocation();
+  const [isLeaderboardOpen, setIsLeaderboardOpen] = useState(false);
 
   const [isOpen, setIsOpen] = useState(!isMobile);
 
@@ -186,6 +189,18 @@ const Sidebar = ({ isMobile }: { isMobile: boolean }) => {
         onClick: () => {
           window.open(LINKS.zero.dex, '_blank');
         }
+      },
+      {
+        route: '/leaderboard',
+        icon: LeaderboardIcon,
+        isActive: true,
+        withCounter: false,
+        count: 0,
+        name: SIDEBAR_ROUTES_NAMES.leaderboard,
+        trackEvent: 'Leaderboard page clicked',
+        onClick: () => {
+          setIsLeaderboardOpen(true);
+        }
       }
       // {
       //   route: '/governance',
@@ -252,6 +267,11 @@ const Sidebar = ({ isMobile }: { isMobile: boolean }) => {
           ZeroColony
           {isMobile && <CloseIcon onClick={() => setIsOpen(false)} />}
         </SidebarTitle>
+
+        <Leaderboard
+          isOpen={isLeaderboardOpen}
+          onClose={() => setIsLeaderboardOpen(false)}
+        />
         <SidebarItemsList>
           <SidebarItemsListInner>
             {availableRoutes.map(
@@ -278,6 +298,7 @@ const Sidebar = ({ isMobile }: { isMobile: boolean }) => {
                   onClick={onClick}
                   withCounter={withCounter}
                   address={address}
+                  trackEvent={trackEvent}
                 />
               )
             )}
