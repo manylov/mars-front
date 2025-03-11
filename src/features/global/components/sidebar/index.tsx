@@ -31,9 +31,11 @@ import { DexIcon } from '@images/icons/sidebarIcons/DexIcon';
 import { LandsIcon } from '@images/icons/sidebarIcons/LandsIcon';
 import { SidebarOpenIcon } from '@images/icons/sidebarIcons/SidebarOpenIcon';
 import { landsMissionsLimitsSelector } from '@selectors/userStatsSelectors';
-import { toggleMyLandPopup } from '@slices/appPartsSlice';
+import {
+  toggleMyLandPopup,
+  toggleLeaderboardPopup
+} from '@slices/appPartsSlice';
 import { LeaderboardIcon } from '@root/images/icons/sidebarIcons/LeaderboardIcon';
-import { Leaderboard } from '@global/components/leaderboard';
 
 type SideBarItemType = {
   route: string;
@@ -118,8 +120,6 @@ const Sidebar = ({ isMobile }: { isMobile: boolean }) => {
   const { isLandsSidebarOpened } = useAppParts();
   const navigate = useNavigate();
   const location = useLocation();
-  const [isLeaderboardOpen, setIsLeaderboardOpen] = useState(false);
-
   const [isOpen, setIsOpen] = useState(!isMobile);
 
   useEffect(() => {
@@ -155,29 +155,6 @@ const Sidebar = ({ isMobile }: { isMobile: boolean }) => {
         name: SIDEBAR_ROUTES_NAMES.lands,
         trackEvent: 'Lands page clicked'
       },
-      // {
-      //   route: '/profile/',
-      //   onClick: () => {
-      //     return navigate('/profile/0');
-      //   },
-      //   icon: ProfileIcons,
-      //   isActive: true,
-      //   withCounter: false,
-      //   count: 0,
-      //   name: SIDEBAR_ROUTES_NAMES.profile
-      // },
-      // {
-      //   route: '/play/',
-      //   onClick: () => {
-      //     return navigate('/play/0');
-      //   },
-      //   icon: PlayIcon,
-      //   isActive: isPlaySection,
-      //   withCounter: isMissionsAvailable,
-      //   count: availableMissionsCount as number,
-      //   name: SIDEBAR_ROUTES_NAMES.play,
-      //   trackEvent: 'Play page clicked'
-      // },
       {
         route: '/xchange',
         icon: DexIcon,
@@ -199,43 +176,10 @@ const Sidebar = ({ isMobile }: { isMobile: boolean }) => {
         name: SIDEBAR_ROUTES_NAMES.leaderboard,
         trackEvent: 'Leaderboard page clicked',
         onClick: () => {
-          setIsLeaderboardOpen(true);
+          dispatch(toggleMyLandPopup('lands'));
+          dispatch(toggleLeaderboardPopup(true));
         }
       }
-      // {
-      //   route: '/governance',
-      //   icon: GovernanceIcon,
-      //   isActive: true,
-      //   withCounter: false,
-      //   count: 0,
-      //   name: SIDEBAR_ROUTES_NAMES.governance,
-      //   onClick: () => {
-      //     if (isHarmonyChains) {
-      //       window.open(LINKS.harmony.governance, '_blank');
-      //     } else {
-      //       window.open(LINKS.polygon.governance, '_blank');
-      //     }
-      //   },
-      //   trackEvent: 'Governance page clicked'
-      // },
-      // {
-      //   route: '/referral',
-      //   icon: ReferralIcon,
-      //   isActive: isRefPageAvailable,
-      //   withCounter: false,
-      //   count: 0,
-      //   name: SIDEBAR_ROUTES_NAMES.referral,
-      //   trackEvent: 'Referral page clicked'
-      // },
-      // {
-      //   route: '/market',
-      //   icon: MarketIcon,
-      //   isActive: false,
-      //   withCounter: false,
-      //   count: 0,
-      //   name: SIDEBAR_ROUTES_NAMES.market,
-      //   trackEvent: 'Market page clicked'
-      // }
     ];
   }, [
     isHarmonyChains,
@@ -267,11 +211,6 @@ const Sidebar = ({ isMobile }: { isMobile: boolean }) => {
           ZeroColony
           {isMobile && <CloseIcon onClick={() => setIsOpen(false)} />}
         </SidebarTitle>
-
-        <Leaderboard
-          isOpen={isLeaderboardOpen}
-          onClose={() => setIsLeaderboardOpen(false)}
-        />
         <SidebarItemsList>
           <SidebarItemsListInner>
             {availableRoutes.map(

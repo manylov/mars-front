@@ -1,6 +1,7 @@
 import { useSelector } from 'react-redux';
 import {
   isGearModalSelector,
+  isLeaderboardPopupSelector,
   isMyLandSelector,
   myLandPageSelector
 } from '@selectors/appPartsSelectors';
@@ -11,6 +12,7 @@ import {
 
 const useAppParts = () => {
   const isLandsSidebarOpened = useSelector(isMyLandSelector);
+  const isLeaderboardPopupOpened = useSelector(isLeaderboardPopupSelector);
   const currentLandsPage = useSelector(myLandPageSelector);
   const isCartOpened = useSelector(cartStateSelector);
   const cartItems = useSelector(cartItemsSelector) ?? [];
@@ -21,7 +23,8 @@ const useAppParts = () => {
     currentLandsPage,
     isCartOpened,
     cartItems,
-    isGearModalOpened
+    isGearModalOpened,
+    isLeaderboardPopupOpened
   };
 };
 

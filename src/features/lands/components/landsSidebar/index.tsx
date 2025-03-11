@@ -35,7 +35,11 @@ import { CloseIcon } from '@images/icons/CloseIcon';
 import { LandPinIcon } from '@images/icons/LandPinIcon';
 import { CartCloseIconWrapper } from '@root/legacy/navbar.styles';
 import { NETWORK_DATA } from '@root/settings';
-import { setLandPageNumber, toggleMyLandPopup } from '@slices/appPartsSlice';
+import {
+  setLandPageNumber,
+  toggleLeaderboardPopup,
+  toggleMyLandPopup
+} from '@slices/appPartsSlice';
 import { deleteItemFromChart, toggleCartSidebar } from '@slices/cartSlice';
 import { StatsBar } from '@features/global/components/statsBar';
 import { Leaderboard } from '@global/components/leaderboard';
@@ -117,6 +121,8 @@ export const NoLandsSidebarView = () => {
   const [maxClnyIncome, setMaxClnyIncome] = useState<string | null>(null);
   const [isLeaderboardOpen, setIsLeaderboardOpen] = useState(false);
   const [isLocalLoading, setIsLocalLoading] = useState(true);
+  const { isLeaderboardPopupOpened } = useAppParts();
+  const dispatch = useDispatch();
 
   const onBuyLandClick = () => {
     if (isHarmonyChains) {
@@ -136,6 +142,12 @@ export const NoLandsSidebarView = () => {
       })();
     } catch (e) {}
   }, []);
+
+  useEffect(() => {
+    if (isLeaderboardPopupOpened) {
+      setIsLeaderboardOpen(true);
+    }
+  }, [isLeaderboardPopupOpened]);
 
   useEffect(() => {
     if (!isInitialized) {
@@ -170,7 +182,10 @@ export const NoLandsSidebarView = () => {
       <StatsBar />
       <Leaderboard
         isOpen={isLeaderboardOpen}
-        onClose={() => setIsLeaderboardOpen(false)}
+        onClose={() => {
+          setIsLeaderboardOpen(false);
+          dispatch(toggleLeaderboardPopup(false));
+        }}
       />
 
       <LandsContentWrapper>
@@ -248,12 +263,14 @@ export const ActiveLandsSidebarView = () => {
     clnyBalance,
     isLoadingTokens
   } = useBalance();
+  const dispatch = useDispatch();
   const [prizeStats, setPrizeStats] = useState({ prizeEth: 0, prizeUsd: 0 });
   const [isLeaderboardOpen, setIsLeaderboardOpen] = useState(false);
 
   const { address, web3Instance } = usePersonalInfo();
   const { isRevShareAvailable, isFixedEconomy } = useFlags();
   const { currentLandsPage } = useAppParts();
+  const { isLeaderboardPopupOpened } = useAppParts();
   const { landsMissionsLimits } = useLands(tokens, web3Instance);
 
   const title = useMemo(
@@ -301,6 +318,12 @@ export const ActiveLandsSidebarView = () => {
     fetchPrizeStats();
   }, []);
 
+  useEffect(() => {
+    if (isLeaderboardPopupOpened) {
+      setIsLeaderboardOpen(true);
+    }
+  }, [isLeaderboardPopupOpened]);
+
   return (
     <div>
       <LandsSidebarHeaderWrapper isMobile={isMobile}>
@@ -308,7 +331,10 @@ export const ActiveLandsSidebarView = () => {
         <StatsBar />
         <Leaderboard
           isOpen={isLeaderboardOpen}
-          onClose={() => setIsLeaderboardOpen(false)}
+          onClose={() => {
+            setIsLeaderboardOpen(false);
+            dispatch(toggleLeaderboardPopup(false));
+          }}
         />
         <LandsContentWrapper>
           <LandsSection>

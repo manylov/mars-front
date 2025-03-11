@@ -6,6 +6,9 @@ export const isConnectionPopupSelector = (state: RootState) =>
 export const isMyLandSelector = (state: RootState) =>
   state.appParts.isMyLandShown;
 
+export const isLeaderboardPopupSelector = (state: RootState) =>
+  state.appParts.isLeaderboardPopupOpened;
+
 export const myLandPageSelector = (state: RootState) =>
   state.appParts.myLandsPageNumber;
 

@@ -5,7 +5,6 @@ import usePersonalInfo from '@global/hooks/usePersonalInfo';
 import { Loader } from '@global/components/loader/loader';
 import { CloseIcon } from '@images/icons/CloseIcon';
 import { MOBILE_BREAKPOINT } from '@global/constants';
-import useMediaQuery from '@global/hooks/useMediaQuery';
 import {
   LeaderboardWrapper,
   LeaderboardTitle,
@@ -38,7 +37,6 @@ export const Leaderboard = ({ isOpen, onClose }: LeaderboardProps) => {
   const [leaderboardData, setLeaderboardData] =
     useState<LeaderboardData | null>(null);
   const [loading, setLoading] = useState(true);
-  const isMobile = useMediaQuery(`(max-width: ${MOBILE_BREAKPOINT}px)`);
 
   useEffect(() => {
     const fetchLeaderboard = async () => {
