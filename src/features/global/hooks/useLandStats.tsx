@@ -42,7 +42,6 @@ const useLandStats = (isCartItem: boolean = false, id?: number) => {
   const { address, provider } = usePersonalInfo();
   const { gameManager, getGameManager } = useContracts();
   const { isFixedEconomy } = useFlags();
-  const { isGamePage } = useRoutes();
   const { collectAllLandInfo } = useGameManagement();
   const { updateEarnedAll, updateCLNYBalance } = useBalance();
 
@@ -116,7 +115,6 @@ const useLandStats = (isCartItem: boolean = false, id?: number) => {
   );
 
   const buildAction = async (method: string, type: string, level?: number) => {
-    if (!isGamePage) setIsBuyProcess(type);
     trackUserEvent(`Upgrade ${type} clicked`, {
       level: level ?? 'no level provided'
     });
@@ -132,8 +130,6 @@ const useLandStats = (isCartItem: boolean = false, id?: number) => {
           level: level ?? 'no level provided',
           landId: id
         });
-
-        if (!isGamePage) setIsBuyProcess('');
       },
       onSuccess: async () => {
         trackUserEvent(`Upgrade ${type} succeed`, {
@@ -144,7 +140,6 @@ const useLandStats = (isCartItem: boolean = false, id?: number) => {
         try {
           await collectAllLandInfo(`${id}`);
           dispatch(setRepaintMode(true));
-          if (!isGamePage) setIsBuyProcess('');
           await updateCLNYBalance(address);
           await updateEarnedAll();
           await updateEarned();

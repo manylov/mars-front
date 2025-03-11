@@ -36,6 +36,7 @@ import {
   toggleLeaderboardPopup
 } from '@slices/appPartsSlice';
 import { LeaderboardIcon } from '@root/images/icons/sidebarIcons/LeaderboardIcon';
+import { Leaderboard } from '@global/components/leaderboard';
 
 type SideBarItemType = {
   route: string;
@@ -120,6 +121,8 @@ const Sidebar = ({ isMobile }: { isMobile: boolean }) => {
   const { isLandsSidebarOpened } = useAppParts();
   const navigate = useNavigate();
   const location = useLocation();
+  const [isLeaderboardOpen, setIsLeaderboardOpen] = useState(false);
+
   const [isOpen, setIsOpen] = useState(!isMobile);
 
   useEffect(() => {
@@ -211,6 +214,11 @@ const Sidebar = ({ isMobile }: { isMobile: boolean }) => {
           ZeroColony
           {isMobile && <CloseIcon onClick={() => setIsOpen(false)} />}
         </SidebarTitle>
+
+        <Leaderboard
+          isOpen={isLeaderboardOpen}
+          onClose={() => setIsLeaderboardOpen(false)}
+        />
         <SidebarItemsList>
           <SidebarItemsListInner>
             {availableRoutes.map(

@@ -23,7 +23,7 @@ const Layout: FC = ({ children }) => {
   const dispatch = useDispatch();
   const { address, connect } = usePersonalInfo();
   const { ref: wrapperRef, width: containerWidth } = useResizeObserver();
-  const { isPlayPage, isProfilePage } = useRoutes();
+
   const { isCartOpened } = useAppParts();
 
   const isMobile = (containerWidth ?? 0) < MOBILE_BREAKPOINT;
@@ -37,7 +37,7 @@ const Layout: FC = ({ children }) => {
 
   return (
     <LayoutWrapper ref={wrapperRef}>
-      <ConnectionZoneWrapper isReplaced={isPlayPage || isProfilePage}>
+      <ConnectionZoneWrapper>
         {isCartButtonShown && (
           <MyAccountIconWrapper
             onClick={onOpenCart}
