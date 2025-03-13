@@ -1,3 +1,4 @@
+import { PartedMars } from '@features/globus/components/partedMars/PartedMars';
 import { LandsSidebar } from '@features/lands/components/landsSidebar';
 import { useBalance } from '@global/hooks/useBalance';
 import { CURRENT_CHAIN } from '@root/settings/chains';
