@@ -44,7 +44,6 @@ export const Enhancement: React.FC<Props> = ({
   title,
   Image,
   aux,
-  speed,
   finalText,
   getWhat,
   price,
@@ -53,12 +52,8 @@ export const Enhancement: React.FC<Props> = ({
   CLNYBalance,
   isAvailable,
   isPlaced,
-  isActive,
-  levelsCount,
-  level = 0,
   isMobileView,
-  isPending = false,
-  isInitialLoad = false
+  isPending = false
 }) => {
   const dispatch = useDispatch();
   const isReplaceMode = useSelector(isReplaceModeSelector);
