@@ -20,12 +20,9 @@ import {
 } from '@global/components/sidebar/sidebar.styles';
 import { LINKS } from '@global/constants';
 import useAppParts from '@global/hooks/useAppParts';
-import useFlags from '@global/hooks/useFlags';
 import usePersonalInfo from '@global/hooks/usePersonalInfo';
-import useNavigationRoutes from '@global/hooks/useRoutes';
 import { LIGHT_GREY, TOXIC_GREEN, WHITE } from '@global/styles/variables';
 import { SIDEBAR_ROUTES_NAMES } from '@global/types';
-import { trackUserEvent } from '@global/utils/analytics';
 import { CloseIcon } from '@images/icons/CloseIcon';
 import { DexIcon } from '@images/icons/sidebarIcons/DexIcon';
 import { LandsIcon } from '@images/icons/sidebarIcons/LandsIcon';

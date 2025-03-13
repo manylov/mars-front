@@ -19,7 +19,6 @@ import {
 import { getClnySpeedLabel } from '@features/lands/utils/formating';
 import useGameManagement from '@global/hooks/useGameManagement';
 import useMediaQuery from '@global/hooks/useMediaQuery';
-import useRoutes from '@global/hooks/useRoutes';
 import { generateBlockie } from '@global/utils/blockie.canvas';
 import { ArrowDown } from '@images/icons/ArrowDown';
 import { NETWORK_DATA } from '@root/settings';
@@ -28,7 +27,6 @@ import {
   GAME_VIEW_MODES,
   selectObjectToSet
 } from '@slices/gameManagementSlice';
-import mixpanel from 'mixpanel-browser';
 
 type GameLandPlotType = {
   id: number;
@@ -44,7 +42,6 @@ export const GameLandPlot = ({
   earned
 }: GameLandPlotType) => {
   const dispatch = useDispatch();
-  const { isGameRepaintMode } = useGameManagement();
   const isMobile = useMediaQuery('(max-width: 1200px)');
 
   const [opened, setOpened] = useState(false);
@@ -90,7 +87,6 @@ export const GameLandPlot = ({
             <LandPlotEarnedButton
               onClick={(e) => {
                 e.stopPropagation();
-                mixpanel.track('Build mode triggered', { landId: id });
                 setOpened(!opened);
                 if (opened) {
                   dispatch(changeGameMode(GAME_VIEW_MODES.navigation));

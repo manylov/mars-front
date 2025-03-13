@@ -7,12 +7,10 @@ import {
 } from '@global/constants';
 import { useBalance } from '@global/hooks/useBalance';
 import useContracts from '@global/hooks/useContracts';
-import useFlags from '@global/hooks/useFlags';
 import useGameManagement from '@global/hooks/useGameManagement';
 import useMetamask from '@global/hooks/useMetamask';
 import usePersonalInfo from '@global/hooks/usePersonalInfo';
 import { CONTRACT_METHODS, METAMASK_EVENTS } from '@global/types';
-import { trackUserEvent } from '@global/utils/analytics';
 import { setRepaintMode } from '@slices/gameManagementSlice';
 
 const useLandStats = (isCartItem: boolean = false, id?: number) => {
@@ -113,9 +111,6 @@ const useLandStats = (isCartItem: boolean = false, id?: number) => {
   );
 
   const buildAction = async (method: string, type: string, level?: number) => {
-    trackUserEvent(`Upgrade ${type} clicked`, {
-      level: level ?? 'no level provided'
-    });
     await makeRequest({
       contract: gameManager ?? getGameManager(),
       method,
@@ -123,18 +118,8 @@ const useLandStats = (isCartItem: boolean = false, id?: number) => {
       type: METAMASK_EVENTS.send,
       address,
       eventName: `Build ${type} on Land Plot #${id}`,
-      onError: () => {
-        trackUserEvent(`Upgrade ${type} failed`, {
-          level: level ?? 'no level provided',
-          landId: id
-        });
-      },
+      onError: () => {},
       onSuccess: async () => {
-        trackUserEvent(`Upgrade ${type} succeed`, {
-          level: level ?? 'no level provided',
-          landId: id
-        });
-
         try {
           await collectAllLandInfo(`${id}`);
           dispatch(setRepaintMode(true));

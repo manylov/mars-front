@@ -5,7 +5,6 @@ import {
   Routes
 } from 'react-router-dom';
 import DataProvider from '@features/globus/hocs/dataProvider';
-import useFlags from '@global/hooks/useFlags';
 import MapPage from '@pages/MapPage';
 import ROUTES from '@root/router/routes';
 

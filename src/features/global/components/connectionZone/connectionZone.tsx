@@ -43,7 +43,6 @@ import {
   userBalanceSelector
 } from '@selectors/userStatsSelectors';
 import { toggleConnectionPopup } from '@slices/appPartsSlice';
-import mixpanel from 'mixpanel-browser';
 
 export const ConnectionZone = ({
   address,
@@ -128,9 +127,6 @@ export const ConnectionZone = ({
         <NewHeaderInfoWrapper
           id={'headerInfo'}
           onClick={() => {
-            mixpanel.track('Wallet details clicked', {
-              address
-            });
             dispatch(toggleConnectionPopup(!showConnectionPopup));
           }}
         >
@@ -164,9 +160,6 @@ export const ConnectionZone = ({
           content={contentSpace}
           id={'headerInfo'}
           onClick={() => {
-            mixpanel.track('Wallet details clicked', {
-              address
-            });
             dispatch(toggleConnectionPopup(!showConnectionPopup));
           }}
         >

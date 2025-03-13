@@ -7,19 +7,13 @@ import {
   METHODS_LABELS
 } from '@global/constants';
 import useContracts from '@global/hooks/useContracts';
-import useFlags from '@global/hooks/useFlags';
 import useMetamask from '@global/hooks/useMetamask';
 import {
   CONTRACT_METHODS,
   METAMASK_EVENTS,
   TOASTS_APPEARANCE
 } from '@global/types';
-import {
-  logDevInfo,
-  setFBPixel,
-  trackGoogleAnalyticsEvent,
-  trackUserEvent
-} from '@global/utils/analytics';
+
 import {
   isCollectingSelector,
   isLoadingTokensSelector
@@ -156,7 +150,6 @@ export const useBalance = () => {
       }
 
       if (userBalance !== _balance) {
-        logDevInfo(`Balance set success ${_balance}`);
         dispatch(setUserBalance(_balance));
         dispatch(setInitialized(true));
       }
@@ -166,7 +159,6 @@ export const useBalance = () => {
 
   const claimToken = React.useCallback(
     async (tokenNumbers: number[], address: string, web3Instance: Web3) => {
-      trackGoogleAnalyticsEvent('cart.start', { tokens: tokenNumbers });
       for (const tokenNumber of tokenNumbers) {
         if (Number.isNaN(tokenNumber)) return;
         const tokenId: string = tokenNumber.toString();
@@ -189,18 +181,11 @@ export const useBalance = () => {
         contract: gameManager ?? getGameManager(),
         params: [tokenNumbers],
         onLoad: (hash: string) => {
-          trackGoogleAnalyticsEvent('cart.pending', {
-            tokens: tokenNumbers,
-            hash
-          });
-
           txHash = hash;
 
           window.view?.popup?.close?.();
           window.ogPopup?.setVisibility?.(false);
           fetchUserBalance(address, web3Instance);
-
-          setFBPixel();
         },
         onSuccess: () => {
           fetchUserBalance(address, web3Instance);
@@ -210,20 +195,10 @@ export const useBalance = () => {
           if (allMintedTokens !== null)
             dispatch(setMintedTokens(tokenNumbers.toString()));
 
-          trackGoogleAnalyticsEvent('cart.success', {
-            tokens: tokenNumbers,
-            hash: txHash
-          });
-
           // @ts-ignore
           window.openLinksPopup();
         },
-        onError: () => {
-          trackGoogleAnalyticsEvent('cart.error', {
-            tokens: tokenNumbers,
-            hash: txHash
-          });
-        },
+        onError: () => {},
         transactionOptions: {
           value: feeValue,
           type: CURRENT_CHAIN.x2
@@ -237,11 +212,6 @@ export const useBalance = () => {
 
   const transfer = React.useCallback(
     async (address, tokenNumber = -1, addressTo: string) => {
-      trackGoogleAnalyticsEvent('transfer.start', {
-        token: tokenNumber,
-        addressTo
-      });
-
       const tokenId: string = tokenNumber.toString();
       let txHash: string | null = null;
 
@@ -255,30 +225,13 @@ export const useBalance = () => {
         eventName: METHODS_LABELS.landTransfer(tokenId),
         onLoad: (hash: string) => {
           txHash = hash;
-          trackGoogleAnalyticsEvent('transfer.pending', {
-            token: tokenNumber,
-            addressTo,
-            hash
-          });
         },
         onSuccess: () => {
           if (tokens !== null) {
             dispatch(setUserTokens(tokens.filter((item) => item !== tokenId)));
           }
-
-          trackGoogleAnalyticsEvent('transfer.success', {
-            token: tokenNumber,
-            addressTo,
-            hash: txHash
-          });
         },
-        onError: () => {
-          trackGoogleAnalyticsEvent('transfer.error', {
-            token: tokenNumber,
-            addressTo,
-            hash: txHash
-          });
-        }
+        onError: () => {}
       });
     },
     [tokens, dispatch, mcManager]
@@ -286,8 +239,6 @@ export const useBalance = () => {
 
   const collectAllStats = React.useCallback(
     async (address, web3Instance) => {
-      trackUserEvent('Collect all clicked', { address });
-      trackGoogleAnalyticsEvent('collect_all.start');
       const partialCollect = async (
         bunch: any[],
         part: number,
@@ -302,13 +253,9 @@ export const useBalance = () => {
             transactionOptions: { type: CURRENT_CHAIN.x2 },
             onLoad: (hash) => {
               rs();
-              trackGoogleAnalyticsEvent('collect_all.pending', { hash });
             },
             onSuccess: () => {
               rs();
-              trackUserEvent('Collect all succeed', {
-                address
-              });
 
               if (part === partsCount) {
                 fetchUserBalance(address, web3Instance);
@@ -317,10 +264,6 @@ export const useBalance = () => {
             },
             onError: () => {
               rs();
-              trackUserEvent('Collect all failed', {
-                address
-              });
-              trackGoogleAnalyticsEvent('collect_all.error');
 
               if (part === partsCount) {
                 fetchUserBalance(address, web3Instance);
@@ -352,8 +295,6 @@ export const useBalance = () => {
 
         await fetchUserBalance(address, web3Instance);
       } catch (error) {
-        trackGoogleAnalyticsEvent('collect_all.error');
-
         addToast(`${NETWORK_DATA.TOKEN_NAME} collecting error!`, {
           appearance: TOASTS_APPEARANCE.error
         });
@@ -370,7 +311,6 @@ export const useBalance = () => {
         const _address = accounts[0];
 
         if (_address !== address) {
-          logDevInfo(`Set address in get account assets: ${_address}`);
           addressRef.current = _address;
           dispatch(setAddress(_address));
           window.address = _address;
@@ -403,9 +343,7 @@ export const useBalance = () => {
             }
           });
         }
-      } catch (err) {
-        logDevInfo(`Error while getting account assets: ${err}`);
-      }
+      } catch (err) {}
     },
     [dispatch, tokens, allMintedTokens, isLoadingTokens]
   );
