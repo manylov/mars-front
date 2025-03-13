@@ -1,7 +1,6 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useToasts } from 'react-toast-notifications';
-import { freeReserve } from '@features/globus/utils/reserveHelper';
 import {
   BUNCH_SIZE,
   EARNED_AMOUNT_CHECK_TICK,
@@ -28,7 +27,6 @@ import {
 import Ethereum from '@root/api/etheriumWeb3';
 import { NETWORK_DATA } from '@root/settings';
 import { CURRENT_CHAIN } from '@root/settings/chains';
-import { cartItemsSelector } from '@selectors/cartSliceSelectors';
 import {
   addressSelector,
   clnyBalanceSelector,
@@ -38,7 +36,6 @@ import {
   tokensSelector,
   userBalanceSelector
 } from '@selectors/userStatsSelectors';
-import { resetCart, setClaimingCartStatus } from '@slices/cartSlice';
 import {
   setGameManager,
   setInitialized,
@@ -85,7 +82,6 @@ export const useBalance = () => {
 
   // APP PARTS
   const userAddress = useSelector(addressSelector);
-  const isCartOpened = useSelector(cartItemsSelector);
   const isCollectInProgress = useSelector(isCollectingSelector);
 
   // UTILS
@@ -205,7 +201,6 @@ export const useBalance = () => {
           window.ogPopup?.setVisibility?.(false);
           fetchUserBalance(address, web3Instance);
 
-          dispatch(setClaimingCartStatus(true));
           setFBPixel();
         },
         onSuccess: () => {
@@ -221,12 +216,6 @@ export const useBalance = () => {
             hash: txHash
           });
 
-          for (const cartItem of isCartOpened) {
-            freeReserve(+cartItem).catch(() => {});
-          }
-
-          dispatch(resetCart());
-          dispatch(setClaimingCartStatus(false));
           // @ts-ignore
           window.openLinksPopup();
         },
@@ -235,8 +224,6 @@ export const useBalance = () => {
             tokens: tokenNumbers,
             hash: txHash
           });
-
-          dispatch(setClaimingCartStatus(false));
         },
         transactionOptions: {
           value: feeValue,
@@ -246,7 +233,7 @@ export const useBalance = () => {
         eventName: METHODS_LABELS.landClaim
       });
     },
-    [gameManager, tokens, allMintedTokens, dispatch, isCartOpened]
+    [gameManager, tokens, allMintedTokens, dispatch]
   );
 
   const transfer = React.useCallback(

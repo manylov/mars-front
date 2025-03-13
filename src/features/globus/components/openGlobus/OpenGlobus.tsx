@@ -13,7 +13,6 @@ import {
   toTokenNumber
 } from '@features/globus/utils/methods';
 import { getReserve, reserve } from '@features/globus/utils/reserveHelper';
-import { EMPTY_ADDRESS } from '@global/utils/etc';
 import {
   entity,
   Extent,
@@ -26,14 +25,10 @@ import {
 import { NETWORK_DATA } from '@root/settings';
 import { CURRENT_CHAIN } from '@root/settings/chains';
 import { isMyLandSelector } from '@selectors/appPartsSelectors';
-import {
-  cartItemsSelector,
-  cartStateSelector
-} from '@selectors/cartSliceSelectors';
+
 import { userGameManagerSelector } from '@selectors/commonAppSelectors';
 import { addressSelector } from '@selectors/userStatsSelectors';
 import { toggleMyLandPopup } from '@slices/appPartsSlice';
-import { addItemToCart } from '@slices/cartSlice';
 import Web3 from 'web3';
 import useMetamask from '@features/global/hooks/useMetamask';
 
@@ -66,9 +61,7 @@ export const OpenGlobus = ({ height, allTokens, myTokens }: Props) => {
   const gm = useSelector(userGameManagerSelector);
   const { addToast } = useToasts();
   const address = useSelector(addressSelector);
-  const isCartOpened = useSelector(cartStateSelector);
   const isMyLandsOpened = useSelector(isMyLandSelector);
-  const cartItems = useSelector(cartItemsSelector);
   const dispatch = useDispatch();
   const popup = React.useRef<Popup>();
   const { makeCallRequest } = useMetamask();
@@ -237,72 +230,9 @@ export const OpenGlobus = ({ height, allTokens, myTokens }: Props) => {
 
   useEffect(() => {
     if (popup.current) {
-      if (isMyLandsOpened || isCartOpened) popup.current.setVisibility(false);
+      if (isMyLandsOpened) popup.current.setVisibility(false);
     }
-  }, [isCartOpened, isMyLandsOpened, popup]);
-
-  // @ts-ignore
-  window.addToCart = React.useCallback(
-    (token: number, sender: unknown) => {
-      if (cartItems?.length >= 10) {
-        addToast('Maximum land plots in the cart reached', {
-          appearance: 'error'
-        });
-        return;
-      }
-
-      reserve(+token)
-        .then((reserved) => {
-          if (reserved === null) {
-            throw new Error();
-          } else {
-            const cart = Array.from(cartEntites.keys()).map((k) =>
-              k.toString()
-            );
-            cart.push(token.toString());
-            dispatch(addItemToCart(Array.from(cart)));
-            updateReserve(reserved);
-          }
-        })
-        .catch(() => {
-          addToast('Reservation error', { appearance: 'error' });
-        });
-
-      (sender as HTMLElement).onclick = () =>
-        // @ts-ignore
-        window?.goToCart(sender);
-      (sender as HTMLElement).innerText = 'Go to cart';
-    },
-    [cartItems?.length, dispatch, addToast]
-  );
-
-  React.useEffect(() => {
-    const currentSet: Set<number> = new Set(
-      cartItems.map((item) => parseInt(item))
-    );
-    for (const item of Array.from(cartEntites.keys())) {
-      if (!currentSet.has(item)) {
-        const entity = cartEntites.get(item);
-        if (entity) {
-          cartLayer.current.removeEntity(entity);
-        }
-        cartEntites.delete(item);
-      }
-    }
-    const entitiesToAdd: entity.Entity[] = [];
-    for (const item of Array.from(currentSet)) {
-      if (!cartEntites.has(item)) {
-        const entity = addCartEntity(item);
-        if (entity) {
-          cartEntites.set(item, entity);
-          entitiesToAdd.push(entity);
-        }
-      }
-    }
-    if (entitiesToAdd.length > 0) {
-      cartLayer.current.addEntities(entitiesToAdd);
-    }
-  }, [addCartEntity, cartEntites, cartItems]);
+  }, [isMyLandsOpened, popup]);
 
   // @ts-ignore
   const isInCart = (window.isInCart = React.useCallback(

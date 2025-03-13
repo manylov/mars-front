@@ -1,6 +1,5 @@
 import { configureStore } from '@reduxjs/toolkit';
 import appPartsReducer from '@slices/appPartsSlice';
-import cartReducer from '@slices/cartSlice';
 import commonStateReducer from '@slices/commonAppStateSlice';
 import gameManagementReducer from '@slices/gameManagementSlice';
 import balanceStatsReducer from '@slices/userStatsSlice';
@@ -10,8 +9,7 @@ export const store = configureStore({
     appParts: appPartsReducer,
     balanceStats: balanceStatsReducer,
     common: commonStateReducer,
-    game: gameManagementReducer,
-    cart: cartReducer
+    game: gameManagementReducer
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({ serializableCheck: false })

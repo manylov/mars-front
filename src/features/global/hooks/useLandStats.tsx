@@ -11,7 +11,6 @@ import useFlags from '@global/hooks/useFlags';
 import useGameManagement from '@global/hooks/useGameManagement';
 import useMetamask from '@global/hooks/useMetamask';
 import usePersonalInfo from '@global/hooks/usePersonalInfo';
-import useRoutes from '@global/hooks/useRoutes';
 import { CONTRACT_METHODS, METAMASK_EVENTS } from '@global/types';
 import { trackUserEvent } from '@global/utils/analytics';
 import { setRepaintMode } from '@slices/gameManagementSlice';

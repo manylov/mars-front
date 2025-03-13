@@ -2,23 +2,11 @@ import { useEffect, useMemo, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useToasts } from 'react-toast-notifications';
 import Backend from '@root/api/backend';
-import { freeReserve } from '@features/globus/utils/reserveHelper';
 import { LandPlot } from '@features/lands/components/land/LandPlot';
-import { CartContent } from '@features/lands/components/landsSidebar/cartContent/cartContent';
 import SocialIconsBar from './SocialIconsBar';
 import useLands from '@features/lands/hooks/useLands';
 import { FlexedPlotDivider } from '@features/lands/styles/landPlot.styles';
-import {
-  LandPlotEnhancementsBlock,
-  LandPlotNewIconWrapper,
-  LandPlotNewImageWrapper,
-  LandPlotNewName,
-  LandPlotNewRemove,
-  LandPlotOuterWrapper,
-  LandPlotTitleLine
-} from '@features/lands/styles/landPlotNew.styles';
 import { getClnySpeedLabel } from '@features/lands/utils/formating';
-import { navigateToGlobeLand } from '@features/lands/utils/globusNavigation';
 import Button from '@global/components/button';
 import { Loader } from '@global/components/loader/loader';
 import { GAP_TEXT, LINKS, MOBILE_BREAKPOINT } from '@global/constants';
@@ -28,11 +16,9 @@ import useFlags from '@global/hooks/useFlags';
 import useMediaQuery from '@global/hooks/useMediaQuery';
 import usePersonalInfo from '@global/hooks/usePersonalInfo';
 import { MarsNavMyLandClose, TokensWrapper } from '@global/styles/app.styles';
-import { generateBlockie } from '@global/utils/blockie.canvas';
 import { fromWeiValue } from '@global/utils/fromWei';
 import { ArrowLeft, ArrowRight } from '@images/icons/ArrowDown';
 import { CloseIcon } from '@images/icons/CloseIcon';
-import { LandPinIcon } from '@images/icons/LandPinIcon';
 import { CartCloseIconWrapper } from '@root/legacy/navbar.styles';
 import { NETWORK_DATA } from '@root/settings';
 import {
@@ -40,7 +26,6 @@ import {
   toggleLeaderboardPopup,
   toggleMyLandPopup
 } from '@slices/appPartsSlice';
-import { deleteItemFromChart, toggleCartSidebar } from '@slices/cartSlice';
 import { StatsBar } from '@features/global/components/statsBar';
 import { Leaderboard } from '@global/components/leaderboard';
 
@@ -75,9 +60,6 @@ export const LandsSidebar = () => {
   const isMobile = useMediaQuery(`(max-width: ${MOBILE_BREAKPOINT}px)`);
 
   const getContent = () => {
-    if (sidebarType === 'cart') {
-      return <CartList />;
-    }
     if (sidebarType === 'lands') {
       return !tokens?.length ? (
         <NoLandsSidebarView />
@@ -101,8 +83,6 @@ export const LandsSidebar = () => {
         <MarsNavMyLandClose
           onClick={() => {
             dispatch(toggleMyLandPopup(null));
-            // Timeout as duration of animation frames
-            setTimeout(() => dispatch(toggleCartSidebar(false)), 300);
           }}
         >
           <CloseIcon />
@@ -454,50 +434,5 @@ const LandsPagination = ({
       </div>
       <FlexedPlotDivider />
     </TokensWrapper>
-  );
-};
-
-const CartList = () => {
-  const dispatch = useDispatch();
-  const { cartItems } = useAppParts();
-
-  const onMapSearch = (event: any, id: number) => {
-    navigateToGlobeLand(event, id);
-  };
-
-  const onCartItemRemove = (id: string) => {
-    freeReserve(+id).catch(() => {});
-    dispatch(deleteItemFromChart(id));
-  };
-
-  return (
-    <div>
-      <CartContent itemsCount={cartItems.length ?? 0} />
-      <div>
-        {cartItems.map((id, idx) => (
-          <LandPlotOuterWrapper key={`${id}-${idx}`}>
-            <LandPlotNewImageWrapper>
-              <img
-                src={generateBlockie(parseInt(id)).toDataURL()}
-                alt={'Land Plot #' + id.toString()}
-              />
-            </LandPlotNewImageWrapper>
-            <LandPlotEnhancementsBlock>
-              <LandPlotTitleLine>
-                <LandPlotNewName>Land #{id}&nbsp;</LandPlotNewName>
-              </LandPlotTitleLine>
-            </LandPlotEnhancementsBlock>
-            <LandPlotNewIconWrapper>
-              <div onClick={(e) => onMapSearch(e, parseInt(id))}>
-                <LandPinIcon className="with-fill" />
-              </div>
-            </LandPlotNewIconWrapper>
-            <LandPlotNewRemove onClick={() => onCartItemRemove(id)}>
-              REMOVE
-            </LandPlotNewRemove>
-          </LandPlotOuterWrapper>
-        ))}
-      </div>
-    </div>
   );
 };
