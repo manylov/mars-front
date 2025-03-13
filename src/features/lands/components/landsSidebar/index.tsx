@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useToasts } from 'react-toast-notifications';
-import PolygonBackend from '@api/polygonBackend';
+import Backend from '@root/api/backend';
 import { freeReserve } from '@features/globus/utils/reserveHelper';
 import { LandPlot } from '@features/lands/components/land/LandPlot';
 import { CartContent } from '@features/lands/components/landsSidebar/cartContent/cartContent';
@@ -136,7 +136,7 @@ export const NoLandsSidebarView = () => {
     if (isHarmonyChains) return;
     try {
       (async () => {
-        const data = await PolygonBackend.getHeaderStats();
+        const data = await Backend.getHeaderStats();
         const stat = data.max ?? 0;
         setMaxClnyIncome(stat);
       })();
@@ -164,7 +164,7 @@ export const NoLandsSidebarView = () => {
   useEffect(() => {
     const fetchPrizeStats = async () => {
       try {
-        const stats = await PolygonBackend.getLandStats();
+        const stats = await Backend.getLandStats();
         setPrizeStats({
           prizeEth: stats.prizeEth || 0,
           prizeUsd: stats.prizeUsd || 0
@@ -306,7 +306,7 @@ export const ActiveLandsSidebarView = () => {
   useEffect(() => {
     const fetchPrizeStats = async () => {
       try {
-        const stats = await PolygonBackend.getLandStats();
+        const stats = await Backend.getLandStats();
         setPrizeStats({
           prizeEth: stats.prizeEth || 0,
           prizeUsd: stats.prizeUsd || 0

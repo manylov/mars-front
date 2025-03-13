@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useToasts } from 'react-toast-notifications';
 import { fromWeiValue } from '@features/global/utils/fromWei';
-import PolygonBackend from '@root/api/polygonBackend';
+import Backend from '@root/api/backend';
 import { Cristal } from '@root/images/icons/Cristal';
 import { Minning } from '@root/images/icons/Minning';
 import { Stone } from '@root/images/icons/Stone';
@@ -35,8 +35,8 @@ export const PolygonScreen = () => {
   useEffect(() => {
     const updateStats = async () => {
       try {
-        const stats = PolygonBackend.getHeaderStats();
-        const lands = PolygonBackend.getLandStats();
+        const stats = Backend.getHeaderStats();
+        const lands = Backend.getLandStats();
         const [statsData, landData] = await Promise.all([stats, lands]);
         setStats(statsData);
         setPlotsInfo(landData);

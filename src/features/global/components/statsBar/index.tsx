@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useToasts } from 'react-toast-notifications';
-import ZeroBackend from '@api/polygonBackend';
+import ZeroBackend from '@root/api/backend';
 import {
   StatsBarWrapper,
   StatsItem,

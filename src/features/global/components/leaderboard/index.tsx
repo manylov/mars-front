@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { CommonModal } from '@global/components/commonModal';
-import PolygonBackend from '@api/polygonBackend';
+import Backend from '@root/api/backend';
 import usePersonalInfo from '@global/hooks/usePersonalInfo';
 import { Loader } from '@global/components/loader/loader';
 import { CloseIcon } from '@images/icons/CloseIcon';
@@ -43,7 +43,7 @@ export const Leaderboard = ({ isOpen, onClose }: LeaderboardProps) => {
       if (isOpen && address) {
         setLoading(true);
         try {
-          const data = await PolygonBackend.getLeaderboard(address);
+          const data = await Backend.getLeaderboard(address);
           setLeaderboardData(data as LeaderboardData);
         } catch (error) {
           console.error('Failed to fetch leaderboard:', error);

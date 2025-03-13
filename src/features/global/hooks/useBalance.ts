@@ -21,7 +21,6 @@ import {
   trackGoogleAnalyticsEvent,
   trackUserEvent
 } from '@global/utils/analytics';
-import { EMPTY_ADDRESS } from '@global/utils/etc';
 import {
   isCollectingSelector,
   isLoadingTokensSelector
@@ -67,10 +66,8 @@ export const useBalance = () => {
     clnyManager,
     gameManager,
     getGameManager,
-    getAvatarsManager,
     mcManager,
-    getMCManager,
-    lootboxesManager
+    getMCManager
   } = useContracts();
 
   // BALANCE ITEMS
@@ -170,29 +167,6 @@ export const useBalance = () => {
       }
     },
     [userBalance]
-  );
-
-  const airdrop = React.useCallback((beneficiar: string, landId: number) => {
-    return makeSendRequest({
-      contract: gameManager ?? getGameManager(),
-      method: 'airdrop',
-      params: [beneficiar, landId],
-      address,
-      eventName: 'Airdropping land'
-    });
-  }, []);
-
-  const dropAvatars = React.useCallback(
-    (beneficiar: string, amount: number) => {
-      return makeSendRequest({
-        contract: getAvatarsManager(),
-        method: 'dropAvatars',
-        params: [beneficiar, amount],
-        address,
-        eventName: 'Airdropping avatars'
-      });
-    },
-    []
   );
 
   const claimToken = React.useCallback(
@@ -449,7 +423,6 @@ export const useBalance = () => {
     },
     [
       dispatch,
-      lootboxesManager,
       isMissionsAvailable,
       isSelectedAvatar,
       tokens,
@@ -490,9 +463,6 @@ export const useBalance = () => {
   window.transfer = transfer;
   window.collectAllStats = collectAllStats;
   window.getAccountsAssets = getAccountAssets;
-  window.dropLand = (beneficiar: string, id: number) => airdrop(beneficiar, id);
-  window.dropAvatars = (beneficiar: string, amount: number) =>
-    dropAvatars(beneficiar, amount);
 
   return {
     updateCLNYBalance,

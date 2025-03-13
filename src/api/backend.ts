@@ -9,7 +9,7 @@ type LeaderboardResponse = {
   place: number;
 };
 
-class PolygonBackend {
+class Backend {
   static getLandStats = async () => {
     try {
       const rawResponse = await fetch(
@@ -64,4 +64,4 @@ class PolygonBackend {
   };
 }
 
-export default PolygonBackend;
+export default Backend;
