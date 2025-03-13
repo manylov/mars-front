@@ -6,7 +6,6 @@ import { EnhancementsListWrapper } from '@features/lands/styles/landPlot.styles'
 import useGameManagement from '@global/hooks/useGameManagement';
 import useLandStats from '@global/hooks/useLandStats';
 import useMediaQuery from '@global/hooks/useMediaQuery';
-import useRoutes from '@global/hooks/useRoutes';
 import { BaseStationIcon } from '@images/icons/BaseStationIcon';
 import { Power } from '@images/icons/Power';
 import { RobotAssembly } from '@images/icons/RobotAssembly';
@@ -19,16 +18,9 @@ type Props = {
   trigger: boolean;
   isDefaultOpen?: boolean;
   missionsLimit?: number | string;
-  isCartItem?: boolean;
-  onCartItemRemove?: () => void;
 };
 
-export const LandPlot: React.FC<Props> = ({
-  id,
-  CLNYBalance,
-  trigger,
-  isCartItem
-}) => {
+export const LandPlot: React.FC<Props> = ({ id, CLNYBalance, trigger }) => {
   const isMobile = useMediaQuery('(max-width: 1200px)');
 
   const {
@@ -42,7 +34,7 @@ export const LandPlot: React.FC<Props> = ({
     robotAssemblyLevel,
     transportLevel,
     updateEarned
-  } = useLandStats(isCartItem, id);
+  } = useLandStats(id);
 
   const {
     isBaseAvailable,
@@ -57,7 +49,7 @@ export const LandPlot: React.FC<Props> = ({
   } = useGameManagement();
 
   React.useEffect(() => {
-    if (trigger || isCartItem) return;
+    if (trigger) return;
     updateEarned().then(() => {});
   }, [trigger]);
 

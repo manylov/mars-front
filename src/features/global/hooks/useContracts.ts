@@ -4,29 +4,22 @@ import * as selectors from '@redux/selectors/commonAppSelectors';
 import {
   setCLNYManager,
   setGameManager,
-  setMCManager,
-  setReplaceManager
+  setMCManager
 } from '@redux/slices/commonAppStateSlice';
 import Ethereum from '@root/api/etheriumWeb3';
 
-const {
-  clnyManagerSelector,
-  replaceManagerSelector,
-  mcManagerSelector,
-  userGameManagerSelector
-} = selectors;
+const { clnyManagerSelector, mcManagerSelector, userGameManagerSelector } =
+  selectors;
 
 const useContracts = () => {
   const dispatch = useDispatch();
 
   const gameManager = useSelector(userGameManagerSelector) ?? window.GM;
-  const replaceManager = useSelector(replaceManagerSelector) ?? window.RM;
   const mcManager = useSelector(mcManagerSelector) ?? window.MCM;
   const clnyManager = useSelector(clnyManagerSelector) ?? window.CLNYM;
 
   const initializeContracts = () => {
     getGameManager();
-    getReplaceManager();
   };
 
   const getMCManager = React.useCallback(() => {
@@ -47,18 +40,11 @@ const useContracts = () => {
     return gm;
   }, [dispatch]);
 
-  const getReplaceManager = React.useCallback(() => {
-    const rm = Ethereum.getReplaceManager();
-    dispatch(setReplaceManager(rm));
-    return rm;
-  }, [dispatch]);
-
   return {
     initializeContracts,
     gameManager,
     clnyManager,
     mcManager,
-    replaceManager,
     getCLNYManager,
     getGameManager,
     getMCManager

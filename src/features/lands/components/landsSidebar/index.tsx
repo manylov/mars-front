@@ -54,12 +54,12 @@ import {
 
 export const LandsSidebar = () => {
   const dispatch = useDispatch();
-  const { isLandsSidebarOpened: sidebarType } = useAppParts();
+  const { isMyLandsShown: sidebarType } = useAppParts();
   const { tokens } = useBalance();
   const isMobile = useMediaQuery(`(max-width: ${MOBILE_BREAKPOINT}px)`);
 
   const getContent = () => {
-    if (sidebarType === 'lands') {
+    if (sidebarType) {
       return !tokens?.length ? (
         <NoLandsSidebarView />
       ) : (
@@ -75,7 +75,7 @@ export const LandsSidebar = () => {
   return (
     <LandsSidebarWrapper
       withLands={hasLands}
-      isVisible={sidebarType === 'lands' || sidebarType === 'cart'}
+      isVisible={sidebarType}
       isMobile={isMobile}
     >
       <CartCloseIconWrapper>

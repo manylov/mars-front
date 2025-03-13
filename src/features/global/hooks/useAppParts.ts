@@ -6,12 +6,12 @@ import {
 } from '@selectors/appPartsSelectors';
 
 const useAppParts = () => {
-  const isLandsSidebarOpened = useSelector(isMyLandSelector);
+  const isMyLandsShown = useSelector(isMyLandSelector);
   const isLeaderboardPopupOpened = useSelector(isLeaderboardPopupSelector);
   const currentLandsPage = useSelector(myLandPageSelector);
 
   return {
-    isLandsSidebarOpened,
+    isMyLandsShown,
     currentLandsPage,
     isLeaderboardPopupOpened
   };

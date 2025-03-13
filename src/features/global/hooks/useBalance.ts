@@ -56,7 +56,6 @@ export const useBalance = () => {
     clnyManager,
     gameManager,
     getGameManager,
-    mcManager,
     getMCManager
   } = useContracts();
 
@@ -210,33 +209,6 @@ export const useBalance = () => {
     [gameManager, tokens, allMintedTokens, dispatch]
   );
 
-  const transfer = React.useCallback(
-    async (address, tokenNumber = -1, addressTo: string) => {
-      const tokenId: string = tokenNumber.toString();
-      let txHash: string | null = null;
-
-      makeRequest({
-        address,
-        type: METAMASK_EVENTS.send,
-        method: CONTRACT_METHODS.safeTransferFrom,
-        contract: mcManager ?? getMCManager(),
-        params: [address, addressTo, tokenId],
-        transactionOptions: { type: CURRENT_CHAIN.x2 },
-        eventName: METHODS_LABELS.landTransfer(tokenId),
-        onLoad: (hash: string) => {
-          txHash = hash;
-        },
-        onSuccess: () => {
-          if (tokens !== null) {
-            dispatch(setUserTokens(tokens.filter((item) => item !== tokenId)));
-          }
-        },
-        onError: () => {}
-      });
-    },
-    [tokens, dispatch, mcManager]
-  );
-
   const collectAllStats = React.useCallback(
     async (address, web3Instance) => {
       const partialCollect = async (
@@ -377,7 +349,6 @@ export const useBalance = () => {
     if (window.xweb3 && address)
       await claimToken(tokens, address, window.xweb3);
   };
-  window.transfer = transfer;
   window.collectAllStats = collectAllStats;
   window.getAccountsAssets = getAccountAssets;
 
@@ -386,7 +357,6 @@ export const useBalance = () => {
     updateEarnedAll,
     fetchUserBalance,
     claimToken,
-    transfer,
     collectAllStats,
     getAccountAssets,
     tokens,

@@ -13,7 +13,7 @@ import usePersonalInfo from '@global/hooks/usePersonalInfo';
 import { CONTRACT_METHODS, METAMASK_EVENTS } from '@global/types';
 import { setRepaintMode } from '@slices/gameManagementSlice';
 
-const useLandStats = (isCartItem: boolean = false, id?: number) => {
+const useLandStats = (id?: number) => {
   // Facilities levels
   const [hasBaseStation, setHasBaseStation] = React.useState<boolean | null>(
     null
@@ -43,7 +43,7 @@ const useLandStats = (isCartItem: boolean = false, id?: number) => {
 
   const updateEarned = useCallback(
     async (callback?: () => void) => {
-      if (isCartItem || !provider) return;
+      if (!provider) return;
 
       await makeRequest({
         address,
@@ -107,7 +107,7 @@ const useLandStats = (isCartItem: boolean = false, id?: number) => {
         onError: () => {}
       });
     },
-    [address, isCartItem, id, provider]
+    [address, id, provider]
   );
 
   const buildAction = async (method: string, type: string, level?: number) => {
@@ -160,8 +160,6 @@ const useLandStats = (isCartItem: boolean = false, id?: number) => {
   };
 
   React.useEffect(() => {
-    if (isCartItem) return;
-
     updateEarned(() => setInitialLoad(false)).then(() => {});
 
     const balanceChecker = setInterval(async () => {
@@ -171,11 +169,10 @@ const useLandStats = (isCartItem: boolean = false, id?: number) => {
     return () => {
       clearInterval(balanceChecker);
     };
-  }, [updateEarned, isCartItem]);
+  }, [updateEarned]);
 
   React.useEffect(() => {
-    if (earningSpeed === 0 || typeof earningSpeed === 'string' || isCartItem)
-      return;
+    if (earningSpeed === 0 || typeof earningSpeed === 'string') return;
     if (softTimer.current) clearInterval(softTimer.current);
 
     softTimer.current = setInterval(() => {
@@ -188,7 +185,7 @@ const useLandStats = (isCartItem: boolean = false, id?: number) => {
     return () => {
       if (softTimer.current) clearInterval(softTimer.current);
     };
-  }, [earned, earningSpeed, isCartItem]);
+  }, [earned, earningSpeed]);
 
   return {
     transportLevel,

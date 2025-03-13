@@ -1,5 +1,3 @@
-import React from 'react';
-import isDev from 'react-is-dev';
 import { useToasts } from 'react-toast-notifications';
 import { METAMASK_EVENTS, MetamaskWrapperType } from '@global/types';
 import { formatRequestWrapperPayload } from '@global/utils/gas';
@@ -9,7 +7,6 @@ import { NETWORK_DATA } from '@root/settings';
 
 const useMetamask = () => {
   const { addToast } = useToasts();
-  const useIsDev = isDev(React);
 
   const makeCallRequest = async <responseType>({
     address,

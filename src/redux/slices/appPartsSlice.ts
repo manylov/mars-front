@@ -2,7 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 
 export interface AppPartsInterface {
   isConnectionPopupOpened: boolean;
-  isMyLandsShown: 'lands' | null;
+  isMyLandsShown: boolean;
   myLandsPageNumber: number;
   isLandMissionsAvailable: boolean;
   isPrivateAccount: boolean | null;
@@ -13,7 +13,7 @@ export interface AppPartsInterface {
 
 const initialState: AppPartsInterface = {
   isConnectionPopupOpened: false,
-  isMyLandsShown: 'lands',
+  isMyLandsShown: true,
   myLandsPageNumber: 1,
   isLandMissionsAvailable: false,
   isPrivateAccount: null,

@@ -23,22 +23,6 @@ const useGameManagement = () => {
   const isBuildPending = useSelector(isBuildPendingSelector);
   const isGameRepaintMode = useSelector(isReplaceModeSelector);
 
-  const getObjectsCoords = async (tokenId: string) => {
-    if (!window.RM || !address) return null;
-
-    return makeCallRequest<{
-      base: Record<string, any>;
-      robot: Record<string, any>;
-      power: Record<string, any>;
-      transport: Record<string, any>;
-    }>({
-      contract: window.RM,
-      method: CONTRACT_METHODS.getCoord,
-      params: [tokenId],
-      address
-    });
-  };
-
   const getObjectsAvailability = async (tokenId: string) => {
     if (!window.GM || !address) return null;
     const data = await makeCallRequest<Array<Record<string, string>>>({
@@ -81,14 +65,6 @@ const useGameManagement = () => {
     }
 
     const { bs, transport, ra, pp } = availData;
-
-    const data = await getObjectsCoords(tokenId);
-
-    console.log('getObjectsCoords', data);
-
-    if (!data) {
-      return;
-    }
 
     const mockedCoords = {
       x: 100,
