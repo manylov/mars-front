@@ -96,7 +96,6 @@ export const LandsSidebar = () => {
 export const NoLandsSidebarView = () => {
   const { addToast } = useToasts();
   const { isLoadingTokens, tokens } = useBalance();
-  const { isHarmonyChains } = useFlags();
   const { isInitialized } = usePersonalInfo();
   const [maxClnyIncome, setMaxClnyIncome] = useState<string | null>(null);
   const [isLeaderboardOpen, setIsLeaderboardOpen] = useState(false);
@@ -105,15 +104,10 @@ export const NoLandsSidebarView = () => {
   const dispatch = useDispatch();
 
   const onBuyLandClick = () => {
-    if (isHarmonyChains) {
-      return window.open(LINKS.harmony.nftKey, '_blank');
-    } else {
-      addToast('You can buy new lands on the globe', { appearance: 'info' });
-    }
+    addToast('You can buy new lands on the globe', { appearance: 'info' });
   };
 
   useEffect(() => {
-    if (isHarmonyChains) return;
     try {
       (async () => {
         const data = await Backend.getHeaderStats();
@@ -248,7 +242,6 @@ export const ActiveLandsSidebarView = () => {
   const [isLeaderboardOpen, setIsLeaderboardOpen] = useState(false);
 
   const { address, web3Instance } = usePersonalInfo();
-  const { isRevShareAvailable, isFixedEconomy } = useFlags();
   const { currentLandsPage } = useAppParts();
   const { isLeaderboardPopupOpened } = useAppParts();
   const { landsMissionsLimits } = useLands(tokens, web3Instance);
@@ -274,9 +267,7 @@ export const ActiveLandsSidebarView = () => {
 
     const speed = () => {
       if (Boolean(dailySpeed)) {
-        return isFixedEconomy
-          ? getClnySpeedLabel(dailySpeed)
-          : `${dailySpeed} ${dailySpeed === 1 ? 'share' : 'shares'}`;
+        return getClnySpeedLabel(dailySpeed);
       } else return GAP_TEXT;
     };
 
@@ -320,7 +311,7 @@ export const ActiveLandsSidebarView = () => {
           <LandsSection>
             <SpanWrapper>
               <LandsSpan>
-                <ActiveLandsFirstLine withRevshare={isRevShareAvailable}>
+                <ActiveLandsFirstLine>
                   <ActiveLandsControlWrapper>
                     <ActiveLandsTitle>{title}</ActiveLandsTitle>
                   </ActiveLandsControlWrapper>
@@ -336,9 +327,7 @@ export const ActiveLandsSidebarView = () => {
                     disabledText="Collecting..."
                   />
                 )}
-                <ButtonSubText withRevshare={isRevShareAvailable}>
-                  {allTimeStats}
-                </ButtonSubText>
+                <ButtonSubText>{allTimeStats}</ButtonSubText>
               </CollectSpan>
             </SpanWrapper>
           </LandsSection>

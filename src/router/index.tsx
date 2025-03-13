@@ -25,28 +25,10 @@ const generateRoutes = (flags: Record<string, boolean>) => {
 };
 
 export const AppRouter = () => {
-  const {
-    isGameFunctionality: game,
-    isMissionsAvailable: missions,
-    isAvatarsAvailable: avatars,
-    isChangePageAvailable: changePage,
-    isRefPageAvailable: referralPage,
-    isPlaySection: play,
-    isProfile: profile
-  } = useFlags();
-
   return (
     <Router>
       <Routes>
-        {generateRoutes({
-          game,
-          missions,
-          avatars,
-          changePage,
-          referralPage,
-          play,
-          profile
-        })}
+        {generateRoutes({})}
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </Router>

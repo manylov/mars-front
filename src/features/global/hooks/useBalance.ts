@@ -57,7 +57,6 @@ import { fromWei } from 'web3-utils';
 
 export const useBalance = () => {
   const { makeRequest, makeSendRequest } = useMetamask();
-  const { isMissionsAvailable, isSelectedAvatar } = useFlags();
   const {
     getCLNYManager,
     clnyManager,
@@ -408,14 +407,7 @@ export const useBalance = () => {
         logDevInfo(`Error while getting account assets: ${err}`);
       }
     },
-    [
-      dispatch,
-      isMissionsAvailable,
-      isSelectedAvatar,
-      tokens,
-      allMintedTokens,
-      isLoadingTokens
-    ]
+    [dispatch, tokens, allMintedTokens, isLoadingTokens]
   );
 
   React.useEffect(() => {

@@ -44,35 +44,26 @@ export const GameLandPlot = ({
   earned
 }: GameLandPlotType) => {
   const dispatch = useDispatch();
-  const { isGamePage } = useRoutes();
   const { isGameRepaintMode } = useGameManagement();
   const isMobile = useMediaQuery('(max-width: 1200px)');
 
   const [opened, setOpened] = useState(false);
-
-  useEffect(() => {
-    if (isGamePage && isGameRepaintMode) {
-      setOpened(false);
-    }
-  }, [isGamePage, isGameRepaintMode]);
 
   return (
     <MainDetailedPlotWrapper>
       <GamePageDetailedPlotWrapper isOpened={opened}>
         <GamePageInfoButtonContainer>
           <GamePageDetailedMeta>
-            <LandPlotImageWrapper isGamePage={isGamePage}>
+            <LandPlotImageWrapper>
               <img
                 src={generateBlockie(id).toDataURL()}
                 alt={'Land Plot #' + id.toString()}
               />
             </LandPlotImageWrapper>
             <GamePageDetailedInfo>
-              <LandPlotLink isGamePage={isGamePage}>
-                Land #{id}&nbsp;
-              </LandPlotLink>
+              <LandPlotLink>Land #{id}&nbsp;</LandPlotLink>
               <GamePageDetailedStats>
-                <LandPlotDescriptionB marginTop={15} isGamePage={isGamePage}>
+                <LandPlotDescriptionB marginTop={15}>
                   {Boolean(earningSpeed) && (
                     <>
                       {NETWORK_DATA.ECONOMY === 'fixed'
@@ -84,9 +75,9 @@ export const GameLandPlot = ({
                   )}
                   {!earningSpeed && 'Loading...'}
                 </LandPlotDescriptionB>
-                <LandPlotEarned isGamePage={isGamePage}>
+                <LandPlotEarned>
                   Earned:{' '}
-                  <LandPlotEarnedText isGamePage={isGamePage}>
+                  <LandPlotEarnedText>
                     {Boolean(earned)
                       ? `${earned} ${NETWORK_DATA.TOKEN_NAME}`
                       : 'Loading...'}

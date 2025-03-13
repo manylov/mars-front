@@ -30,7 +30,6 @@ export const LandPlot: React.FC<Props> = ({
   isCartItem
 }) => {
   const isMobile = useMediaQuery('(max-width: 1200px)');
-  const { isGamePage } = useRoutes();
 
   const {
     earned,
@@ -64,10 +63,7 @@ export const LandPlot: React.FC<Props> = ({
 
   const enhancementsItemsList = useMemo(
     () => (
-      <EnhancementsListWrapper
-        isBottomBlock={isGamePage}
-        isMobileView={isMobile}
-      >
+      <EnhancementsListWrapper isMobileView={isMobile}>
         <Enhancement
           isInitialLoad={isInitialLoad}
           Image={BaseStationIcon}
@@ -83,7 +79,6 @@ export const LandPlot: React.FC<Props> = ({
           }
           handler={() => build.base()}
           CLNYBalance={CLNYBalance}
-          isGamePage={isGamePage}
           isAvailable={isBaseAvailable}
           isPlaced={isBasePlaced}
           isActive={hasBaseStation}
@@ -107,7 +102,6 @@ export const LandPlot: React.FC<Props> = ({
           oldNew={OLD_NEW[robotAssemblyLevel] as [number, number] | undefined}
           handler={() => build.robots(robotAssemblyLevel + 1)}
           CLNYBalance={CLNYBalance}
-          isGamePage={isGamePage}
           isAvailable={isRobotAvailable}
           isPlaced={isRobotPlaced}
           isActive={Boolean(robotAssemblyLevel && robotAssemblyLevel > 0)}
@@ -131,7 +125,6 @@ export const LandPlot: React.FC<Props> = ({
           oldNew={OLD_NEW[transportLevel] as [number, number] | undefined}
           handler={() => build.transport(transportLevel + 1)}
           CLNYBalance={CLNYBalance}
-          isGamePage={isGamePage}
           isAvailable={isTransportAvailable}
           isPlaced={isTransportPlaced}
           isActive={Boolean(transportLevel && transportLevel > 0)}
@@ -155,7 +148,6 @@ export const LandPlot: React.FC<Props> = ({
           oldNew={OLD_NEW[powerProductionLevel] as [number, number] | undefined}
           handler={() => build.power(powerProductionLevel + 1)}
           CLNYBalance={CLNYBalance}
-          isGamePage={isGamePage}
           isAvailable={isPowerplantAvailable}
           isPlaced={isPowerplantPlaced}
           isActive={Boolean(powerProductionLevel && powerProductionLevel > 0)}
@@ -172,7 +164,6 @@ export const LandPlot: React.FC<Props> = ({
     [
       isInitialLoad,
       isBuyProcess,
-      isGamePage,
       hasBaseStation,
       robotAssemblyLevel,
       transportLevel,

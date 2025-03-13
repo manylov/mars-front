@@ -7,7 +7,6 @@ const useNavigationRoutes = () => {
   const isProfilePage = location.pathname.includes('/profile');
   const isLandsPage =
     location.pathname === '/' || location.pathname.includes('/lands');
-  const isGamePage = location.pathname.includes('/game');
   const isPlayPage = location.pathname.includes('/play');
   const isMissionsPage = location.pathname.includes('/missions');
   const isWelcomePage = location.pathname === '/';
@@ -21,7 +20,6 @@ const useNavigationRoutes = () => {
   return {
     isProfilePage,
     isLandsPage,
-    isGamePage,
     isPlayPage,
     isMissionsPage,
     isWelcomePage,

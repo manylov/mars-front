@@ -55,7 +55,6 @@ export const Enhancement: React.FC<Props> = ({
   oldNew,
   handler,
   CLNYBalance,
-  isGamePage,
   isAvailable,
   isPlaced,
   isActive,
@@ -70,15 +69,15 @@ export const Enhancement: React.FC<Props> = ({
 
   const availableButNotPlaced = useMemo(
     () => !!parseInt(isAvailable ?? '0') && !isPlaced,
-    [isAvailable, isPlaced, isGamePage]
+    [isAvailable, isPlaced]
   );
   const notAvailableButNotPlaced = useMemo(
     () => !parseInt(isAvailable ?? '0') && !isPlaced,
-    [isAvailable, isPlaced, isGamePage]
+    [isAvailable, isPlaced]
   );
   const isPlacedAndAvailable = useMemo(
     () => !!parseInt(isAvailable ?? '0') && isPlaced,
-    [isAvailable, isPlaced, isGamePage]
+    [isAvailable, isPlaced]
   );
 
   const getClnySpeedLabel = (val: string | number) => {
@@ -140,20 +139,19 @@ export const Enhancement: React.FC<Props> = ({
             </>
           )}
           {price > CLNYBalance && (
-            <EnhButtonError isDisabled={price < CLNYBalance} mt="-18px">
+            <EnhButtonError mt="-18px">
               not enough {NETWORK_DATA.TOKEN_NAME}
             </EnhButtonError>
           )}
         </LandPlotEarnedButton>
       )}
 
-      <EnhButtonOuterWrapper isGamePage={isGamePage}>
+      <EnhButtonOuterWrapper>
         {Boolean(finalText) && isPlacedAndAvailable && (
           <Ticked text={String(finalText)} />
         )}
         {!finalText && (
           <EnhButton
-            isGamePage={isGamePage}
             getWhat={getWhat}
             handler={handler}
             price={price}

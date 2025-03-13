@@ -2,7 +2,7 @@ import { RGB_BLACK } from '@features/global/styles/variables';
 import { fontProperty } from '@global/styles/fonts.styles';
 import styled, { css } from 'styled-components';
 
-const LandPlotImageWrapper = styled.div<{ isGamePage?: boolean }>`
+const LandPlotImageWrapper = styled.div`
   width: 35px;
   height: 35px;
 
@@ -10,21 +10,10 @@ const LandPlotImageWrapper = styled.div<{ isGamePage?: boolean }>`
     width: inherit;
     height: inherit;
   }
-
-  ${({ isGamePage }) => {
-    if (isGamePage) {
-      return css`
-        box-sizing: border-box;
-        height: 48px;
-        width: 48px;
-      `;
-    }
-  }}
 `;
 
 const LandPlotDescriptionB = styled.div<{
   marginTop?: number;
-  isGamePage?: boolean;
 }>`
   display: inline-block;
   font-style: normal;
@@ -36,25 +25,9 @@ const LandPlotDescriptionB = styled.div<{
   margin-top: ${({ marginTop }) => marginTop ?? 'unset'};
   background: #1c1c1f;
   border-radius: 3px;
-
-  ${({ isGamePage }) => {
-    if (isGamePage) {
-      return css`
-        background: rgba(255, 255, 255, 0.2);
-        border-radius: 3px;
-        padding: 2px 6px;
-        font-weight: 400;
-        font-size: 10px;
-        line-height: 10px;
-        text-align: center;
-        letter-spacing: -0.02em;
-        color: #ffffff;
-      `;
-    }
-  }}
 `;
 
-const LandPlotLink = styled.div<{ isGamePage?: boolean }>`
+const LandPlotLink = styled.div`
   ${fontProperty};
   font-weight: bold;
   font-size: 16px;
@@ -71,25 +44,13 @@ const LandPlotLink = styled.div<{ isGamePage?: boolean }>`
     position: relative;
     top: 3px;
   }
-
-  ${({ isGamePage }) => {
-    if (isGamePage) {
-      return css`
-        font-weight: 700;
-        font-size: 24px;
-        line-height: 28px;
-        letter-spacing: -0.02em;
-        color: #ffffff;
-      `;
-    }
-  }}
 `;
 
 const FlexedPlotDivider = styled.div`
   flex: 1;
 `;
 
-const LandPlotEarned = styled.div<{ isGamePage?: boolean }>`
+const LandPlotEarned = styled.div`
   ${fontProperty};
   font-family: Helvetica, 'sans-serif';
   font-weight: 400;
@@ -98,39 +59,14 @@ const LandPlotEarned = styled.div<{ isGamePage?: boolean }>`
   color: #c4c4c4;
   width: unset;
   text-align: center;
-
-  ${({ isGamePage }) => {
-    if (isGamePage) {
-      return css`
-        font-weight: 400;
-        font-size: 10px;
-        line-height: 12px;
-        text-align: right;
-        letter-spacing: -0.02em;
-        color: rgba(255, 255, 255, 0.8);
-      `;
-    }
-  }}
 `;
 
-const LandPlotEarnedText = styled.span<{ isGamePage?: boolean }>`
+const LandPlotEarnedText = styled.span`
   ${fontProperty};
   font-weight: normal;
   font-size: 12px;
   line-height: 13.8px;
   color: white;
-
-  ${({ isGamePage }) => {
-    if (isGamePage) {
-      return css`
-        font-weight: 700;
-        font-size: 10px;
-        line-height: 12px;
-        letter-spacing: -0.02em;
-        color: #ffffff;
-      `;
-    }
-  }}
 `;
 
 const DexGrid = styled.div<{

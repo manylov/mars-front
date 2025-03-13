@@ -1,16 +1,15 @@
 import React from 'react';
 import isDev from 'react-is-dev';
 import { useToasts } from 'react-toast-notifications';
-import useFlags from '@global/hooks/useFlags';
 import { METAMASK_EVENTS, MetamaskWrapperType } from '@global/types';
 import { logDevInfo } from '@global/utils/analytics';
 import { formatRequestWrapperPayload } from '@global/utils/gas';
 import { callWrapper, txWrapper } from '@global/utils/tx-wrapper';
 import { CURRENT_CHAIN } from '@root/settings/chains';
+import { NETWORK_DATA } from '@root/settings';
 
 const useMetamask = () => {
   const { addToast } = useToasts();
-  const { networkConfig } = useFlags();
   const useIsDev = isDev(React);
 
   const makeCallRequest = async <responseType>({
@@ -29,7 +28,7 @@ const useMetamask = () => {
         from: address,
         type: CURRENT_CHAIN.x2,
         addToast,
-        errorText: errorText ?? `Error with ${networkConfig.CHAIN} chain`,
+        errorText: errorText ?? `Error with ${NETWORK_DATA.CHAIN} chain`,
         onFail: onError
       });
 
@@ -50,7 +49,7 @@ const useMetamask = () => {
 
       return result;
     } catch (err) {
-      logDevInfo(`Error with ${method} in ${networkConfig.CHAIN}`);
+      logDevInfo(`Error with ${method} in ${NETWORK_DATA.CHAIN}`);
       return;
     }
   };

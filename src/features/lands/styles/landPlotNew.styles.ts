@@ -27,7 +27,7 @@ const LandPlotOuterWrapper = styled.div<{ isMobile?: boolean }>`
   }};
 `;
 
-const LandPlotNewImageWrapper = styled.div<{ isGamePage?: boolean }>`
+const LandPlotNewImageWrapper = styled.div`
   width: 40px;
   height: 40px;
 

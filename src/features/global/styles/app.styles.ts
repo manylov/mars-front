@@ -125,49 +125,7 @@ const MarsNavConnectedModalLink = styled.a`
   }
 `;
 
-const MarsNavDisconnectButton = styled.button<{ isGamePage?: boolean }>`
-  height: 50px;
-  width: 196px;
-  background: #ff3943;
-  border-radius: 175px;
-  border: 0;
-  font-size: 18px;
-  font-weight: bold;
-  line-height: 22px;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  color: ${WHITE};
-  cursor: pointer;
-
-  ${({ isGamePage }) => {
-    if (isGamePage) {
-      return css`
-        position: fixed;
-        top: 8px;
-        right: 30px;
-        display: flex;
-        box-sizing: border-box;
-        justify-content: center;
-        align-items: center;
-        padding: 14px 50px 15px;
-        width: 270px;
-        height: 50px;
-        background: #fe5161;
-        font-weight: 700;
-        font-size: 16px;
-        line-height: 21px;
-        border-radius: unset;
-        text-align: center;
-        text-transform: uppercase;
-        color: #000000;
-      `;
-    }
-  }}
-`;
-
 const MarsNavMyLandClose = styled.div<{
-  isGamePage?: boolean;
-  isMobileView?: boolean;
   Position?: string;
   Right?: string;
   Top?: string;
@@ -181,18 +139,6 @@ const MarsNavMyLandClose = styled.div<{
   right: ${({ Right }) => Right ?? ''};
   top: ${({ Top }) => Top ?? ''};
   z-index: ${({ zIndex }) => zIndex ?? '1'};
-
-  ${({ isGamePage, isMobileView }) => {
-    if (isGamePage) {
-      return css`
-        flex: unset;
-        position: absolute;
-        right: ${isMobileView ? 'unset' : '5px'};
-        left: ${isMobileView ? '15px' : 'unset'};
-        top: 5px;
-      `;
-    }
-  }}
 `;
 
 const MarsNavPanelItemFlexed = styled.div`
@@ -480,7 +426,6 @@ export {
   MarsNavConnectedModalLink,
   MarsNavConnectedModalTitle,
   MarsNavConnectedWallet,
-  MarsNavDisconnectButton,
   MarsNavMyLandClose,
   MarsNavPanelItemFlexed,
   MiningPageBackButton,

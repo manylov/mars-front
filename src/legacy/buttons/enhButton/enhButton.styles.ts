@@ -1,7 +1,7 @@
 import { WHITE } from '@global/styles/variables';
 import styled, { css } from 'styled-components';
 
-const EnhButtonWrapper = styled.button<{ isGamePage?: boolean }>`
+const EnhButtonWrapper = styled.button`
   display: block;
   border: 0;
   width: 105px;
@@ -12,7 +12,7 @@ const EnhButtonWrapper = styled.button<{ isGamePage?: boolean }>`
   font-family: 'Play', sans-serif;
   color: ${WHITE};
   cursor: pointer;
-  margin-left: ${({ isGamePage }) => (isGamePage ? '0px' : '7px')};
+  margin-left: 7px;
   position: relative;
 
   &:not([disabled]):hover {
@@ -41,41 +41,9 @@ const EnhButtonWrapper = styled.button<{ isGamePage?: boolean }>`
     line-height: 11.6px;
     text-align: center;
   }
-
-  ${({ isGamePage }) => {
-    if (isGamePage) {
-      return css`
-        border: none;
-        outline: none;
-        box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
-
-        .enh_button__get {
-          color: #fe5161;
-        }
-
-        &:not([disabled]):hover {
-          color: white;
-        }
-
-        &:disabled {
-          background-color: #7c8087;
-
-          .enh_button__get {
-            color: rgba(255, 255, 255, 0.5);
-          }
-
-          .enh_button__for {
-            color: rgba(255, 255, 255, 0.5);
-          }
-        }
-      `;
-    }
-  }}
 `;
 
 const EnhButtonError = styled.div<{
-  isGamePage?: boolean;
-  isDisabled?: boolean;
   mt?: string;
 }>`
   position: absolute;
@@ -86,14 +54,6 @@ const EnhButtonError = styled.div<{
   text-align: center;
   text-transform: initial;
   font-weight: 400;
-  ${({ isGamePage, isDisabled, mt }) => {
-    if (isGamePage || isDisabled) {
-      return css`
-        top: ${mt ?? '-13px'};
-        font-weight: 400;
-      `;
-    }
-  }}
 `;
 
 const EhchSidebarWrapper = styled.div`

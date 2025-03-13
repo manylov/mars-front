@@ -8,7 +8,6 @@ type Props = {
   getWhat?: string;
   price: number;
   disabled: boolean;
-  isGamePage?: boolean;
   isPending?: boolean;
 };
 
@@ -16,7 +15,6 @@ export const EnhButton: React.FC<Props> = ({
   handler,
   getWhat = '',
   price,
-  isGamePage,
   disabled,
   isPending = false
 }) => {
@@ -24,7 +22,6 @@ export const EnhButton: React.FC<Props> = ({
     <EnhButtonWrapper
       onClick={() => handler()}
       disabled={disabled || isPending}
-      isGamePage={isGamePage}
     >
       {!isPending && (
         <>
@@ -36,9 +33,7 @@ export const EnhButton: React.FC<Props> = ({
       )}
       {!!isPending && <div className="enh_button__get">Pending...</div>}
       {disabled && !isPending && (
-        <EnhButtonError isGamePage={isGamePage}>
-          not enough {NETWORK_DATA.TOKEN_NAME}
-        </EnhButtonError>
+        <EnhButtonError>not enough {NETWORK_DATA.TOKEN_NAME}</EnhButtonError>
       )}
     </EnhButtonWrapper>
   );

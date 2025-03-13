@@ -156,7 +156,7 @@ const LandsBlock = styled.div`
   margin-top: 40px;
 `;
 
-const ButtonSubText = styled.p<{ withRevshare?: boolean }>`
+const ButtonSubText = styled.p`
   font-family: 'Helvetica', sans-serif;
   font-style: normal;
   font-weight: 400;
@@ -164,15 +164,6 @@ const ButtonSubText = styled.p<{ withRevshare?: boolean }>`
   line-height: 11px;
   margin: 0;
   text-align: center;
-
-  ${({ withRevshare }) => {
-    if (!withRevshare) {
-      return css`
-        font-size: 12px;
-        line-height: 14px;
-      `;
-    }
-  }}
 `;
 
 const ButtonNoLandsSubText = styled.p`
@@ -196,7 +187,7 @@ const ActiveLandsTitle = styled.p`
   text-align: center;
 `;
 
-const ActiveLandsFirstLine = styled.div<{ withRevshare?: boolean }>`
+const ActiveLandsFirstLine = styled.div`
   ${commonFlexLine};
   align-items: center;
   justify-content: center;

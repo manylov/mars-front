@@ -79,19 +79,12 @@ const EnhTitle = styled.div`
   color: #ffffff;
 `;
 
-const EnhButtonOuterWrapper = styled.div<{ isGamePage?: boolean }>`
+const EnhButtonOuterWrapper = styled.div`
   margin-top: 17px;
   text-align: center;
-  ${({ isGamePage }) => {
-    if (isGamePage) {
-      return css`
-        margin-top: 0;
-      `;
-    }
-  }}
 `;
 
-const EnhOldNew = styled.div<{ isGamePage?: boolean }>`
+const EnhOldNew = styled.div`
   ${fontProperty};
   font-family: Helvetica, sans-serif;
   font-weight: normal;
@@ -99,14 +92,6 @@ const EnhOldNew = styled.div<{ isGamePage?: boolean }>`
   line-height: 10px;
   color: rgba(52, 255, 97, 0.8);
   margin-bottom: 21px;
-
-  ${({ isGamePage }) => {
-    if (isGamePage) {
-      return css`
-        margin-bottom: 0;
-      `;
-    }
-  }}
 `;
 
 const CounterBlockWrapper = styled.div`

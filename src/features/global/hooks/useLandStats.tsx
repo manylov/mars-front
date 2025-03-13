@@ -40,7 +40,6 @@ const useLandStats = (isCartItem: boolean = false, id?: number) => {
   const { makeRequest } = useMetamask();
   const { address, provider } = usePersonalInfo();
   const { gameManager, getGameManager } = useContracts();
-  const { isFixedEconomy } = useFlags();
   const { collectAllLandInfo } = useGameManagement();
   const { updateEarnedAll, updateCLNYBalance } = useBalance();
 
@@ -194,14 +193,13 @@ const useLandStats = (isCartItem: boolean = false, id?: number) => {
       return;
     if (softTimer.current) clearInterval(softTimer.current);
 
-    if (isFixedEconomy) {
-      softTimer.current = setInterval(() => {
-        if (parseFloat(earned) > 0) {
-          // 0 means that CLNY minting is probably stopped
-          setEarned((earned) => (+earned + 0.0001).toFixed(4));
-        }
-      }, SPEED_STAT_CHECK_TICK / earningSpeed);
-    }
+    softTimer.current = setInterval(() => {
+      if (parseFloat(earned) > 0) {
+        // 0 means that CLNY minting is probably stopped
+        setEarned((earned) => (+earned + 0.0001).toFixed(4));
+      }
+    }, SPEED_STAT_CHECK_TICK / earningSpeed);
+
     return () => {
       if (softTimer.current) clearInterval(softTimer.current);
     };

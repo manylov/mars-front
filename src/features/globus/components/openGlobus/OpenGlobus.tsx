@@ -395,25 +395,6 @@ export const OpenGlobus = ({ height, allTokens, myTokens }: Props) => {
     cartLayer.current!.events.on('mousemove', mouseHandler, null);
     tokensLayer.current!.events.on('mousemove', mouseHandler, null);
 
-    // tokens.events.on("mouseleave", function (e: any) {
-    //   // console.log('LEAVE');
-    //   e.pickingObject.geometry.setFillColor(1, 1, 1, 0.01);
-    //   // e.pickingObject.geometry.setLineColor(0.2, 0.6, 0.8, 0.6);
-    // }, null);
-    // tokens.events.on("mouseenter", function (e: any) {
-    //   // console.log('ENTER');
-
-    //   e.pickingObject.geometry.bringToFront();
-    //   e.pickingObject.geometry.setFillColor(1, 0, 0, 0.4);
-    //   // e.pickingObject.geometry.setLineColor(1, 0, 0, 1.0);
-    // }, null);
-    // tokens.events.on("lclick", function (e: any) {
-    //   globus.planet.flyExtent(e.pickingObject.geometry.getExtent());
-    // }, null);
-    // tokens.events.on("touchstart", function (e: any) {
-    //   globus.planet.flyExtent(e.pickingObject.geometry.getExtent());
-    // }, null);
-
     globe.current!.planet.viewExtent(
       Extent.createFromArray([-158, 4, -86, 69])
     );

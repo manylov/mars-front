@@ -88,7 +88,6 @@ const SideBarItem = ({
   }, [isActive, name]);
 
   const onItemClick = () => {
-    if (trackEvent) trackUserEvent(trackEvent);
     if (!isActive) return;
     if (typeof onClick === 'function') onClick();
     else navigate(route);
@@ -110,14 +109,8 @@ const SideBarItem = ({
 const Sidebar = ({ isMobile }: { isMobile: boolean }) => {
   const dispatch = useDispatch();
   const sidebarRef = useRef<HTMLDivElement>(null);
-  const {
-    isMissionsAvailable,
-    isChangePageAvailable,
-    isRefPageAvailable,
-    isHarmonyChains
-  } = useFlags();
+
   const { address } = usePersonalInfo();
-  const { isGamePage } = useNavigationRoutes();
   const { isLandsSidebarOpened } = useAppParts();
   const navigate = useNavigate();
   const location = useLocation();
@@ -155,17 +148,15 @@ const Sidebar = ({ isMobile }: { isMobile: boolean }) => {
         isActive: true,
         withCounter: false,
         count: 0,
-        name: SIDEBAR_ROUTES_NAMES.lands,
-        trackEvent: 'Lands page clicked'
+        name: SIDEBAR_ROUTES_NAMES.lands
       },
       {
         route: '/xchange',
         icon: DexIcon,
-        isActive: isChangePageAvailable,
+        isActive: true,
         withCounter: false,
         count: 0,
         name: SIDEBAR_ROUTES_NAMES.aiTrade,
-        trackEvent: 'DEX page clicked (harmony only)',
         onClick: () => {
           window.open(LINKS.zero.dex, '_blank');
         }
@@ -177,7 +168,6 @@ const Sidebar = ({ isMobile }: { isMobile: boolean }) => {
         withCounter: false,
         count: 0,
         name: SIDEBAR_ROUTES_NAMES.leaderboard,
-        trackEvent: 'Leaderboard page clicked',
         onClick: () => {
           dispatch(toggleMyLandPopup('lands'));
           dispatch(toggleLeaderboardPopup(true));
@@ -185,20 +175,14 @@ const Sidebar = ({ isMobile }: { isMobile: boolean }) => {
       }
     ];
   }, [
-    isHarmonyChains,
     availableMissionsCount,
     address,
-    isMissionsAvailable,
-    isChangePageAvailable,
-    isRefPageAvailable,
     isLandsSidebarOpened,
     location.pathname
   ]);
 
   const isHidden = !isOpen && isMobile;
   const isMobileOverlay = isOpen && isMobile;
-
-  if (isGamePage) return null;
 
   return (
     <>
@@ -223,16 +207,7 @@ const Sidebar = ({ isMobile }: { isMobile: boolean }) => {
           <SidebarItemsListInner>
             {availableRoutes.map(
               (
-                {
-                  route,
-                  isActive,
-                  icon,
-                  count,
-                  name,
-                  withCounter,
-                  onClick,
-                  trackEvent
-                },
+                { route, isActive, icon, count, name, withCounter, onClick },
                 idx
               ) => (
                 <SideBarItem
@@ -245,7 +220,6 @@ const Sidebar = ({ isMobile }: { isMobile: boolean }) => {
                   onClick={onClick}
                   withCounter={withCounter}
                   address={address}
-                  trackEvent={trackEvent}
                 />
               )
             )}

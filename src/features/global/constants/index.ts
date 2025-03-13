@@ -3,17 +3,9 @@ import { CURRENT_CHAIN } from '@root/settings/chains';
 
 export const METHODS_LABELS = {
   landClaim: 'Land Plots claiming',
-  landSharing: 'Land sharing',
-  accountMissionState: 'Account publicity status',
   landTransfer: (tokenId: string) => `Land Plot #${tokenId} transfer`,
   partialClaim: (part: number, partsCount: number) =>
-    `Collecting: [${part} of ${partsCount}]`,
-  gearOpen: 'Gear opening',
-  getUserGears: 'Getting gears list',
-  getLastOwnedToken: 'Getting last owned token URI',
-  setGearLocks: 'Locking active gears',
-  repairTransport: 'Repair transport',
-  getTransportCondition: 'Get transport condition'
+    `Collecting: [${part} of ${partsCount}]`
 };
 
 export const BUNCH_SIZE = 60;

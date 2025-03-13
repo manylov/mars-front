@@ -1,5 +1,4 @@
 import { FC } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { ConnectionZone } from '@features/global/components/connectionZone/connectionZone';
 import {
   ConnectionZoneWrapper,
