@@ -7,6 +7,7 @@ import TileLayer from '@arcgis/core/layers/TileLayer';
 import Map from '@arcgis/core/Map';
 import SceneView from '@arcgis/core/views/SceneView';
 import { toLat, toLong, toTokenNumber } from '@features/globus/utils/methods';
+import { logDevInfo } from '@global/utils/analytics';
 import Web3 from 'web3';
 
 const polylineSymbol = {
@@ -184,6 +185,8 @@ export const initView = (
     setCurToken(token === null ? null : token.toString());
     tokenRef.current = token === null ? null : token.toString();
   });
+
+  logDevInfo('RENDERED VIEW');
 
   return {
     tokenLayer,

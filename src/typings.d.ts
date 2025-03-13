@@ -42,6 +42,7 @@ export declare global {
   var ORACLE: any;
   var restartMiningGame: () => void;
   var navigateHook: (path: string) => void;
+  var logEvent: (name: string, payload: Record<string, any>) => void;
   var toast: (name: string, args: Record<string, any>) => void;
   interface Window {
     sizeChanged: () => void;

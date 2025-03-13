@@ -3,6 +3,7 @@ import isDev from 'react-is-dev';
 import { useToasts } from 'react-toast-notifications';
 import useFlags from '@global/hooks/useFlags';
 import { METAMASK_EVENTS, MetamaskWrapperType } from '@global/types';
+import { logDevInfo } from '@global/utils/analytics';
 import { formatRequestWrapperPayload } from '@global/utils/gas';
 import { callWrapper, txWrapper } from '@global/utils/tx-wrapper';
 import { CURRENT_CHAIN } from '@root/settings/chains';
@@ -38,10 +39,18 @@ const useMetamask = () => {
 
       if (useIsDev) {
         console.log('CALL');
+        logDevInfo(
+          `to ${
+            (await contract).options.address
+          } | method ${method} | params ${params} | result ${JSON.stringify(
+            result
+          )}`
+        );
       }
 
       return result;
     } catch (err) {
+      logDevInfo(`Error with ${method} in ${networkConfig.CHAIN}`);
       return;
     }
   };
@@ -75,6 +84,11 @@ const useMetamask = () => {
     );
 
     if (useIsDev) {
+      logDevInfo(
+        `to ${
+          (await contract).options.address
+        } | method ${method} | params ${params} | payload ${payload}`
+      );
     }
   };
 
