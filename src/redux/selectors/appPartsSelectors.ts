@@ -4,19 +4,10 @@ export const isConnectionPopupSelector = (state: RootState) =>
   state.appParts.isConnectionPopupOpened;
 
 export const isMyLandSelector = (state: RootState) =>
-  state.appParts.isMyLandShown;
+  state.appParts.isMyLandsShown;
 
 export const isLeaderboardPopupSelector = (state: RootState) =>
   state.appParts.isLeaderboardPopupOpened;
 
 export const myLandPageSelector = (state: RootState) =>
   state.appParts.myLandsPageNumber;
-
-export const isPrivateAddressSelector = (state: RootState) =>
-  state.appParts.isPrivateAccount;
-
-export const isRevShareModalSelector = (state: RootState) =>
-  state.appParts.isRevshareModalOpened;
-
-export const isGearModalSelector = (state: RootState) =>
-  state.appParts.isGearPopupOpened;

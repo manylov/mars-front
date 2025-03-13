@@ -24,11 +24,10 @@ import {
 } from '@openglobus/og';
 import { NETWORK_DATA } from '@root/settings';
 import { CURRENT_CHAIN } from '@root/settings/chains';
-import { isMyLandSelector } from '@selectors/appPartsSelectors';
 
 import { userGameManagerSelector } from '@selectors/commonAppSelectors';
 import { addressSelector } from '@selectors/userStatsSelectors';
-import { toggleMyLandPopup } from '@slices/appPartsSlice';
+import { toggleMyLandsPopup } from '@slices/appPartsSlice';
 import Web3 from 'web3';
 import useMetamask from '@features/global/hooks/useMetamask';
 
@@ -61,7 +60,6 @@ export const OpenGlobus = ({ height, allTokens, myTokens }: Props) => {
   const gm = useSelector(userGameManagerSelector);
   const { addToast } = useToasts();
   const address = useSelector(addressSelector);
-  const isMyLandsOpened = useSelector(isMyLandSelector);
   const dispatch = useDispatch();
   const popup = React.useRef<Popup>();
   const { makeCallRequest } = useMetamask();
@@ -227,12 +225,6 @@ export const OpenGlobus = ({ height, allTokens, myTokens }: Props) => {
       tokensLayer.current.addEntities(entities);
     }
   }, [myTokens, allTokens]);
-
-  useEffect(() => {
-    if (popup.current) {
-      if (isMyLandsOpened) popup.current.setVisibility(false);
-    }
-  }, [isMyLandsOpened, popup]);
 
   // @ts-ignore
   const isInCart = (window.isInCart = React.useCallback(
@@ -440,7 +432,7 @@ export const OpenGlobus = ({ height, allTokens, myTokens }: Props) => {
       );
 
       window.goToCart = () => {
-        dispatch(toggleMyLandPopup('cart'));
+        dispatch(toggleMyLandsPopup('cart'));
       };
 
       let status = allTokensSet.current.has(tokenNumber ?? -1)

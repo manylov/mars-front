@@ -4,7 +4,6 @@ import { useLocation } from 'react-router-dom';
 import Layout from '@global/components/layout/layout';
 import { BALANCE_CHECKER_INTERVAL } from '@global/constants';
 import { useBalance } from '@global/hooks/useBalance';
-import useFlags from '@global/hooks/useFlags';
 import useGameManagement from '@global/hooks/useGameManagement';
 import usePersonalInfo from '@global/hooks/usePersonalInfo';
 import { extractURLParam } from '@global/utils/urlParams';
@@ -21,7 +20,6 @@ function DataProvider({ children }: { children: ReactElement }) {
   const { web3Instance, address } = usePersonalInfo(true);
 
   const { tokens, updateEarnedAll } = useBalance();
-  const { isBalanceCheckerTick } = useFlags();
 
   useEffect(() => {
     const id = extractURLParam(location, 'id');
@@ -42,16 +40,14 @@ function DataProvider({ children }: { children: ReactElement }) {
     if (!address) return;
     updateEarnedAll().then(() => {});
 
-    if (isBalanceCheckerTick) {
-      const balanceChecker = setInterval(async () => {
-        await updateEarnedAll();
-      }, BALANCE_CHECKER_INTERVAL);
+    const balanceChecker = setInterval(async () => {
+      await updateEarnedAll();
+    }, BALANCE_CHECKER_INTERVAL);
 
-      return () => {
-        clearInterval(balanceChecker);
-      };
-    }
-  }, [isBalanceCheckerTick, updateEarnedAll, address]);
+    return () => {
+      clearInterval(balanceChecker);
+    };
+  }, [updateEarnedAll, address]);
 
   return <Layout>{children}</Layout>;
 }

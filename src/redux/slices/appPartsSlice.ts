@@ -1,9 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { NETWORK_DATA } from '@root/settings';
 
 export interface AppPartsInterface {
   isConnectionPopupOpened: boolean;
-  isMyLandShown: 'lands' | 'cart' | null;
+  isMyLandsShown: 'lands' | null;
   myLandsPageNumber: number;
   isLandMissionsAvailable: boolean;
   isPrivateAccount: boolean | null;
@@ -14,7 +13,7 @@ export interface AppPartsInterface {
 
 const initialState: AppPartsInterface = {
   isConnectionPopupOpened: false,
-  isMyLandShown: NETWORK_DATA.DEFAULT_ACCOUNT_STATE,
+  isMyLandsShown: 'lands',
   myLandsPageNumber: 1,
   isLandMissionsAvailable: false,
   isPrivateAccount: null,
@@ -30,38 +29,22 @@ export const appPartsSlice = createSlice({
     toggleConnectionPopup: (state, action) => {
       state.isConnectionPopupOpened = action.payload;
     },
-    toggleMyLandPopup: (state, action) => {
-      state.isMyLandShown = action.payload;
+    toggleMyLandsPopup: (state, action) => {
+      state.isMyLandsShown = action.payload;
     },
     toggleLeaderboardPopup: (state, action) => {
       state.isLeaderboardPopupOpened = action.payload;
     },
     setLandPageNumber: (state, action) => {
       state.myLandsPageNumber = action.payload;
-    },
-    setLandMissionsAvailability: (state, action) => {
-      state.isLandMissionsAvailable = !!action.payload;
-    },
-    setAccountPublicity: (state, action) => {
-      state.isPrivateAccount = action.payload;
-    },
-    setRevshareModalState: (state, action) => {
-      state.isRevshareModalOpened = action.payload;
-    },
-    toggleGearPopup: (state, action) => {
-      state.isGearPopupOpened = action.payload;
     }
   }
 });
 
 export const {
   toggleConnectionPopup,
-  toggleMyLandPopup,
+  toggleMyLandsPopup,
   setLandPageNumber,
-  setLandMissionsAvailability,
-  setAccountPublicity,
-  setRevshareModalState,
-  toggleGearPopup,
   toggleLeaderboardPopup
 } = appPartsSlice.actions;
 

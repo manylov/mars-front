@@ -21,7 +21,6 @@ type InitialStateType = {
     string,
     { coords: { x: string; y: string; rotate: number }; availability: string }
   >;
-  mode: GAME_VIEW_MODES.build | GAME_VIEW_MODES.navigation;
   objectToPlace: string | null;
   isBuildPending: string;
   isRepaintNeeded: boolean;
@@ -40,7 +39,6 @@ type InitialStateType = {
 
 const initialState: InitialStateType = {
   landPlacesInfo: {},
-  mode: GAME_VIEW_MODES.navigation,
   objectToPlace: null,
   isBuildPending: '',
   isRepaintNeeded: false,
@@ -60,9 +58,6 @@ const gameManagementReducer = createSlice({
         coords: action.payload.value,
         availability: action.payload.availability
       };
-    },
-    changeGameMode: (state, action: PayloadAction<GAME_VIEW_MODES>) => {
-      state.mode = action.payload;
     },
     selectObjectToSet: (state, action) => {
       state.objectToPlace = action.payload;
@@ -87,7 +82,6 @@ const gameManagementReducer = createSlice({
 
 export const {
   setLandInfoPart,
-  changeGameMode,
   dropGameInfo,
   selectObjectToSet,
   setBuildPending,

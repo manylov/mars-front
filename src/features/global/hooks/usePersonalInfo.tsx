@@ -19,7 +19,7 @@ import {
 } from '@redux/selectors/commonAppSelectors';
 import {
   toggleConnectionPopup,
-  toggleMyLandPopup
+  toggleMyLandsPopup
 } from '@redux/slices/appPartsSlice';
 import {
   resetInitializationOnDisconnect,
@@ -122,7 +122,7 @@ const usePersonalInfo = (withInitialize = false) => {
       addressRef.current = '';
       dispatch(resetUserBalance());
       dispatch(resetInitializationOnDisconnect());
-      dispatch(toggleMyLandPopup(null));
+      dispatch(toggleMyLandsPopup(null));
       dispatch(toggleConnectionPopup(false));
     },
     []
@@ -148,7 +148,7 @@ const usePersonalInfo = (withInitialize = false) => {
 
       dispatch(setUserProvider(provider));
       dispatch(setInitialized(false));
-      dispatch(toggleMyLandPopup('lands'));
+      dispatch(toggleMyLandsPopup('lands'));
 
       await subscribeProvider(provider);
 

@@ -9,10 +9,9 @@ import { FlexedPlotDivider } from '@features/lands/styles/landPlot.styles';
 import { getClnySpeedLabel } from '@features/lands/utils/formating';
 import Button from '@global/components/button';
 import { Loader } from '@global/components/loader/loader';
-import { GAP_TEXT, LINKS, MOBILE_BREAKPOINT } from '@global/constants';
+import { GAP_TEXT, MOBILE_BREAKPOINT } from '@global/constants';
 import useAppParts from '@global/hooks/useAppParts';
 import { useBalance } from '@global/hooks/useBalance';
-import useFlags from '@global/hooks/useFlags';
 import useMediaQuery from '@global/hooks/useMediaQuery';
 import usePersonalInfo from '@global/hooks/usePersonalInfo';
 import { MarsNavMyLandClose, TokensWrapper } from '@global/styles/app.styles';
@@ -24,7 +23,7 @@ import { NETWORK_DATA } from '@root/settings';
 import {
   setLandPageNumber,
   toggleLeaderboardPopup,
-  toggleMyLandPopup
+  toggleMyLandsPopup
 } from '@slices/appPartsSlice';
 import { StatsBar } from '@features/global/components/statsBar';
 import { Leaderboard } from '@global/components/leaderboard';
@@ -82,7 +81,7 @@ export const LandsSidebar = () => {
       <CartCloseIconWrapper>
         <MarsNavMyLandClose
           onClick={() => {
-            dispatch(toggleMyLandPopup(null));
+            dispatch(toggleMyLandsPopup(null));
           }}
         >
           <CloseIcon />

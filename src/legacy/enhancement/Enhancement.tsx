@@ -5,11 +5,7 @@ import { Ticked } from '@global/components/ticked/Ticked';
 import { EnhButton } from '@root/legacy/buttons/enhButton/EnhButton';
 import { NETWORK_DATA } from '@root/settings';
 import { isReplaceModeSelector } from '@selectors/gameManagerSelectors';
-import {
-  changeGameMode,
-  GAME_VIEW_MODES,
-  selectObjectToSet
-} from '@slices/gameManagementSlice';
+import { selectObjectToSet } from '@slices/gameManagementSlice';
 
 import { EnhButtonError } from '../buttons/enhButton/enhButton.styles';
 
@@ -107,7 +103,6 @@ export const Enhancement: React.FC<Props> = ({
           Height={'30px'}
           Padding={'0'}
           onClick={() => {
-            dispatch(changeGameMode(GAME_VIEW_MODES.build));
             dispatch(selectObjectToSet(title));
           }}
         >
@@ -125,7 +120,6 @@ export const Enhancement: React.FC<Props> = ({
           Width={'105px'}
           mb={'2px'}
           onClick={() => {
-            dispatch(changeGameMode(GAME_VIEW_MODES.build));
             dispatch(selectObjectToSet(title));
           }}
         >

@@ -17,13 +17,11 @@ import {
   GamePageInfoButtonContainer
 } from '@features/lands/styles/landPlot.styles';
 import { getClnySpeedLabel } from '@features/lands/utils/formating';
-import useGameManagement from '@global/hooks/useGameManagement';
 import useMediaQuery from '@global/hooks/useMediaQuery';
 import { generateBlockie } from '@global/utils/blockie.canvas';
 import { ArrowDown } from '@images/icons/ArrowDown';
 import { NETWORK_DATA } from '@root/settings';
 import {
-  changeGameMode,
   GAME_VIEW_MODES,
   selectObjectToSet
 } from '@slices/gameManagementSlice';
@@ -89,7 +87,6 @@ export const GameLandPlot = ({
                 e.stopPropagation();
                 setOpened(!opened);
                 if (opened) {
-                  dispatch(changeGameMode(GAME_VIEW_MODES.navigation));
                   dispatch(selectObjectToSet(null));
                   setOpened(false);
                 }
@@ -104,7 +101,6 @@ export const GameLandPlot = ({
           <GamePageEnhancementsOverlay
             isMobile={isMobile}
             onMouseEnter={() => {
-              dispatch(changeGameMode(GAME_VIEW_MODES.navigation));
               dispatch(selectObjectToSet(null));
             }}
           >

@@ -19,7 +19,6 @@ import {
   SidebarWrapper
 } from '@global/components/sidebar/sidebar.styles';
 import { LINKS } from '@global/constants';
-import useAppParts from '@global/hooks/useAppParts';
 import usePersonalInfo from '@global/hooks/usePersonalInfo';
 import { LIGHT_GREY, TOXIC_GREEN, WHITE } from '@global/styles/variables';
 import { SIDEBAR_ROUTES_NAMES } from '@global/types';
@@ -29,7 +28,7 @@ import { LandsIcon } from '@images/icons/sidebarIcons/LandsIcon';
 import { SidebarOpenIcon } from '@images/icons/sidebarIcons/SidebarOpenIcon';
 import { landsMissionsLimitsSelector } from '@selectors/userStatsSelectors';
 import {
-  toggleMyLandPopup,
+  toggleMyLandsPopup,
   toggleLeaderboardPopup
 } from '@slices/appPartsSlice';
 import { LeaderboardIcon } from '@root/images/icons/sidebarIcons/LeaderboardIcon';
@@ -108,7 +107,6 @@ const Sidebar = ({ isMobile }: { isMobile: boolean }) => {
   const sidebarRef = useRef<HTMLDivElement>(null);
 
   const { address } = usePersonalInfo();
-  const { isLandsSidebarOpened } = useAppParts();
   const navigate = useNavigate();
   const location = useLocation();
   const [isLeaderboardOpen, setIsLeaderboardOpen] = useState(false);
@@ -138,8 +136,7 @@ const Sidebar = ({ isMobile }: { isMobile: boolean }) => {
       {
         route: '/',
         onClick: () => {
-          dispatch(toggleMyLandPopup('lands'));
-          return navigate('/lands');
+          dispatch(toggleMyLandsPopup('lands'));
         },
         icon: LandsIcon,
         isActive: true,
@@ -166,17 +163,12 @@ const Sidebar = ({ isMobile }: { isMobile: boolean }) => {
         count: 0,
         name: SIDEBAR_ROUTES_NAMES.leaderboard,
         onClick: () => {
-          dispatch(toggleMyLandPopup('lands'));
+          dispatch(toggleMyLandsPopup('lands'));
           dispatch(toggleLeaderboardPopup(true));
         }
       }
     ];
-  }, [
-    availableMissionsCount,
-    address,
-    isLandsSidebarOpened,
-    location.pathname
-  ]);
+  }, [availableMissionsCount, address, location.pathname]);
 
   const isHidden = !isOpen && isMobile;
   const isMobileOverlay = isOpen && isMobile;
