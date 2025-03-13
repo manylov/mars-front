@@ -9,14 +9,7 @@ import {
   ConnectEventsType,
   PROVIDER_EVENTS
 } from '@global/types';
-import {
-  getDefaultEventPayload,
-  logDevInfo,
-  setUserIdentities,
-  setUserIdentitiesFiled,
-  trackGoogleAnalyticsEvent,
-  trackUserEvent
-} from '@global/utils/analytics';
+
 import { getProviderOptions } from '@global/utils/cryptoHelpers';
 import { wrongChainToast } from '@global/utils/utilModals';
 import {
@@ -131,32 +124,13 @@ const usePersonalInfo = (withInitialize = false) => {
       dispatch(resetInitializationOnDisconnect());
       dispatch(toggleMyLandPopup(null));
       dispatch(toggleConnectionPopup(false));
-
-      logDevInfo('DISCONNECT');
-      trackGoogleAnalyticsEvent('disconnect');
     },
     []
   ));
 
   const connect = React.useCallback(
     async (to = '', type: ConnectEventsType = CONNECT_EVENTS.click) => {
-      if (type === CONNECT_EVENTS.click) {
-        trackUserEvent(
-          'Connect wallet clicked',
-          getDefaultEventPayload(addressRef.current)
-        );
-      }
-
-      if (type === CONNECT_EVENTS.switch) {
-        trackUserEvent(
-          'Chain switching clicked',
-          getDefaultEventPayload(addressRef.current)
-        );
-      }
-
       if (connecting) return;
-
-      logDevInfo('CONNECT');
 
       let provider: any;
 
@@ -167,19 +141,8 @@ const usePersonalInfo = (withInitialize = false) => {
           provider = await web3ModalRef.current?.connect();
         }
 
-        trackUserEvent(
-          'Wallet connected succeed',
-          getDefaultEventPayload(addressRef.current)
-        );
-        trackGoogleAnalyticsEvent('userData', { userID: addressRef.current });
-
         dispatch(setIsConnected(true));
       } catch (error) {
-        trackUserEvent('Wallet connect failed', {
-          ...getDefaultEventPayload(addressRef.current),
-          error
-        });
-
         dispatch(setIsConnected(false));
       }
 
@@ -192,8 +155,6 @@ const usePersonalInfo = (withInitialize = false) => {
       window.xweb3 = web3.current = new Web3(provider);
       initializeContracts();
 
-      setUserIdentities(addressRef.current);
-
       let chainId: number = 0;
       try {
         chainId = await web3.current.eth.getChainId();
@@ -201,23 +162,17 @@ const usePersonalInfo = (withInitialize = false) => {
         addToast(error.message, { appearance: 'error' });
         return;
       }
-      trackGoogleAnalyticsEvent('chain.connecting', { id: chainId });
 
       if (chainId !== CURRENT_NET) {
         showWrongChain();
         await disconnect();
         dispatch(setIsConnected(false));
-        trackGoogleAnalyticsEvent('chain.wrong', {
-          id: chainId,
-          name: CURRENT_CHAIN?.name
-        });
+
         return;
       }
 
       const accounts = await web3.current.eth.getAccounts();
       const addressValue = accounts[0];
-
-      setUserIdentitiesFiled(addressRef.current);
 
       await updateAddress(addressValue);
       dispatch(setIsConnected(false));
@@ -244,19 +199,10 @@ const usePersonalInfo = (withInitialize = false) => {
           const oldAddress = addressRef.current;
           await updateAddress(accounts[0]);
           await getAccountAssets(addressRef, web3.current);
-
-          logDevInfo('EV: ACCOUNTS CHANGED');
-          trackGoogleAnalyticsEvent('account.changed', {
-            address: accounts[0],
-            old: oldAddress
-          });
         }
       );
 
       provider.on(PROVIDER_EVENTS.chainChanged, async (chainId: number) => {
-        logDevInfo(['EV: CHAIN CHANGED', chainId.toString()], 'Chain switch:');
-        trackGoogleAnalyticsEvent('chain.changed', { id: chainId });
-
         if (+chainId !== CURRENT_NET) {
           await disconnect();
           showWrongChain();
@@ -292,10 +238,6 @@ const usePersonalInfo = (withInitialize = false) => {
   const updateAddress = React.useCallback(
     async (_address: string) => {
       if (_address !== addressRef.current) {
-        logDevInfo(`SET ADDRESS: ${_address}`);
-        trackGoogleAnalyticsEvent('userData', {
-          userID: _address
-        });
         switchAddress(_address);
         dispatch(resetUserTokens());
 
@@ -352,7 +294,6 @@ const usePersonalInfo = (withInitialize = false) => {
     }
     addToast(
       wrongChainToast(() => {
-        trackUserEvent('Switch chain clicked');
         return switchNetwork(toastData);
       }),
       {
@@ -382,8 +323,6 @@ const usePersonalInfo = (withInitialize = false) => {
 
   window.connect = connect;
   window.toast = addToast;
-  window.logEvent = (name: string, payload: Record<string, any>) =>
-    trackUserEvent(name, payload);
 
   return {
     address: stateAddress ?? addressRef.current,

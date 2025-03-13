@@ -16,7 +16,6 @@ import {
   toLat,
   toLong
 } from '@features/globus/utils/methods';
-import { NETWORK_DATA } from '@root/settings';
 import { addressSelector } from '@selectors/userStatsSelectors';
 import Web3 from 'web3';
 
@@ -127,9 +126,7 @@ export const PartedMars = ({
       });
 
       // first draw myTokens in green, then allTokens in orange
-      for (const tokens of NETWORK_DATA.SOLDOUT
-        ? [myTokens]
-        : [myTokens, allTokens]) {
+      for (const tokens of [myTokens, allTokens]) {
         for (const token of Array.from(tokens)) {
           const { x, y } = parseTokenNumber(token) ?? {};
           if (x !== undefined && y !== undefined && y >= 0 && y < 140) {
@@ -152,10 +149,6 @@ export const PartedMars = ({
               symbol: myTokens.includes(token)
                 ? simpleFillSymbolGreen
                 : simpleFillSymbolOrange
-              // popupTemplate: {
-              //   title: `Token #1${y.toString().padStart(3, '0')}${x.toString().padStart(3, '0')}`,
-              //   content: geoText(longitudes, latitudes),
-              // },
             });
             tokensLayer.current?.add(polygonGraphic);
           }

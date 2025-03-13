@@ -4,7 +4,6 @@ import Button from '@global/components/button';
 import { LINKS } from '@global/constants';
 import useFlags from '@global/hooks/useFlags';
 import usePersonalInfo from '@global/hooks/usePersonalInfo';
-import { trackUserEvent } from '@global/utils/analytics';
 import { LinkIcon } from '@images/icons/LinkIcon';
 
 import {
@@ -26,7 +25,6 @@ export const MainScreen = () => {
   }, [isHarmonyChains]);
 
   const onBuyPlotLClick = () => {
-    trackUserEvent('Buy a plot clicked', { address });
     if (isHarmonyChains) openLink(LINKS.harmony.lands);
     else navigate('/lands');
   };
@@ -40,7 +38,6 @@ export const MainScreen = () => {
             What is Zero Colony{' '}
             <LinkIcon
               onClick={() => {
-                trackUserEvent('What is Zero Colony clicked', { address });
                 openLink(LINKS[chainKey].colonyGuide);
               }}
             />
@@ -51,7 +48,6 @@ export const MainScreen = () => {
           <Button
             disabled={!isMissionsAvailable}
             onClick={() => {
-              trackUserEvent('Play mission clicked', { address });
               navigate('/play/0');
             }}
             text={
