@@ -3,7 +3,7 @@ import React, {
   useEffect,
   useMemo,
   useRef,
-  useState
+  useState,
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -16,7 +16,7 @@ import {
   SidebarItemWrapper,
   SidebarMobileControl,
   SidebarTitle,
-  SidebarWrapper
+  SidebarWrapper,
 } from '@global/components/sidebar/sidebar.styles';
 import { LINKS } from '@global/constants';
 import usePersonalInfo from '@global/hooks/usePersonalInfo';
@@ -29,10 +29,11 @@ import { SidebarOpenIcon } from '@images/icons/sidebarIcons/SidebarOpenIcon';
 import { landsMissionsLimitsSelector } from '@selectors/userStatsSelectors';
 import {
   toggleMyLandsPopup,
-  toggleLeaderboardPopup
+  toggleLeaderboardPopup,
 } from '@slices/appPartsSlice';
 import { LeaderboardIcon } from '@root/images/icons/sidebarIcons/LeaderboardIcon';
 import { Leaderboard } from '@global/components/leaderboard';
+import useMediaQuery from '@features/global/hooks/useMediaQuery';
 
 type SideBarItemType = {
   route: string;
@@ -54,7 +55,7 @@ const SideBarItem = ({
   count,
   name,
   onClick,
-  trackEvent
+  trackEvent,
 }: SideBarItemType) => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -102,9 +103,10 @@ const SideBarItem = ({
   );
 };
 
-const Sidebar = ({ isMobile }: { isMobile: boolean }) => {
+const Sidebar = () => {
   const dispatch = useDispatch();
   const sidebarRef = useRef<HTMLDivElement>(null);
+  const isMobile = useMediaQuery('(max-width: 768px)');
 
   const { address } = usePersonalInfo();
   const navigate = useNavigate();
@@ -142,7 +144,7 @@ const Sidebar = ({ isMobile }: { isMobile: boolean }) => {
         isActive: true,
         withCounter: false,
         count: 0,
-        name: SIDEBAR_ROUTES_NAMES.lands
+        name: SIDEBAR_ROUTES_NAMES.lands,
       },
       {
         route: '/xchange',
@@ -153,7 +155,7 @@ const Sidebar = ({ isMobile }: { isMobile: boolean }) => {
         name: SIDEBAR_ROUTES_NAMES.aiTrade,
         onClick: () => {
           window.open(LINKS.zero.dex, '_blank');
-        }
+        },
       },
       {
         route: '/leaderboard',
@@ -165,13 +167,15 @@ const Sidebar = ({ isMobile }: { isMobile: boolean }) => {
         onClick: () => {
           dispatch(toggleMyLandsPopup('lands'));
           dispatch(toggleLeaderboardPopup(true));
-        }
-      }
+        },
+      },
     ];
   }, [availableMissionsCount, address, location.pathname]);
 
   const isHidden = !isOpen && isMobile;
   const isMobileOverlay = isOpen && isMobile;
+
+  console.log('ismobile', isMobile);
 
   return (
     <>
