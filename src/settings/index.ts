@@ -122,8 +122,8 @@ export const contracts: Record<
     TRANSPORT_REPAIR_PRICE: {
       '25': 1.5,
       '50': 2,
-      '100': 4
-    }
+      '100': 4,
+    },
   },
   zero: {
     CHAIN: 'Zero',
@@ -179,11 +179,11 @@ export const contracts: Record<
     TRANSPORT_REPAIR_PRICE: {
       '25': 1.5,
       '50': 2,
-      '100': 4
-    }
-  }
+      '100': 4,
+    },
+  },
 };
 
-const current_network = process.env.REACT_APP_NETWORK;
+const current_network = import.meta.env.VITE_NETWORK;
 
 export const NETWORK_DATA = contracts[current_network ?? ''];

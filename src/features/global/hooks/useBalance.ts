@@ -4,19 +4,19 @@ import { useToasts } from 'react-toast-notifications';
 import {
   BUNCH_SIZE,
   EARNED_AMOUNT_CHECK_TICK,
-  METHODS_LABELS
+  METHODS_LABELS,
 } from '@global/constants';
 import useContracts from '@global/hooks/useContracts';
 import useMetamask from '@global/hooks/useMetamask';
 import {
   CONTRACT_METHODS,
   METAMASK_EVENTS,
-  TOASTS_APPEARANCE
+  TOASTS_APPEARANCE,
 } from '@global/types';
 
 import {
   isCollectingSelector,
-  isLoadingTokensSelector
+  isLoadingTokensSelector,
 } from '@redux/selectors/commonAppSelectors';
 import Ethereum from '@root/api/etheriumWeb3';
 import { NETWORK_DATA } from '@root/settings';
@@ -28,13 +28,13 @@ import {
   earnSpeedSelector,
   mintedTokensSelector,
   tokensSelector,
-  userBalanceSelector
+  userBalanceSelector,
 } from '@selectors/userStatsSelectors';
 import {
   setGameManager,
   setInitialized,
   setIsCollecting,
-  setIsLoading
+  setIsLoading,
 } from '@slices/commonAppStateSlice';
 import {
   resetMintedTokens,
@@ -44,7 +44,7 @@ import {
   setEarnSpeed,
   setMintedTokens,
   setUserBalance,
-  setUserTokens
+  setUserTokens,
 } from '@slices/userStatsSlice';
 import Web3 from 'web3';
 import { fromWei } from 'web3-utils';
@@ -56,7 +56,7 @@ export const useBalance = () => {
     clnyManager,
     gameManager,
     getGameManager,
-    getMCManager
+    getMCManager,
   } = useContracts();
 
   // BALANCE ITEMS
@@ -96,7 +96,7 @@ export const useBalance = () => {
               dispatch(setColonyBalance(_clnyBalance));
             }
           }
-        }
+        },
       });
     },
     [dispatch, clnyBalance, clnyManager]
@@ -125,7 +125,7 @@ export const useBalance = () => {
               earnedAmount = earnedAmount + parseInt(earned) * 1e-18;
               earnSpeed = earnSpeed + parseInt(speed);
             }
-          }
+          },
         });
         bunch = [];
       }
@@ -171,7 +171,7 @@ export const useBalance = () => {
         params: [tokenNumbers.length],
         address,
         type: METAMASK_EVENTS.call,
-        contract: gameManager ?? getGameManager()
+        contract: gameManager ?? getGameManager(),
       });
 
       makeRequest({
@@ -200,10 +200,10 @@ export const useBalance = () => {
         onError: () => {},
         transactionOptions: {
           value: feeValue,
-          type: CURRENT_CHAIN.x2
+          type: CURRENT_CHAIN.x2,
         },
         address,
-        eventName: METHODS_LABELS.landClaim
+        eventName: METHODS_LABELS.landClaim,
       });
     },
     [gameManager, tokens, allMintedTokens, dispatch]
@@ -243,7 +243,7 @@ export const useBalance = () => {
               }
             },
             type: METAMASK_EVENTS.send,
-            eventName: METHODS_LABELS.partialClaim(part, partsCount)
+            eventName: METHODS_LABELS.partialClaim(part, partsCount),
           });
         });
       };
@@ -268,7 +268,7 @@ export const useBalance = () => {
         await fetchUserBalance(address, web3Instance);
       } catch (error) {
         addToast(`${NETWORK_DATA.TOKEN_NAME} collecting error!`, {
-          appearance: TOASTS_APPEARANCE.error
+          appearance: TOASTS_APPEARANCE.error,
         });
       }
     },
@@ -312,7 +312,7 @@ export const useBalance = () => {
               dispatch(resetMintedTokens(allData));
               dispatch(setInitialized(true));
               dispatch(setIsLoading({ field: 'tokensLoading', value: false }));
-            }
+            },
           });
         }
       } catch (err) {}
@@ -328,7 +328,7 @@ export const useBalance = () => {
 
     if (
       NETWORK_DATA.ECONOMY === 'fixed' &&
-      process.env.REACT_APP_BALANCE_CHECK_AVAILABLE
+      import.meta.env.VITE_BALANCE_CHECK_AVAILABLE
     ) {
       softTimer.current = setInterval(() => {
         dispatch(setEarnedAmount(earnedAmount + 0.01));
@@ -366,6 +366,6 @@ export const useBalance = () => {
     dailySpeed: speed,
     isCollectInProgress,
     clnyBalance,
-    isLoadingTokens
+    isLoadingTokens,
   };
 };

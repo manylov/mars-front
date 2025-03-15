@@ -1,11 +1,11 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
 import Ethereum from '@api/etheriumWeb3';
 import { generateBlockie } from '@global/utils/blockie.canvas';
-import { EMPTY_ADDRESS } from '@global/utils/etc';
 import { callWrapper } from '@global/utils/tx-wrapper';
 import { BN } from '@harmony-js/crypto';
 import { CURRENT_CHAIN } from '@root/settings/chains';
+import React from 'react';
+// @ts-ignore
+import { createRoot } from 'react-dom/client';
 import Web3 from 'web3';
 
 const externalState: {
@@ -109,7 +109,7 @@ export const buildPopup = async ({
   });
 
   const popupNode = document.createElement('div');
-  ReactDOM.render(
+  createRoot(popupNode).render(
     <div className="popup">
       <div className="popup__column" id="token_pic">
         <img
@@ -130,8 +130,7 @@ export const buildPopup = async ({
           address={address}
         />
       </div>
-    </div>,
-    popupNode
+    </div>
   );
   return popupNode;
 };

@@ -1,16 +1,14 @@
-import React, { Fragment } from 'react';
-import ReactDOM from 'react-dom';
-import { Provider } from 'react-redux';
-import { ToastProvider } from 'react-toast-notifications';
+import { Fragment } from 'react';
 import { store } from '@redux/store';
 import GlobalStyle from '@root/features/global/styles/global.styles';
 import { AppRouter } from '@root/router';
+import { Provider } from 'react-redux';
+import { ToastProvider } from 'react-toast-notifications';
 
 // Enabling the debug mode flag is useful during implementation,
 // but it's recommended you remove it for production
-const ROOT_ID = 'root';
 
-ReactDOM.render(
+export const App = () => (
   <ToastProvider
     autoDismiss
     autoDismissTimeout={10000}
@@ -22,6 +20,5 @@ ReactDOM.render(
         <GlobalStyle />
       </Fragment>
     </Provider>
-  </ToastProvider>,
-  document.getElementById(ROOT_ID)
+  </ToastProvider>
 );

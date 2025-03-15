@@ -10,16 +10,16 @@ export const getProviderOptions = (isZerion: boolean = false) => {
         name: isZerion ? 'Zerion' : 'Metamask',
         description: isZerion
           ? 'Connect with Zerion in your Browser'
-          : 'Connect with Metamask in your Browser'
+          : 'Connect with Metamask in your Browser',
       },
       package: null,
-      options: {}
+      options: {},
     },
     walletconnect: {
       package: WalletConnectProvider,
       options: {
-        infuraId: process.env.REACT_APP_INFURA_ID
-      }
+        infuraId: import.meta.env.VITE_INFURA_ID,
+      },
     },
     ...(!isZerion
       ? {
@@ -27,17 +27,17 @@ export const getProviderOptions = (isZerion: boolean = false) => {
             display: {
               logo: '/icons/zerion.png',
               name: 'Install Zerion',
-              description: 'Install Zerion wallet for Gasless transactions'
+              description: 'Install Zerion wallet for Gasless transactions',
             },
             package: WalletConnectProvider,
             connector: async () => {
               window.open('https://zerion.io/download', '_blank');
               // Return a promise that never resolves since we're redirecting
               return new Promise(() => {});
-            }
-          }
+            },
+          },
         }
-      : {})
+      : {}),
   };
 };
 
