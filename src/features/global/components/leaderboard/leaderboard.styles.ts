@@ -76,6 +76,15 @@ export const LeaderboardItem = styled.div<{ isCurrentUser?: boolean }>`
       : 'rgba(255, 255, 255, 0.05)'};
   border-radius: 4px;
   font-family: 'Play', sans-serif;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background: ${(props) =>
+      props.isCurrentUser
+        ? 'rgba(254, 81, 97, 0.2)'
+        : 'rgba(255, 255, 255, 0.1)'};
+  }
 `;
 
 export const LeaderboardRank = styled.span`
@@ -87,6 +96,11 @@ export const LeaderboardAddress = styled.span`
   flex: 1;
   margin: 0 10px;
   font-family: monospace;
+
+  a {
+    color: white;
+    text-decoration: none;
+  }
 `;
 
 export const LeaderboardAmount = styled.span`
