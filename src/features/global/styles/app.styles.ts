@@ -96,7 +96,7 @@ const BlockButton = styled.div`
   }
 `;
 
-const MarsNavConnectedModalLink = styled.a`
+const MarsNavConnectedModalLink = styled.button`
   ${fontProperty};
 
   display: flex;
@@ -210,7 +210,7 @@ const GameZoomWrapper = styled.div`
 `;
 
 const NewHeaderInfoWrapper = styled.div`
-  padding: 8px 20px;
+  padding: 6px 6px 6px 22px;
   box-sizing: border-box;
   box-shadow: 0 0 4px rgba(0, 0, 0, 0.25);
   backdrop-filter: blur(10px);
@@ -223,8 +223,12 @@ const NewHeaderInfoWrapper = styled.div`
   color: white;
   cursor: pointer;
   background: #2e2e34;
-  border-radius: 4px;
+  border-radius: 10px;
   align-items: center;
+
+  * {
+    user-select: none;
+  }
 
   @media screen and (max-width: ${MOBILE_BREAKPOINT}px) {
     flex-direction: column;
@@ -253,10 +257,10 @@ const NewHeaderStatWrapper = styled.div`
 
 const NewHeaderStatInnerWrapper = styled.div`
   background: #1c1c1f;
-  border-radius: 4px 3px 3px 4px;
+  border-radius: 6px;
   display: flex;
   gap: 8px;
-  padding: 7px 20px 7px 30px;
+  padding: 8px 32px 8px 32px;
 
   @media screen and (max-width: ${MOBILE_BREAKPOINT}px) {
     padding: 5px 20px 5px;
@@ -446,5 +450,5 @@ export {
   StatsIcon,
   StatsText,
   StatsValue,
-  StatsLabel
+  StatsLabel,
 };

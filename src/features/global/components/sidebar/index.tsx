@@ -175,8 +175,6 @@ const Sidebar = () => {
   const isHidden = !isOpen && isMobile;
   const isMobileOverlay = isOpen && isMobile;
 
-  console.log('ismobile', isMobile);
-
   return (
     <>
       {isHidden && (

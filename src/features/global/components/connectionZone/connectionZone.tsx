@@ -1,10 +1,12 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { useToasts } from 'react-toast-notifications';
+import { useBalance } from '@features/global/hooks/useBalance';
+import {
+  useCLNYBalance,
+  useEthBalance,
+} from '@features/global/hooks/useCallContracts';
 import useMediaQuery from '@features/global/hooks/useMediaQuery';
 import {
   copyTextToClipboard,
-  formatWallet
+  formatWallet,
 } from '@features/globus/utils/methods';
 import Button from '@global/components/button';
 import {
@@ -23,10 +25,10 @@ import {
   NewHeaderAddressText,
   NewHeaderInfoWrapper,
   NewHeaderStatInnerWrapper,
-  NewHeaderStatWrapper
+  NewHeaderStatWrapper,
 } from '@global/styles/app.styles';
-import MarsIconImg from '@images/photo/connection-zone-icons/MarsIcon.png';
 import EthIconImg from '@images/photo/connection-zone-icons/eth.png';
+import MarsIconImg from '@images/photo/connection-zone-icons/MarsIcon.png';
 import PolygonIconImg from '@images/photo/connection-zone-icons/PolygonIcon.png';
 import { Copy } from '@root/images/icons/Copy';
 import { ImageIconWrapper } from '@root/images/icons/imageIconWrapper';
@@ -35,37 +37,40 @@ import { NETWORK_DATA } from '@root/settings';
 import { CURRENT_CHAIN } from '@root/settings/chains';
 import { isConnectionPopupSelector } from '@selectors/appPartsSelectors';
 import {
-  isInitializedSelector,
-  providerSelector
-} from '@selectors/commonAppSelectors';
-import {
   clnyBalanceSelector,
-  userBalanceSelector
+  userBalanceSelector,
 } from '@selectors/userStatsSelectors';
 import { toggleConnectionPopup } from '@slices/appPartsSlice';
+import { ConnectKitButton } from 'connectkit';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useToasts } from 'react-toast-notifications';
+import { useAccount, useDisconnect } from 'wagmi';
 
-export const ConnectionZone = ({
-  address,
-  onConnect
-}: {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export const ConnectionZone = (_: {
   address: string;
   onConnect: () => void;
 }) => {
   const dispatch = useDispatch();
   const popupRef = useRef<HTMLDivElement>(null);
   const { addToast } = useToasts();
-  const balance = useSelector(userBalanceSelector);
-  const clnyBalance = useSelector(clnyBalanceSelector);
+  // const clnyBalance = useSelector(clnyBalanceSelector);
   const showConnectionPopup = useSelector(isConnectionPopupSelector);
-  const provider = useSelector(providerSelector);
-  const isInitialized = useSelector(isInitializedSelector);
   const isTableMobile = useMediaQuery(`(min-width: 630px)`);
   const [contentSpace, setContentSpace] = useState<string>('space-between');
+  const { address, isDisconnected, isConnecting, isReconnecting } =
+    useAccount();
+  const { disconnect } = useDisconnect();
+  const { userBalance: balance } = useBalance();
+
+  const { clnyBalance } = useCLNYBalance();
+  const { ethBalance } = useEthBalance();
 
   useEffect(() => {
     const handleMouseClick = (event: any) => {
       let flagConnection = false;
-      for (let value of event.composedPath()) {
+      for (const value of event.composedPath()) {
         if ('headerInfo' === value.id || 'connectionInfo' === value.id) {
           flagConnection = !flagConnection;
         }
@@ -82,43 +87,23 @@ export const ConnectionZone = ({
     };
   }, [showConnectionPopup]);
 
-  const normalizeBalance = useMemo(() => {
-    if (balance === -1) {
-      return '---';
-    } else if (+balance.toFixed(2) > 1000) {
-      return `${+balance.toFixed(2)}k`;
-    } else {
-      setContentSpace('space-around');
-      return +balance.toFixed(4);
-    }
-  }, [balance]);
-
-  const normalizeClnyBalance = useMemo(() => {
-    if (clnyBalance === -1) {
-      return '---';
-    } else if (+clnyBalance.toFixed(2) > 1000) {
-      if (+clnyBalance.toFixed(2) > 1000000) {
-        return `${+clnyBalance.toFixed(2)}kk`;
-      }
-      return `${+clnyBalance.toFixed(2)}k`;
-    } else {
-      setContentSpace('space-around');
-      return +clnyBalance.toFixed(2);
-    }
-  }, [clnyBalance]);
-
-  if (!provider && !isInitialized) {
+  if (isDisconnected) {
     return (
-      <Button
-        text="Connect wallet"
-        variant="common"
-        onClick={() => onConnect()}
-      />
+      <ConnectKitButton.Custom>
+        {({ show }) => (
+          <Button
+            connectButton={true}
+            text="Connect wallet"
+            variant="common"
+            onClick={() => show?.()}
+          />
+        )}
+      </ConnectKitButton.Custom>
     );
   }
 
-  if (Boolean(provider) && !isInitialized) {
-    return <>Loading...</>;
+  if (isConnecting || isReconnecting) {
+    return <div>Connecting...</div>;
   }
 
   return (
@@ -132,9 +117,7 @@ export const ConnectionZone = ({
         >
           <NewHeaderStatWrapper>
             <ImageIconWrapper src={MarsIconImg} dimension="14px" />
-            {clnyBalance === -1
-              ? '---'
-              : +clnyBalance.toFixed(2) + ' ' + NETWORK_DATA.TOKEN_NAME}
+            {clnyBalance} {NETWORK_DATA.TOKEN_NAME}
           </NewHeaderStatWrapper>
           <NewHeaderStatWrapper>
             <ImageIconWrapper
@@ -143,7 +126,7 @@ export const ConnectionZone = ({
               }
               dimension="14px"
             />
-            {balance === -1 ? '---' : +balance.toFixed(4)}{' '}
+            {ethBalance}
             {CURRENT_CHAIN.ticker}
           </NewHeaderStatWrapper>
           <NewHeaderStatWrapper>
@@ -166,7 +149,7 @@ export const ConnectionZone = ({
           <MobileTableBlockBalance>
             <MobileTableBlock>
               <ImageIconWrapper src={MarsIconImg} dimension="14px" />
-              <MobileTableText>{normalizeClnyBalance}</MobileTableText>
+              <MobileTableText>{clnyBalance}</MobileTableText>
             </MobileTableBlock>
             <MobileTableBlock>
               <ImageIconWrapper
@@ -175,7 +158,7 @@ export const ConnectionZone = ({
                 }
                 dimension="14px"
               />
-              <MobileTableText>{normalizeBalance}</MobileTableText>
+              <MobileTableText>{balance}</MobileTableText>
             </MobileTableBlock>
           </MobileTableBlockBalance>
           <MobileTableWalletBlock>
@@ -197,13 +180,13 @@ export const ConnectionZone = ({
                     copyTextToClipboard(address)
                       .then(() => {
                         addToast('Address has been copied to clipboard', {
-                          appearance: 'success'
+                          appearance: 'success',
                         });
                       })
                       .catch((error) => {
                         console.error(error);
                         addToast('Copying to clipboard has failed', {
-                          appearance: 'error'
+                          appearance: 'error',
                         });
                       });
                   }}
@@ -214,7 +197,7 @@ export const ConnectionZone = ({
             </div>
           </div>
           <BlockButton>
-            <MarsNavConnectedModalLink href="/" onClick={disconnect}>
+            <MarsNavConnectedModalLink onClick={() => disconnect()}>
               Disconnect
             </MarsNavConnectedModalLink>
             <MarsNavPanelItemFlexed>

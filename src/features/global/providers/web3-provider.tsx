@@ -1,52 +1,44 @@
+import { wagmiConfig } from '@root/settings/wagmi';
+import { createSyncStoragePersister } from '@tanstack/query-sync-storage-persister';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { ConnectKitProvider, getDefaultConfig } from 'connectkit';
-import { WagmiProvider, createConfig, http } from 'wagmi';
+import { persistQueryClient } from '@tanstack/react-query-persist-client';
+import { ConnectKitProvider } from 'connectkit';
+import { WagmiProvider } from 'wagmi';
 import { zeroNetwork } from 'wagmi/chains';
 
-const config = createConfig(
-  getDefaultConfig({
-    // Your dApps chains
-    chains: [zeroNetwork],
-
-    transports: {
-      // RPC URL for each chain
-      [zeroNetwork.id]: http(
-        `https://eth-mainnet.g.alchemy.com/v2/${
-          import.meta.env.VITE_ALCHEMY_ID
-        }`
-      ),
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      gcTime: 1000 * 60 * 60 * 24, // 24 hours
+      staleTime: 1000 * 60 * 5, // 5 minutes
     },
+  },
+});
 
-    // Required API Keys
-    walletConnectProjectId: import.meta.env.VITE_WALLETCONNECT_PROJECT_ID,
+// Set up the localStorage persister
+if (typeof window !== 'undefined') {
+  const localStoragePersister = createSyncStoragePersister({
+    storage: window.localStorage,
+    key: 'MARS_APP_QUERY_CACHE',
+  });
 
-    // Required App Info
-    appName: 'Your App Name',
+  // Enable persistence
+  persistQueryClient({
+    queryClient,
+    persister: localStoragePersister,
+    maxAge: 1000 * 60 * 60 * 4, // 4 hours
+  });
+}
 
-    // Optional App Info
-    appDescription: 'Your App Description',
-    appUrl: 'https://family.co', // your app's url
-    appIcon: 'https://family.co/logo.png', // your app's icon, no bigger than 1024x1024px (max. 1MB)
-  })
-);
-
-const queryClient = new QueryClient();
-
-// Custom ConnectKit options to better control the wallet experience
 const connectKitOptions = {
-  // Rename the WalletConnect option to make it more prominent
-  walletConnectName: 'More Wallet Options',
-
-  hideNoWalletCTA: true,
-
   initialChainId: zeroNetwork.id,
 };
 
 export const Web3Provider = ({ children }: { children: React.ReactNode }) => {
   return (
-    <WagmiProvider config={config}>
+    <WagmiProvider config={wagmiConfig}>
       <QueryClientProvider client={queryClient}>
-        <ConnectKitProvider options={connectKitOptions}>
+        <ConnectKitProvider options={connectKitOptions} mode="dark">
           {children}
         </ConnectKitProvider>
       </QueryClientProvider>

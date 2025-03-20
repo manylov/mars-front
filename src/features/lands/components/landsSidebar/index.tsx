@@ -23,7 +23,7 @@ import { NETWORK_DATA } from '@root/settings';
 import {
   setLandPageNumber,
   toggleLeaderboardPopup,
-  toggleMyLandsPopup
+  toggleMyLandsPopup,
 } from '@slices/appPartsSlice';
 import { StatsBar } from '@features/global/components/statsBar';
 import { Leaderboard } from '@global/components/leaderboard';
@@ -49,14 +49,23 @@ import {
   PrizeAmountText,
   LearnMoreLink,
   ButtonNoLandsSubText,
-  PrizeLinksSpan
+  PrizeLinksSpan,
 } from './landsSidebar.styles';
+import {
+  useCLNYBalance,
+  useMyTokens,
+  useUpdateEarnedAll,
+} from '@features/global/hooks/useCallContracts';
+import { useAllTokens } from '@features/global/hooks/useApi';
 
 export const LandsSidebar = () => {
   const dispatch = useDispatch();
   const { isMyLandsShown: sidebarType } = useAppParts();
-  const { tokens } = useBalance();
+
+  // const { tokens } = useBalance();
   const isMobile = useMediaQuery(`(max-width: ${MOBILE_BREAKPOINT}px)`);
+
+  const { myTokens: tokens } = useMyTokens();
 
   const getContent = () => {
     if (sidebarType) {
@@ -140,7 +149,7 @@ export const NoLandsSidebarView = () => {
         const stats = await Backend.getLandStats();
         setPrizeStats({
           prizeEth: stats.prizeEth || 0,
-          prizeUsd: stats.prizeUsd || 0
+          prizeUsd: stats.prizeUsd || 0,
         });
       } catch (error) {
         console.error('Failed to fetch prize stats:', error);
@@ -227,15 +236,14 @@ export const NoLandsSidebarView = () => {
 };
 
 export const ActiveLandsSidebarView = () => {
-  const {
-    tokens,
-    earnedAmount,
-    dailySpeed,
-    collectAllStats,
-    isCollectInProgress,
-    clnyBalance,
-    isLoadingTokens
-  } = useBalance();
+  const { isAllTokensLoading } = useAllTokens();
+  const { myTokens } = useMyTokens();
+  const { earnedAmount, earnSpeed: dailySpeed } = useUpdateEarnedAll();
+
+  const { clnyBalanceWei } = useCLNYBalance();
+
+  const { collectAllStats, isCollectInProgress } = useBalance();
+
   const dispatch = useDispatch();
   const [prizeStats, setPrizeStats] = useState({ prizeEth: 0, prizeUsd: 0 });
   const [isLeaderboardOpen, setIsLeaderboardOpen] = useState(false);
@@ -243,14 +251,14 @@ export const ActiveLandsSidebarView = () => {
   const { address, web3Instance } = usePersonalInfo();
   const { currentLandsPage } = useAppParts();
   const { isLeaderboardPopupOpened } = useAppParts();
-  const { landsMissionsLimits } = useLands(tokens, web3Instance);
+  const { landsMissionsLimits } = useLands(myTokens, web3Instance);
 
   const title = useMemo(
     () =>
-      isLoadingTokens ? 'Loading...' : `Lands: ${tokens?.length ?? '...'}`,
-    [tokens, isLoadingTokens]
+      isAllTokensLoading ? 'Loading...' : `Lands: ${myTokens?.length ?? '...'}`,
+    [myTokens, isAllTokensLoading]
   );
-  const isCollectAvailable = Boolean(tokens?.length) && Boolean(earnedAmount);
+  const isCollectAvailable = Boolean(myTokens?.length) && Boolean(earnedAmount);
   const isMobile = useMediaQuery(`(max-width: ${MOBILE_BREAKPOINT}px)`);
 
   const isLandPaginated = (index: number) =>
@@ -260,12 +268,10 @@ export const ActiveLandsSidebarView = () => {
     landsMissionsLimits?.[`${token}`] ?? '...';
 
   const allTimeStats = useMemo(() => {
-    const earned = Boolean(earnedAmount)
-      ? `${earnedAmount.toFixed(2)} ${NETWORK_DATA.TOKEN_NAME} earned`
-      : GAP_TEXT;
+    const earned = `${earnedAmount} ${NETWORK_DATA.TOKEN_NAME} earned`;
 
     const speed = () => {
-      if (Boolean(dailySpeed)) {
+      if (dailySpeed) {
         return getClnySpeedLabel(dailySpeed);
       } else return GAP_TEXT;
     };
@@ -279,7 +285,7 @@ export const ActiveLandsSidebarView = () => {
         const stats = await Backend.getLandStats();
         setPrizeStats({
           prizeEth: stats.prizeEth || 0,
-          prizeUsd: stats.prizeUsd || 0
+          prizeUsd: stats.prizeUsd || 0,
         });
       } catch (error) {
         console.error('Failed to fetch prize stats:', error);
@@ -359,26 +365,27 @@ export const ActiveLandsSidebarView = () => {
         </LandsContentWrapper>
       </LandsSidebarHeaderWrapper>
       <LandsBlock>
-        {isLoadingTokens && <Loader />}
-        {!isLoadingTokens &&
-          Array.from(tokens ?? []).map((token, index) => {
-            return (
-              <div key={`${token}-${index}`}>
-                {isLandPaginated(index) && (
-                  <LandPlot
-                    missionsLimit={getMissionsLimit(token ?? '')}
-                    key={`${token}-${index}`}
-                    id={parseInt(token ?? '')}
-                    CLNYBalance={clnyBalance}
-                    trigger={isCollectInProgress}
-                  />
-                )}
-              </div>
-            );
-          })}
+        {isAllTokensLoading && <Loader />}
+        {myTokens && clnyBalanceWei
+          ? Array.from(myTokens ?? []).map((token, index) => {
+              return (
+                <div key={`${token}-${index}`}>
+                  {isLandPaginated(index) && (
+                    <LandPlot
+                      missionsLimit={getMissionsLimit(token ?? '')}
+                      key={`${token}-${index}`}
+                      id={parseInt(token ?? '')}
+                      CLNYBalanceWei={clnyBalanceWei}
+                      trigger={isCollectInProgress}
+                    />
+                  )}
+                </div>
+              );
+            })
+          : null}
       </LandsBlock>
-      {tokens && (
-        <LandsPagination currentPage={currentLandsPage} tokens={tokens} />
+      {myTokens && (
+        <LandsPagination currentPage={currentLandsPage} tokens={myTokens} />
       )}
     </div>
   );
@@ -386,7 +393,7 @@ export const ActiveLandsSidebarView = () => {
 
 const LandsPagination = ({
   currentPage,
-  tokens = []
+  tokens = [],
 }: {
   currentPage: number;
   tokens: string[];

@@ -1,7 +1,7 @@
-import CLNY from '@root/contracts/CLNY.json';
-import GM from '@root/contracts/GameManager.json';
-import MC from '@root/contracts/MC.json';
-import RM from '@root/contracts/ReplaceABI.json';
+import { CLNY_ABI as CLNY } from '@root/abi/CLNY';
+import { GAME_MANAGER_ABI as GM } from '@root/abi/GameManager';
+import { MC_ABI as MC } from '@root/abi/MC';
+import { ReplaceABI as RM } from '@root/abi/ReplaceABI';
 import { NETWORK_DATA } from '@root/settings';
 import { AbiItem } from 'web3-utils';
 

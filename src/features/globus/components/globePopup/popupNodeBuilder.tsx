@@ -11,7 +11,7 @@ import Web3 from 'web3';
 const externalState: {
   fee: number | null;
 } = {
-  fee: null
+  fee: null,
 };
 
 type Props = {
@@ -33,7 +33,7 @@ const PopupFeesSection: React.FC<Props> = ({
   balance,
   currency,
   claim,
-  address
+  address,
 }) => {
   // здесь редакс не получится использовать, потому что ниже свой ReactDOM.render вне общего контекста
   const [fee, setFee] = React.useState(externalState.fee);
@@ -47,9 +47,8 @@ const PopupFeesSection: React.FC<Props> = ({
         errorText: 'Fail getting claiming fees',
         params: [1],
         from: address,
-        type: CURRENT_CHAIN.x2
+        type: CURRENT_CHAIN.x2,
       }).then((_fee) => {
-        console.log('fee', _fee);
         if (_fee && +_fee) {
           externalState.fee = +Web3.utils.fromWei(_fee, 'ether');
           setFee(externalState.fee);
@@ -98,14 +97,14 @@ export const buildPopup = async ({
   balance,
   currency,
   claim,
-  address
+  address,
 }: Props): Promise<HTMLDivElement> => {
   window.dataLayer.push({
     event: 'popup.render',
     token,
     occupied,
     balance,
-    address
+    address,
   });
 
   const popupNode = document.createElement('div');

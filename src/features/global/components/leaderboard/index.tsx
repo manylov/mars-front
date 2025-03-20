@@ -1,30 +1,24 @@
-import { useEffect, useState } from 'react';
+import { useLeaderboard } from '@features/global/hooks/useApi';
 import { CommonModal } from '@global/components/commonModal';
-import Backend from '@root/api/backend';
-import usePersonalInfo from '@global/hooks/usePersonalInfo';
 import { Loader } from '@global/components/loader/loader';
-import { CloseIcon } from '@images/icons/CloseIcon';
 import { MOBILE_BREAKPOINT } from '@global/constants';
+import { CloseIcon } from '@images/icons/CloseIcon';
+import { useAccount } from 'wagmi';
 import {
-  LeaderboardWrapper,
-  LeaderboardTitle,
-  LeaderboardPlace,
-  LeaderboardList,
-  LeaderboardItem,
-  LeaderboardRank,
   LeaderboardAddress,
   LeaderboardAmount,
-  LeaderboardCloseButton
+  LeaderboardCloseButton,
+  LeaderboardItem,
+  LeaderboardList,
+  LeaderboardPlace,
+  LeaderboardRank,
+  LeaderboardTitle,
+  LeaderboardWrapper,
 } from './leaderboard.styles';
 
 interface LeaderboardProps {
   isOpen: boolean;
   onClose: () => void;
-}
-
-interface LeaderboardData {
-  top100: Array<{ address: string; amount: number; updatedAt: string }>;
-  place: number;
 }
 
 const shortenAddress = (address: string) => {
@@ -33,31 +27,11 @@ const shortenAddress = (address: string) => {
 };
 
 export const Leaderboard = ({ isOpen, onClose }: LeaderboardProps) => {
-  const { address } = usePersonalInfo();
-  const [leaderboardData, setLeaderboardData] =
-    useState<LeaderboardData | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchLeaderboard = async () => {
-      if (isOpen && address) {
-        setLoading(true);
-        try {
-          const data = await Backend.getLeaderboard(address);
-          setLeaderboardData(data as LeaderboardData);
-        } catch (error) {
-          console.error('Failed to fetch leaderboard:', error);
-          setLeaderboardData(null);
-        }
-        setLoading(false);
-      }
-    };
-
-    fetchLeaderboard();
-  }, [isOpen, address]);
+  const { address } = useAccount();
+  const { leaderboard: leaderboardData, isLeaderboardLoading: loading } =
+    useLeaderboard();
 
   if (!isOpen) return null;
-
   return (
     <CommonModal
       onClose={onClose}

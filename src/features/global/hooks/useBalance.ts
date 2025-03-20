@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useToasts } from 'react-toast-notifications';
 import {
@@ -319,6 +319,13 @@ export const useBalance = () => {
     },
     [dispatch, tokens, allMintedTokens, isLoadingTokens]
   );
+  useEffect(() => {
+    Ethereum.getTokens().then((allData) => {
+      dispatch(resetMintedTokens(allData));
+      dispatch(setInitialized(true));
+      dispatch(setIsLoading({ field: 'tokensLoading', value: false }));
+    });
+  }, []);
 
   React.useEffect(() => {
     if (speed === 0) return;

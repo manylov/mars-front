@@ -1,7 +1,7 @@
 import {
   parseTokenNumber,
   toLat,
-  toLong
+  toLong,
 } from '@features/globus/utils/methods';
 
 const navigateToGlobeLand = (event: MouseEvent, id: number) => {
@@ -14,9 +14,9 @@ const navigateToGlobeLand = (event: MouseEvent, id: number) => {
     view
       .goTo({
         tilt: 0.2,
-        center: [toLong(x), toLat(y)]
+        center: [toLong(x), toLat(y)],
       })
-      .catch((error: Error) => console.log(error));
+      .catch((error: Error) => console.error(error));
   }
 };
 

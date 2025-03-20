@@ -9,6 +9,7 @@ type ButtonPropsType = {
   disabled?: boolean;
   disabledText?: string | ReactElement;
   id?: string;
+  connectButton?: boolean;
 };
 
 const Button = ({
@@ -17,7 +18,8 @@ const Button = ({
   variant,
   disabled = false,
   disabledText,
-  id
+  id,
+  connectButton,
 }: ButtonPropsType) => {
   return (
     <ButtonWrapper
@@ -25,6 +27,7 @@ const Button = ({
       variant={variant}
       disabled={disabled}
       id={id}
+      connectButton={connectButton}
     >
       {disabled ? disabledText : text}
     </ButtonWrapper>

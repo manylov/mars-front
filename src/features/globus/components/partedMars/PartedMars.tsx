@@ -7,14 +7,14 @@ import SceneView from '@arcgis/core/views/SceneView';
 import { buildPopup } from '@features/globus/components/globePopup/popupNodeBuilder';
 import {
   PartedMarsMainWrapper,
-  PartedMarsViewWrapper
+  PartedMarsViewWrapper,
 } from '@features/globus/styles/partedMars.styles';
 import { initView } from '@features/globus/utils/initView';
 import {
   parseTokenNumber,
   simpleFillSymbol,
   toLat,
-  toLong
+  toLong,
 } from '@features/globus/utils/methods';
 import { NETWORK_DATA } from '@root/settings';
 import { addressSelector } from '@selectors/userStatsSelectors';
@@ -25,7 +25,7 @@ interface Props {
   myTokens: string[] | null;
   height: string;
   handleClaim: (tokens: number[], address: string, web3: Web3) => void;
-  balance: number;
+  balance: number | bigint;
   currency: string;
   web3?: React.MutableRefObject<Web3 | null>;
 }
@@ -36,7 +36,7 @@ export const PartedMars = ({
   myTokens,
   handleClaim,
   balance,
-  currency
+  currency,
 }: Props) => {
   const [curToken, setCurToken] = React.useState<string | null>(null);
   const tokenRef = React.useRef<string | null>(null);
@@ -65,10 +65,12 @@ export const PartedMars = ({
             [longitudes[0], latitudes[0]],
             [longitudes[0], latitudes[1]],
             [longitudes[1], latitudes[1]],
-            [longitudes[1], latitudes[0]]
+            [longitudes[1], latitudes[0]],
           ],
-          spatialReference: { wkid: 104971 }
+          spatialReference: { wkid: 104971 },
         };
+
+        console.log(curToken);
 
         const simpleFillSymbolHover = !allTokens?.includes(curToken)
           ? simpleFillSymbol([33, 222, 33, 0.5]) // Green
@@ -89,9 +91,9 @@ export const PartedMars = ({
                 balance,
                 currency,
                 claim,
-                address
-              })
-          }
+                address,
+              }),
+          },
         });
         hoverLayer.current.add(polygonGraphic);
       }
@@ -99,14 +101,13 @@ export const PartedMars = ({
   }, [curToken, hoverLayer, allTokens, balance, myTokens, currency, address]);
 
   React.useEffect(() => {
-    console.log('RENDERED MAP');
     tokensLayer.current?.removeAll();
     // STEP 1 - render a view as soon as possible
     if (view.current === null) {
       const {
         tokenLayer: _tl,
         hoverLayer: _hl,
-        view: _view
+        view: _view,
       } = initView(tokenRef, handleClaim, setCurToken);
       tokensLayer.current = _tl;
       hoverLayer.current = _hl;
@@ -121,9 +122,9 @@ export const PartedMars = ({
         symbolLayers: [
           {
             type: 'fill',
-            material: { color: [139, 227, 79, 0.4] }
-          }
-        ]
+            material: { color: [139, 227, 79, 0.4] },
+          },
+        ],
       });
 
       // first draw myTokens in green, then allTokens in orange
@@ -142,16 +143,16 @@ export const PartedMars = ({
                 [longitudes[0], latitudes[0]],
                 [longitudes[0], latitudes[1]],
                 [longitudes[1], latitudes[1]],
-                [longitudes[1], latitudes[0]]
+                [longitudes[1], latitudes[0]],
               ],
-              spatialReference: { wkid: 104971 }
+              spatialReference: { wkid: 104971 },
             };
 
             const polygonGraphic = new Graphic({
               geometry: polygon,
               symbol: myTokens.includes(token)
                 ? simpleFillSymbolGreen
-                : simpleFillSymbolOrange
+                : simpleFillSymbolOrange,
               // popupTemplate: {
               //   title: `Token #1${y.toString().padStart(3, '0')}${x.toString().padStart(3, '0')}`,
               //   content: geoText(longitudes, latitudes),

@@ -287,5 +287,5 @@ export {
   PrizeAmountText,
   LearnMoreLink,
   ButtonNoLandsSubText,
-  PrizeLinksSpan
+  PrizeLinksSpan,
 };

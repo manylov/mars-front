@@ -1,5 +1,3 @@
-import React, { ReactElement, useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
 import {
   GamePageDetailedButton,
   GamePageDetailedInfo,
@@ -7,6 +5,7 @@ import {
   GamePageDetailedPlotWrapper,
   GamePageDetailedStats,
   GamePageEnhancementsOverlay,
+  GamePageInfoButtonContainer,
   LandPlotDescriptionB,
   LandPlotEarned,
   LandPlotEarnedButton,
@@ -14,17 +13,15 @@ import {
   LandPlotImageWrapper,
   LandPlotLink,
   MainDetailedPlotWrapper,
-  GamePageInfoButtonContainer
 } from '@features/lands/styles/landPlot.styles';
 import { getClnySpeedLabel } from '@features/lands/utils/formating';
 import useMediaQuery from '@global/hooks/useMediaQuery';
 import { generateBlockie } from '@global/utils/blockie.canvas';
 import { ArrowDown } from '@images/icons/ArrowDown';
 import { NETWORK_DATA } from '@root/settings';
-import {
-  GAME_VIEW_MODES,
-  selectObjectToSet
-} from '@slices/gameManagementSlice';
+import { selectObjectToSet } from '@slices/gameManagementSlice';
+import { ReactElement, useState } from 'react';
+import { useDispatch } from 'react-redux';
 
 type GameLandPlotType = {
   id: number;
@@ -37,7 +34,7 @@ export const GameLandPlot = ({
   id,
   enhancements,
   earningSpeed,
-  earned
+  earned,
 }: GameLandPlotType) => {
   const dispatch = useDispatch();
   const isMobile = useMediaQuery('(max-width: 1200px)');
@@ -73,7 +70,7 @@ export const GameLandPlot = ({
                 <LandPlotEarned>
                   Earned:{' '}
                   <LandPlotEarnedText>
-                    {Boolean(earned)
+                    {earned
                       ? `${earned} ${NETWORK_DATA.TOKEN_NAME}`
                       : 'Loading...'}
                   </LandPlotEarnedText>
@@ -81,6 +78,7 @@ export const GameLandPlot = ({
               </GamePageDetailedStats>
             </GamePageDetailedInfo>
           </GamePageDetailedMeta>
+
           <GamePageDetailedButton>
             <LandPlotEarnedButton
               onClick={(e) => {
@@ -93,7 +91,7 @@ export const GameLandPlot = ({
               }}
             >
               Build
-              <ArrowDown upside={!opened} />
+              <ArrowDown upside={opened} />
             </LandPlotEarnedButton>
           </GamePageDetailedButton>
         </GamePageInfoButtonContainer>

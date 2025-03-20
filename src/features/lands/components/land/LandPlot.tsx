@@ -14,13 +14,13 @@ import { Enhancement } from '@root/legacy/enhancement/Enhancement';
 
 type Props = {
   id: number;
-  CLNYBalance: number;
+  CLNYBalanceWei: number | bigint;
   trigger: boolean;
   isDefaultOpen?: boolean;
   missionsLimit?: number | string;
 };
 
-export const LandPlot: React.FC<Props> = ({ id, CLNYBalance, trigger }) => {
+export const LandPlot: React.FC<Props> = ({ id, CLNYBalanceWei, trigger }) => {
   const isMobile = useMediaQuery('(max-width: 1200px)');
 
   const {
@@ -33,7 +33,7 @@ export const LandPlot: React.FC<Props> = ({ id, CLNYBalance, trigger }) => {
     powerProductionLevel,
     robotAssemblyLevel,
     transportLevel,
-    updateEarned
+    updateEarned,
   } = useLandStats(id);
 
   const {
@@ -45,7 +45,7 @@ export const LandPlot: React.FC<Props> = ({ id, CLNYBalance, trigger }) => {
     isPowerplantPlaced,
     isPowerplantAvailable,
     isRobotPlaced,
-    isBuildPending
+    isBuildPending,
   } = useGameManagement();
 
   React.useEffect(() => {
@@ -70,7 +70,7 @@ export const LandPlot: React.FC<Props> = ({ id, CLNYBalance, trigger }) => {
               : [1, 1] /* if has BS -> no level upping then */
           }
           handler={() => build.base()}
-          CLNYBalance={CLNYBalance}
+          CLNYBalanceWei={CLNYBalanceWei}
           isAvailable={isBaseAvailable}
           isPlaced={isBasePlaced}
           isActive={hasBaseStation}
@@ -93,7 +93,7 @@ export const LandPlot: React.FC<Props> = ({ id, CLNYBalance, trigger }) => {
           price={PRICES[robotAssemblyLevel + 1]}
           oldNew={OLD_NEW[robotAssemblyLevel] as [number, number] | undefined}
           handler={() => build.robots(robotAssemblyLevel + 1)}
-          CLNYBalance={CLNYBalance}
+          CLNYBalanceWei={CLNYBalanceWei}
           isAvailable={isRobotAvailable}
           isPlaced={isRobotPlaced}
           isActive={Boolean(robotAssemblyLevel && robotAssemblyLevel > 0)}
@@ -116,7 +116,7 @@ export const LandPlot: React.FC<Props> = ({ id, CLNYBalance, trigger }) => {
           price={PRICES[transportLevel + 1]}
           oldNew={OLD_NEW[transportLevel] as [number, number] | undefined}
           handler={() => build.transport(transportLevel + 1)}
-          CLNYBalance={CLNYBalance}
+          CLNYBalanceWei={CLNYBalanceWei}
           isAvailable={isTransportAvailable}
           isPlaced={isTransportPlaced}
           isActive={Boolean(transportLevel && transportLevel > 0)}
@@ -139,7 +139,7 @@ export const LandPlot: React.FC<Props> = ({ id, CLNYBalance, trigger }) => {
           price={PRICES[powerProductionLevel + 1]}
           oldNew={OLD_NEW[powerProductionLevel] as [number, number] | undefined}
           handler={() => build.power(powerProductionLevel + 1)}
-          CLNYBalance={CLNYBalance}
+          CLNYBalanceWei={CLNYBalanceWei}
           isAvailable={isPowerplantAvailable}
           isPlaced={isPowerplantPlaced}
           isActive={Boolean(powerProductionLevel && powerProductionLevel > 0)}
@@ -168,9 +168,9 @@ export const LandPlot: React.FC<Props> = ({ id, CLNYBalance, trigger }) => {
       isPowerplantPlaced,
       isPowerplantAvailable,
       isRobotPlaced,
-      CLNYBalance,
+      CLNYBalanceWei,
       isMobile,
-      isBuildPending
+      isBuildPending,
     ]
   );
 

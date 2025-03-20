@@ -18,8 +18,8 @@ class Backend {
           method: 'GET',
           headers: {
             Accept: 'application/json',
-            'Content-Type': 'application/json'
-          }
+            'Content-Type': 'application/json',
+          },
         }
       );
       const content = await rawResponse.json();
@@ -36,8 +36,8 @@ class Backend {
         method: 'GET',
         headers: {
           Accept: 'application/json',
-          'Content-Type': 'application/json'
-        }
+          'Content-Type': 'application/json',
+        },
       }
     );
     const content = await rawResponse.json();
@@ -45,22 +45,18 @@ class Backend {
   };
 
   static getLeaderboard = async (address: string) => {
-    try {
-      const rawResponse = await fetch(
-        `${NETWORK_DATA.LAND_META_SERVER}leaderboard/${address}`,
-        {
-          method: 'GET',
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json'
-          }
-        }
-      );
-      const content = (await rawResponse.json()) as LeaderboardResponse;
-      return content;
-    } catch (err) {
-      return {};
-    }
+    const rawResponse = await fetch(
+      `${NETWORK_DATA.LAND_META_SERVER}leaderboard/${address}`,
+      {
+        method: 'GET',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+    const content = (await rawResponse.json()) as LeaderboardResponse;
+    return content;
   };
 }
 

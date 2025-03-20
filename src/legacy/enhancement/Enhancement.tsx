@@ -15,8 +15,9 @@ import {
   EnhButtonOuterWrapper,
   EnhImageWrapper,
   EnhOldNew,
-  EnhTitle
+  EnhTitle,
 } from './enhancements.styles';
+import { parseEther } from 'viem';
 
 type Props = {
   title: string;
@@ -28,7 +29,7 @@ type Props = {
   price: number;
   oldNew?: [number, number];
   handler: () => void;
-  CLNYBalance: number;
+  CLNYBalanceWei: number | bigint;
   isGamePage?: boolean;
   isAvailable?: string;
   isPlaced?: boolean;
@@ -49,11 +50,11 @@ export const Enhancement: React.FC<Props> = ({
   price,
   oldNew,
   handler,
-  CLNYBalance,
+  CLNYBalanceWei,
   isAvailable,
   isPlaced,
   isMobileView,
-  isPending = false
+  isPending = false,
 }) => {
   const dispatch = useDispatch();
   const isReplaceMode = useSelector(isReplaceModeSelector);
@@ -79,6 +80,10 @@ export const Enhancement: React.FC<Props> = ({
   const getClnySpeedLevel = (val: string | number) => {
     return `${val} ${NETWORK_DATA.TOKEN_NAME}/day`;
   };
+
+  const priceWei = useMemo(() => {
+    return parseEther(price.toString());
+  }, [price]);
 
   return (
     <EnhancementItemWrapper isMobileView={isMobileView}>
@@ -109,7 +114,7 @@ export const Enhancement: React.FC<Props> = ({
       {notAvailableButNotPlaced && (
         <LandPlotEarnedButton
           isNewBuild={true}
-          disabled={price > CLNYBalance || isPending || isReplaceMode}
+          disabled={priceWei > CLNYBalanceWei || isPending || isReplaceMode}
           Height={'30px'}
           Padding={'0'}
           Width={'105px'}
@@ -127,7 +132,7 @@ export const Enhancement: React.FC<Props> = ({
               </div>
             </>
           )}
-          {price > CLNYBalance && (
+          {priceWei > CLNYBalanceWei && (
             <EnhButtonError mt="-18px">
               not enough {NETWORK_DATA.TOKEN_NAME}
             </EnhButtonError>
@@ -144,7 +149,7 @@ export const Enhancement: React.FC<Props> = ({
             getWhat={getWhat}
             handler={handler}
             price={price}
-            disabled={price > CLNYBalance}
+            disabled={priceWei > CLNYBalanceWei}
             isPending={isPending}
           />
         )}

@@ -2,7 +2,6 @@ import WalletConnectProvider from '@walletconnect/web3-provider';
 import { toBech32 as _toBech32 } from '@harmony-js/crypto';
 
 export const getProviderOptions = (isZerion: boolean = false) => {
-  console.log('getProviderOptions isZerion', isZerion);
   return {
     injected: {
       display: {

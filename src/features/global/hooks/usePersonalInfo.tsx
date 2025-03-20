@@ -7,7 +7,7 @@ import useContracts from '@global/hooks/useContracts';
 import {
   CONNECT_EVENTS,
   ConnectEventsType,
-  PROVIDER_EVENTS
+  PROVIDER_EVENTS,
 } from '@global/types';
 
 import { getProviderOptions } from '@global/utils/cryptoHelpers';
@@ -15,23 +15,23 @@ import { wrongChainToast } from '@global/utils/utilModals';
 import {
   isConnecting,
   isInitializedSelector,
-  providerSelector
+  providerSelector,
 } from '@redux/selectors/commonAppSelectors';
 import {
   toggleConnectionPopup,
-  toggleMyLandsPopup
+  toggleMyLandsPopup,
 } from '@redux/slices/appPartsSlice';
 import {
   resetInitializationOnDisconnect,
   setInitialized,
   setIsConnected,
   setIsLoading,
-  setUserProvider
+  setUserProvider,
 } from '@redux/slices/commonAppStateSlice';
 import {
   resetUserBalance,
   resetUserTokens,
-  setAddress
+  setAddress,
 } from '@redux/slices/userStatsSlice';
 import { NETWORK_DATA } from '@root/settings';
 import { CURRENT_CHAIN, CURRENT_NET } from '@root/settings/chains';
@@ -54,12 +54,10 @@ const usePersonalInfo = (withInitialize = false) => {
   // Initialize web3Modal
   useEffect(() => {
     const initializeWeb3Modal = (isZerion: boolean) => {
-      console.log('initializeWeb3Modal isZerion', isZerion);
-
       web3ModalRef.current = new Web3Modal({
         cacheProvider: true,
         providerOptions: getProviderOptions(isZerion),
-        theme: 'dark'
+        theme: 'dark',
       });
     };
 
@@ -68,17 +66,9 @@ const usePersonalInfo = (withInitialize = false) => {
 
     // Listen for provider announcements
     const handleProviderAnnouncement = (event: any) => {
-      console.log('Provider announcement received, reinitializing Web3Modal');
-
-      console.log('event.detail.info.name', event.detail.info.name);
       if (event.detail.info.name === 'Zerion') {
         window.isZerion = true;
       }
-
-      console.log(
-        'BEFORE initializeWeb3Modal, window.isZerion',
-        window.isZerion
-      );
 
       initializeWeb3Modal(!!window.isZerion);
     };
@@ -209,7 +199,7 @@ const usePersonalInfo = (withInitialize = false) => {
           window.dataLayer.push({
             event: 'chain.wrong',
             id: chainId,
-            name: CURRENT_CHAIN?.name
+            name: CURRENT_CHAIN?.name,
           });
           return;
         }
@@ -224,7 +214,7 @@ const usePersonalInfo = (withInitialize = false) => {
       addressRef.current,
       dispatch,
       CURRENT_NET,
-      web3.current
+      web3.current,
     ]
   );
 
@@ -255,7 +245,7 @@ const usePersonalInfo = (withInitialize = false) => {
       try {
         await window.ethereum.request({
           method: 'wallet_switchEthereumChain',
-          params: [{ chainId }]
+          params: [{ chainId }],
         });
         if (toastData.id !== '') {
           removeToast(toastData.id);
@@ -272,7 +262,7 @@ const usePersonalInfo = (withInitialize = false) => {
           try {
             await window.ethereum.request({
               method: 'wallet_addEthereumChain',
-              params: [ADD_ETH_REQUEST_PAYLOAD(chainId)]
+              params: [ADD_ETH_REQUEST_PAYLOAD(chainId)],
             });
             if (toastData.id !== '') {
               removeToast(toastData.id);
@@ -300,7 +290,7 @@ const usePersonalInfo = (withInitialize = false) => {
         autoDismiss: false,
         onDismiss: () => {
           toastData.id = '';
-        }
+        },
       },
       (id: string) => {
         toastData.id = id;
@@ -334,7 +324,7 @@ const usePersonalInfo = (withInitialize = false) => {
     showWrongChain,
     connecting,
     provider,
-    isInitialized
+    isInitialized,
   };
 };
 

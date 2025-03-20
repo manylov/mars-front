@@ -31,7 +31,7 @@ const LandPlotLink = styled.div`
   ${fontProperty};
   font-weight: bold;
   font-size: 16px;
-  line-height: 30px;
+
   text-transform: uppercase;
 
   color: #ff7c25;
@@ -57,7 +57,7 @@ const LandPlotEarned = styled.div`
   font-size: 12px;
   line-height: 13.8px;
   color: #c4c4c4;
-  width: unset;
+
   text-align: center;
 `;
 
@@ -87,9 +87,13 @@ const LandPlotEarnedButton = styled.button<{
   Height?: string;
   Padding?: string;
 }>`
-  display: block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
   width: ${({ Width }) => Width ?? '100%'};
   background: #fe5161;
+  border-radius: 6px;
   border: 4px solid #fe5161;
   box-sizing: border-box;
   box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
@@ -249,7 +253,7 @@ const GamePageDetailedInfo = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 6px;
+  gap: 10px;
 `;
 
 const GamePageDetailedStats = styled.div`
@@ -261,12 +265,19 @@ const GamePageDetailedStats = styled.div`
 const GamePageInfoButtonContainer = styled.div`
   display: flex;
   align-items: center;
-  gap: 20px;
+  gap: 40px;
+  padding-left: 12px;
+  padding-top: 4px;
+  padding-bottom: 4px;
 `;
 
 const GamePageDetailedButton = styled.div`
   width: 167px;
   height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-left: 12px;
 
   button {
     height: 30px;
@@ -346,5 +357,5 @@ export {
   NewDexWrapper,
   NewPoolListWrapper,
   XchangeWrapper,
-  GamePageInfoButtonContainer
+  GamePageInfoButtonContainer,
 };

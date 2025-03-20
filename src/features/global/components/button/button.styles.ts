@@ -3,7 +3,10 @@ import { BLACK, TOXIC_GREEN } from '@global/styles/variables';
 import { ButtonVariantsType } from '@global/types';
 import styled, { css } from 'styled-components';
 
-const ButtonWrapper = styled.button<{ variant: ButtonVariantsType }>`
+const ButtonWrapper = styled.button<{
+  variant: ButtonVariantsType;
+  connectButton?: boolean;
+}>`
   ${fontProperty};
   font-size: 12px;
   line-height: 14px;
@@ -26,10 +29,21 @@ const ButtonWrapper = styled.button<{ variant: ButtonVariantsType }>`
         border-radius: 4px;
       `;
     }
+
     if (variant === 'ghost') {
       return css`
         color: ${TOXIC_GREEN};
         background-color: transparent;
+      `;
+    }
+  }}
+
+  ${({ connectButton }) => {
+    if (connectButton) {
+      return css`
+        background-color: ${TOXIC_GREEN};
+        border-radius: 8px;
+        padding: 8px 28px;
       `;
     }
   }}
