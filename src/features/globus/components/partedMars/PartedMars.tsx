@@ -103,11 +103,9 @@ export const PartedMars = ({
     tokensLayer.current?.removeAll();
     // STEP 1 - render a view as soon as possible
     if (view.current === null) {
-      const {
-        tokenLayer: _tl,
-        hoverLayer: _hl,
-        view: _view
-      } = initView(tokenRef, handleClaim, setCurToken);
+      const v = initView(tokenRef, handleClaim, setCurToken);
+      const { tokenLayer: _tl, hoverLayer: _hl, view: _view } = v;
+
       tokensLayer.current = _tl;
       hoverLayer.current = _hl;
       view.current = _view;

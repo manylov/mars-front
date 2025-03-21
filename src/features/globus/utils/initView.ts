@@ -185,6 +185,13 @@ export const initView = (
     tokenRef.current = token === null ? null : token.toString();
   });
 
+  view.on('click', (evt) => {
+    const point = view.toMap({ x: evt.x, y: evt.y }) ?? {};
+    const { latitude, longitude } = point;
+    const token = toTokenNumber(latitude, longitude);
+    console.log({ token });
+  });
+
   return {
     tokenLayer,
     hoverLayer,

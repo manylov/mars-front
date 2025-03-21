@@ -348,10 +348,11 @@ export const ActiveLandsSidebarView = () => {
                   Learn more
                 </LearnMoreLink>
                 <LearnMoreLink
-                  onClick={() => setIsLeaderboardOpen(true)}
-                  style={{ cursor: 'pointer' }}
+                  href="https://zerocolony.notion.site/Space-Race-Finalists-1bdd49cbead980309746d77cb5f30593"
+                  target="_blank"
+                  rel="noopener noreferrer"
                 >
-                  Leaderboard
+                  Season 1 Finalists
                 </LearnMoreLink>
               </PrizeLinksSpan>
             </PrizeSpanWrapper>
