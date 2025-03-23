@@ -56,6 +56,7 @@ import {
   PrizeSpanWrapper,
   SpanWrapper,
 } from './landsSidebar.styles';
+import { useAccount } from 'wagmi';
 
 export const LandsSidebar = () => {
   const dispatch = useDispatch();
@@ -103,11 +104,14 @@ export const LandsSidebar = () => {
 export const NoLandsSidebarView = () => {
   const [isLeaderboardOpen, setIsLeaderboardOpen] = useState(false);
   const { addToast } = useToasts();
-  const { isLoadingMyLands: isLoadingMyTokens } = useMyLands();
+  const { isLoadingMyLands: isLoadingMyTokens, hasNoLands } = useMyLands();
+  const { isConnected } = useAccount();
 
   const isLocalLoading = false;
   const { isLeaderboardPopupOpened } = useAppParts();
   const dispatch = useDispatch();
+
+  console.log('isLoadingMyTokens', isLoadingMyTokens);
 
   const maxClnyIncome = 14;
 
@@ -154,30 +158,33 @@ export const NoLandsSidebarView = () => {
         <LandsSection>
           <SpanWrapper>
             <LandsSpan>
-              <NoLandsTitle>
-                {isLoadingMyTokens || isLocalLoading ? (
-                  'Loading...'
-                ) : (
-                  <>
-                    You do not <br /> have lands
-                  </>
-                )}
-              </NoLandsTitle>
-              {(isLoadingMyTokens || isLocalLoading) && <Loader />}
-              {!isLoadingMyTokens && !isLocalLoading && (
+              {isLoadingMyTokens && isConnected ? (
                 <>
-                  <Button
-                    onClick={onBuyLandClick}
-                    text="Claim land"
-                    variant="common"
-                  />
-                  <ButtonNoLandsSubText>
-                    {NETWORK_DATA.ECONOMY === 'fixed'
-                      ? 'Earn up to 14 CLNY/day from a land'
-                      : `Earn up to ${fromWeiValue(
-                          maxClnyIncome ?? '...'
-                        )} CLNY/day from a land`}
-                  </ButtonNoLandsSubText>
+                  <NoLandsTitle>Loading...</NoLandsTitle>
+                  <Loader />
+                </>
+              ) : (
+                <>
+                  <NoLandsTitle>
+                    You do not <br /> have lands
+                  </NoLandsTitle>
+
+                  {(!isConnected || hasNoLands) && (
+                    <>
+                      <Button
+                        onClick={onBuyLandClick}
+                        text="Claim land"
+                        variant="common"
+                      />
+                      <ButtonNoLandsSubText>
+                        {NETWORK_DATA.ECONOMY === 'fixed'
+                          ? 'Earn up to 14 CLNY/day from a land'
+                          : `Earn up to ${fromWeiValue(
+                              String(maxClnyIncome) ?? '...'
+                            )} CLNY/day from a land`}
+                      </ButtonNoLandsSubText>
+                    </>
+                  )}
                 </>
               )}
             </LandsSpan>
@@ -332,10 +339,11 @@ export const ActiveLandsSidebarView = () => {
                   Learn more
                 </LearnMoreLink>
                 <LearnMoreLink
-                  onClick={() => setIsLeaderboardOpen(true)}
-                  style={{ cursor: 'pointer' }}
+                  href="https://zerocolony.notion.site/Space-Race-Finalists-1bdd49cbead980309746d77cb5f30593"
+                  target="_blank"
+                  rel="noopener noreferrer"
                 >
-                  Leaderboard
+                  Season 1 Finalists
                 </LearnMoreLink>
               </PrizeLinksSpan>
             </PrizeSpanWrapper>
@@ -344,7 +352,7 @@ export const ActiveLandsSidebarView = () => {
       </LandsSidebarHeaderWrapper>
       <LandsBlock>
         {isAllTokensLoading && <Loader />}
-        {myTokens && clnyBalanceWei
+        {myTokens
           ? Array.from(myTokens ?? []).map((token, index) => {
               return (
                 <div key={`${token}-${index}`}>
@@ -352,7 +360,6 @@ export const ActiveLandsSidebarView = () => {
                     <LandPlot
                       key={`${token}-${index}`}
                       id={parseInt(token ?? '')}
-                      CLNYBalanceWei={clnyBalanceWei}
                       trigger={isCollectInProgress}
                     />
                   )}

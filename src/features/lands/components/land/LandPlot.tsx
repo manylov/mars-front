@@ -8,6 +8,7 @@ import {
   useBuildPowerProduction,
   useBuildRobotAssembly,
   useBuildTransport,
+  useCLNYBalance,
   useLandStats,
 } from '@features/global/hooks/useCallContracts';
 import useMediaQuery from '@global/hooks/useMediaQuery';
@@ -19,42 +20,14 @@ import { Enhancement } from '@root/legacy/enhancement/Enhancement';
 
 type Props = {
   id: number;
-  CLNYBalanceWei: number | bigint;
+
   trigger: boolean;
   isDefaultOpen?: boolean;
-  missionsLimit?: number | string;
 };
 
-// await makeRequest({
-//   address,
-//   type: METAMASK_EVENTS.call,
-//   method: CONTRACT_METHODS.getAttributesMany,
-//   params: [[id]],
-//   errorText: 'getAttributesMany error',
-//   contract: gameManager ?? getGameManager(),
-//   onSuccess: (data: Record<string, string>[]) => {
-//     callback?.();
-//     if (data) {
-//       const [bs, transport, ra, pp] = [
-//         data[0]['2'],
-//         data[0]['3'],
-//         data[0]['4'],
-//         data[0]['5']
-//       ];
-
-//       setHasBaseStation(!!parseInt(bs));
-//       setTransportLevel(parseInt(transport));
-//       setRobotAssemblyLevel(parseInt(ra));
-//       setPowerProductionLevel(parseInt(pp));
-//     }
-//   },
-//   onError: () => {
-//     callback?.();
-//   }
-// });
-
-export const LandPlot: React.FC<Props> = ({ id, CLNYBalanceWei, trigger }) => {
+export const LandPlot: React.FC<Props> = ({ id, trigger }) => {
   const isMobile = useMediaQuery('(max-width: 1200px)');
+  const { clnyBalanceWei: CLNYBalanceWei } = useCLNYBalance();
 
   const {
     hasBaseStation,
