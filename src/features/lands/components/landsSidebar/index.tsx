@@ -107,11 +107,8 @@ export const NoLandsSidebarView = () => {
   const { isLoadingMyLands: isLoadingMyTokens, hasNoLands } = useMyLands();
   const { isConnected } = useAccount();
 
-  const isLocalLoading = false;
   const { isLeaderboardPopupOpened } = useAppParts();
   const dispatch = useDispatch();
-
-  console.log('isLoadingMyTokens', isLoadingMyTokens);
 
   const maxClnyIncome = 14;
 

@@ -26,9 +26,13 @@ export const useLeaderboard = () => {
   const { data: leaderboard, isLoading: isLeaderboardLoading } = useQuery({
     queryKey: ['leaderboard'],
     queryFn: () => {
-      return Backend.getLeaderboard(address as string);
+      const a =
+        (address as string) ?? '0x0000000000000000000000000000000000000000';
+
+      console.log('a', a);
+
+      return Backend.getLeaderboard(a);
     },
-    enabled: !!address,
   });
 
   return { leaderboard, isLeaderboardLoading };

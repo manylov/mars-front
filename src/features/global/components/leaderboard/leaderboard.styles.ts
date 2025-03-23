@@ -21,13 +21,14 @@ export const LeaderboardWrapper = styled.div`
 `;
 
 export const LeaderboardTitle = styled.h1`
-  font-size: 32px;
+  font-size: 24px;
   text-align: center;
   margin: 0;
   padding: 0;
   font-family: 'Play', sans-serif;
   text-transform: uppercase;
   line-height: 48px;
+  font-weight: 700;
 `;
 
 export const LeaderboardCloseButton = styled.div`

@@ -31,6 +31,8 @@ export const Leaderboard = ({ isOpen, onClose }: LeaderboardProps) => {
   const { leaderboard: leaderboardData, isLeaderboardLoading: loading } =
     useLeaderboard();
 
+  console.log('leaderboardData', leaderboardData);
+
   if (!isOpen) return null;
   return (
     <CommonModal
@@ -48,7 +50,7 @@ export const Leaderboard = ({ isOpen, onClose }: LeaderboardProps) => {
           <Loader />
         ) : (
           <>
-            {leaderboardData?.place && (
+            {Boolean(leaderboardData?.place) && (
               <LeaderboardPlace>
                 Your place is #{leaderboardData.place}
               </LeaderboardPlace>
