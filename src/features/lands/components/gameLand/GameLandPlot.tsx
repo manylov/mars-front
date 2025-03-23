@@ -1,3 +1,4 @@
+import { formatCurrency } from '@features/global/utils/formatCurrency';
 import {
   GamePageDetailedButton,
   GamePageDetailedInfo,
@@ -22,12 +23,13 @@ import { NETWORK_DATA } from '@root/settings';
 import { selectObjectToSet } from '@slices/gameManagementSlice';
 import { ReactElement, useState } from 'react';
 import { useDispatch } from 'react-redux';
+import { formatEther } from 'viem';
 
 type GameLandPlotType = {
   id: number;
   enhancements: ReactElement;
-  earningSpeed: number | string;
-  earned: string;
+  earningSpeed: bigint | undefined | null;
+  earned: bigint | undefined | null;
 };
 
 export const GameLandPlot = ({
@@ -70,8 +72,10 @@ export const GameLandPlot = ({
                 <LandPlotEarned>
                   Earned:{' '}
                   <LandPlotEarnedText>
-                    {earned
-                      ? `${earned} ${NETWORK_DATA.TOKEN_NAME}`
+                    {earned !== undefined
+                      ? `${formatCurrency(earned, 4)} ${
+                          NETWORK_DATA.TOKEN_NAME
+                        }`
                       : 'Loading...'}
                   </LandPlotEarnedText>
                 </LandPlotEarned>

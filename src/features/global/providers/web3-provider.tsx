@@ -1,10 +1,10 @@
-import { wagmiConfig } from '@root/settings/wagmi';
+import { wagmiConfig, zeroTestnet } from '@root/settings/wagmi';
 import { createSyncStoragePersister } from '@tanstack/query-sync-storage-persister';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { persistQueryClient } from '@tanstack/react-query-persist-client';
 import { ConnectKitProvider } from 'connectkit';
 import { WagmiProvider } from 'wagmi';
-import { zeroNetwork } from 'wagmi/chains';
+import { zeroNetwork } from 'viem/chains';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -30,8 +30,12 @@ if (typeof window !== 'undefined') {
   });
 }
 
+// zeroNetwork
 const connectKitOptions = {
-  initialChainId: zeroNetwork.id,
+  initialChainId:
+    import.meta.env.VITE_NETWORK === 'zero-testnet'
+      ? zeroTestnet.id
+      : zeroNetwork.id,
 };
 
 export const Web3Provider = ({ children }: { children: React.ReactNode }) => {

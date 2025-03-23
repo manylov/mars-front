@@ -3,17 +3,21 @@ import Ethereum from '@root/api/etheriumWeb3';
 import Backend from '@root/backend';
 import { useAccount } from 'wagmi';
 
-export const useAllTokens = () => {
+export const useAllLands = () => {
   const {
-    data: allTokens,
-    isLoading: isAllTokensLoading,
-    refetch: refetchAllTokens,
+    data: allLands,
+    isLoading: isAllLandsLoading,
+    refetch: refetchAllLands,
   } = useQuery({
     queryKey: ['allTokens'],
     queryFn: () => Ethereum.getTokens(),
   });
 
-  return { allTokens, isAllTokensLoading, refetchAllTokens };
+  return {
+    allTokens: allLands,
+    isAllTokensLoading: isAllLandsLoading,
+    refetchAllTokens: refetchAllLands,
+  };
 };
 
 export const useLeaderboard = () => {

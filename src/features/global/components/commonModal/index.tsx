@@ -142,7 +142,7 @@ export const CommonModal: React.FC<{
   border,
   scrollBP,
   mobileClose = true,
-  isCloseButton = true
+  isCloseButton = true,
 }) => {
   const overlayRef = useRef<HTMLDivElement>(null);
   const { ref: wrapperRef, width: containerWidth } = useResizeObserver();

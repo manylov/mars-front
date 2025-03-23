@@ -1,22 +1,21 @@
-import { WHITE } from '@global/styles/variables';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 
 const EnhButtonWrapper = styled.button`
   display: block;
   border: 0;
   width: 105px;
   height: 30px;
-  background-color: #487636;
+  background-color: #fe5161;
+  border-radius: 6px;
+  color: #000000;
   box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
   margin-bottom: 2px;
   font-family: 'Play', sans-serif;
-  color: ${WHITE};
   cursor: pointer;
   margin-left: 7px;
   position: relative;
 
   &:not([disabled]):hover {
-    color: #fe5161;
     filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25))
       drop-shadow(0px 0px 20px #fe5161);
   }

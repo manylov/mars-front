@@ -38,7 +38,6 @@ type Props = {
   level?: number;
   isMobileView?: boolean;
   isPending?: boolean;
-  isInitialLoad?: boolean;
 };
 
 export const Enhancement: React.FC<Props> = ({
@@ -82,6 +81,7 @@ export const Enhancement: React.FC<Props> = ({
   };
 
   const priceWei = useMemo(() => {
+    if (!price) return undefined;
     return parseEther(price.toString());
   }, [price]);
 
@@ -92,7 +92,7 @@ export const Enhancement: React.FC<Props> = ({
         <Image />
       </EnhImageWrapper>
       <EnhTitle>{title}</EnhTitle>
-      <div className="enh_speed">
+      <div className="enh_speed whitespace-nowrap">
         <>{getClnySpeedLevel(oldNew?.[0] ?? 3)}</>
       </div>
       {availableButNotPlaced && (

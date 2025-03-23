@@ -270,16 +270,23 @@
       const linksPopup = document.getElementById('linksPopup');
       const closeLinksBtn = document.getElementById('closeLinksBtn');
 
-      popup.style.display = 'none';
+      // Check if the user has completed onboarding
+
+      if (localStorage.getItem('onboarding_completed') !== null) {
+        popup.style.display = 'none';
+      }
+      // Listen for claim land events to show links popup
 
       // Add a click event to the close button to hide the popup.
       closeBtn.addEventListener('click', () => {
         popup.style.display = 'none';
+        localStorage.setItem('onboarding_completed', 'true');
       });
 
       // Add a click event to the links popup close button
       closeLinksBtn.addEventListener('click', () => {
         linksPopup.style.display = 'none';
+        localStorage.setItem('onboarding_completed', 'true');
       });
 
       // Global function to open links popup

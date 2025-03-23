@@ -8,15 +8,21 @@ import {
   copyTextToClipboard,
   formatWallet,
 } from '@features/globus/utils/methods';
+import {
+  autoUpdate,
+  flip,
+  FloatingFocusManager,
+  FloatingPortal,
+  offset,
+  shift,
+  useClick,
+  useDismiss,
+  useFloating,
+  useInteractions,
+} from '@floating-ui/react';
 import Button from '@global/components/button';
 import {
-  BlockButton,
   MainAppContainer,
-  MarsNavConnectedModal,
-  MarsNavConnectedModalLink,
-  MarsNavConnectedModalTitle,
-  MarsNavConnectedWallet,
-  MarsNavPanelItemFlexed,
   MobileTableBlock,
   MobileTableBlockBalance,
   MobileTableText,
@@ -36,22 +42,14 @@ import { WalletIcon } from '@root/images/icons/WalletIcon';
 import { NETWORK_DATA } from '@root/settings';
 import { CURRENT_CHAIN } from '@root/settings/chains';
 import { isConnectionPopupSelector } from '@selectors/appPartsSelectors';
-import {
-  clnyBalanceSelector,
-  userBalanceSelector,
-} from '@selectors/userStatsSelectors';
 import { toggleConnectionPopup } from '@slices/appPartsSlice';
 import { ConnectKitButton } from 'connectkit';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useToasts } from 'react-toast-notifications';
 import { useAccount, useDisconnect } from 'wagmi';
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const ConnectionZone = (_: {
-  address: string;
-  onConnect: () => void;
-}) => {
+export const ConnectionZone = () => {
   const dispatch = useDispatch();
   const popupRef = useRef<HTMLDivElement>(null);
   const { addToast } = useToasts();
@@ -67,12 +65,33 @@ export const ConnectionZone = (_: {
   const { clnyBalance } = useCLNYBalance();
   const { ethBalance } = useEthBalance();
 
+  // Floating UI setup
+  const { refs, floatingStyles, context } = useFloating({
+    open: showConnectionPopup,
+    onOpenChange: (open) => dispatch(toggleConnectionPopup(open)),
+    middleware: [offset(10), flip(), shift()],
+    whileElementsMounted: autoUpdate,
+  });
+
+  const click = useClick(context);
+  const dismiss = useDismiss(context);
+
+  const { getReferenceProps, getFloatingProps } = useInteractions([
+    click,
+    dismiss,
+  ]);
+
   useEffect(() => {
-    const handleMouseClick = (event: any) => {
+    const handleMouseClick = (event: MouseEvent) => {
       let flagConnection = false;
       for (const value of event.composedPath()) {
-        if ('headerInfo' === value.id || 'connectionInfo' === value.id) {
-          flagConnection = !flagConnection;
+        if (
+          'headerInfo' === (value as HTMLElement).id ||
+          'connectionInfo' === (value as HTMLElement).id ||
+          'connectionPopup' === (value as HTMLElement).id
+        ) {
+          flagConnection = true;
+          break;
         }
       }
       if (!flagConnection) {
@@ -111,13 +130,12 @@ export const ConnectionZone = (_: {
       {isTableMobile ? (
         <NewHeaderInfoWrapper
           id={'headerInfo'}
-          onClick={() => {
-            dispatch(toggleConnectionPopup(!showConnectionPopup));
-          }}
+          ref={refs.setReference}
+          {...getReferenceProps()}
         >
           <NewHeaderStatWrapper>
             <ImageIconWrapper src={MarsIconImg} dimension="14px" />
-            {clnyBalance} {NETWORK_DATA.TOKEN_NAME}
+            {clnyBalance ?? 0} {NETWORK_DATA.TOKEN_NAME}
           </NewHeaderStatWrapper>
           <NewHeaderStatWrapper>
             <ImageIconWrapper
@@ -126,8 +144,7 @@ export const ConnectionZone = (_: {
               }
               dimension="14px"
             />
-            {ethBalance}
-            {CURRENT_CHAIN.ticker}
+            {ethBalance} {CURRENT_CHAIN.ticker}
           </NewHeaderStatWrapper>
           <NewHeaderStatWrapper>
             <NewHeaderStatInnerWrapper>
@@ -142,9 +159,8 @@ export const ConnectionZone = (_: {
         <MobileTableWrapperWallet
           content={contentSpace}
           id={'headerInfo'}
-          onClick={() => {
-            dispatch(toggleConnectionPopup(!showConnectionPopup));
-          }}
+          ref={refs.setReference}
+          {...getReferenceProps()}
         >
           <MobileTableBlockBalance>
             <MobileTableBlock>
@@ -168,49 +184,70 @@ export const ConnectionZone = (_: {
       )}
 
       {showConnectionPopup && (
-        <MarsNavConnectedModal ref={popupRef} id={'connectionInfo'}>
-          <div>
-            <MarsNavConnectedModalTitle>Account</MarsNavConnectedModalTitle>
-            <div>
-              <MarsNavConnectedWallet>
-                <a
-                  href="/"
-                  onClick={(event) => {
-                    event.preventDefault();
-                    copyTextToClipboard(address)
-                      .then(() => {
-                        addToast('Address has been copied to clipboard', {
-                          appearance: 'success',
-                        });
-                      })
-                      .catch((error) => {
-                        console.error(error);
-                        addToast('Copying to clipboard has failed', {
-                          appearance: 'error',
-                        });
-                      });
-                  }}
+        <FloatingPortal>
+          <FloatingFocusManager context={context}>
+            <div
+              ref={refs.setFloating}
+              style={{
+                ...floatingStyles,
+                width: refs.reference.current?.clientWidth,
+              }}
+              id="connectionPopup"
+              className="bg-[#2E2E33] rounded-lg p-4 shadow-lg z-50"
+              {...getFloatingProps()}
+            >
+              <div className="mb-4">
+                <div className="text-lg font-bold text-white mb-2">Account</div>
+                <div>
+                  <div className="">
+                    <a
+                      href="/"
+                      className="text-white text-sm flex items-center gap-2 w-full overflow-hidden text-ellipsis hover:text-opacity-80 transition-colors"
+                      onClick={(event) => {
+                        event.preventDefault();
+                        copyTextToClipboard(address)
+                          .then(() => {
+                            addToast('Address has been copied to clipboard', {
+                              appearance: 'success',
+                            });
+                          })
+                          .catch((error) => {
+                            console.error(error);
+                            addToast('Copying to clipboard has failed', {
+                              appearance: 'error',
+                            });
+                          });
+                      }}
+                    >
+                      <span className="overflow-hidden text-ellipsis">
+                        {address}
+                      </span>{' '}
+                      <Copy className="size-4" />
+                    </a>
+                  </div>
+                </div>
+              </div>
+              <div className="flex  items-center *:flex-1/2 gap-2">
+                <button
+                  className="w-full h-[30px] flex items-center justify-center uppercase cursor-pointer font-bold text-xs  bg-[#FE5161] rounded-md  transition-colors"
+                  onClick={() => disconnect()}
                 >
-                  {address} <Copy />
-                </a>
-              </MarsNavConnectedWallet>
+                  Disconnect
+                </button>
+                <div className="flex items-center">
+                  <a
+                    href={`${CURRENT_CHAIN.explorer}/address/${address}`}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="w-full text-center h-[30px] flex items-center justify-center uppercase text-xs font-bold cursor-pointer text-white bg-[#1C1C1F] rounded-md transition-colors"
+                  >
+                    Explorer
+                  </a>
+                </div>
+              </div>
             </div>
-          </div>
-          <BlockButton>
-            <MarsNavConnectedModalLink onClick={() => disconnect()}>
-              Disconnect
-            </MarsNavConnectedModalLink>
-            <MarsNavPanelItemFlexed>
-              <a
-                href={`${CURRENT_CHAIN.explorer}/address/${address}`}
-                target="_blank"
-                rel="noreferrer"
-              >
-                Explorer
-              </a>
-            </MarsNavPanelItemFlexed>
-          </BlockButton>
-        </MarsNavConnectedModal>
+          </FloatingFocusManager>
+        </FloatingPortal>
       )}
     </MainAppContainer>
   );

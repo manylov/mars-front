@@ -1,15 +1,15 @@
-import React, { ReactElement, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
-import { useLocation } from 'react-router-dom';
 import Layout from '@global/components/layout/layout';
 import { BALANCE_CHECKER_INTERVAL } from '@global/constants';
 import { useBalance } from '@global/hooks/useBalance';
 import useGameManagement from '@global/hooks/useGameManagement';
-import usePersonalInfo from '@global/hooks/usePersonalInfo';
 import { extractURLParam } from '@global/utils/urlParams';
 import { AppDispatch } from '@redux/store';
 import * as Sentry from '@sentry/react';
 import { dropGameInfo } from '@slices/gameManagementSlice';
+import React, { ReactElement, useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import { useLocation } from 'react-router-dom';
+import { useAccount } from 'wagmi';
 
 function DataProvider({ children }: { children: ReactElement }) {
   const location = useLocation();
@@ -17,14 +17,14 @@ function DataProvider({ children }: { children: ReactElement }) {
   const dispatch = useDispatch<AppDispatch>();
 
   const { collectAllLandInfo } = useGameManagement();
-  const { web3Instance, address } = usePersonalInfo(true);
+  const { address } = useAccount();
 
   const { tokens, updateEarnedAll } = useBalance();
 
   useEffect(() => {
     const id = extractURLParam(location, 'id');
     const isInitializedUser = Boolean(
-      id && web3Instance && address && tokens && window.GM?.methods
+      id && address && tokens && window.GM?.methods
     );
 
     if (isInitializedUser && id) {
@@ -34,7 +34,7 @@ function DataProvider({ children }: { children: ReactElement }) {
     if (location.pathname === '/') {
       dispatch(dropGameInfo());
     }
-  }, [location.pathname, location.search, web3Instance, address, tokens]);
+  }, [location.pathname, location.search, address, tokens]);
 
   React.useEffect(() => {
     if (!address) return;

@@ -2,15 +2,7 @@ import React from 'react';
 
 const SocialIconsBar = () => {
   return (
-    <div
-      style={{
-        display: 'flex',
-        gap: '16px',
-        justifyContent: 'center',
-        width: '100%',
-        paddingBottom: '0px'
-      }}
-    >
+    <div className="flex gap-4 justify-center w-full items-center pb-0">
       <a
         href="https://x.com/zero_colony_fun"
         target="_blank"

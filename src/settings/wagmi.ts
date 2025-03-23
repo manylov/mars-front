@@ -2,10 +2,21 @@ import { getDefaultConfig } from 'connectkit';
 import { createConfig, http, injected } from 'wagmi';
 import { zeroNetwork } from 'wagmi/chains';
 
+import { type Chain } from 'viem';
+
+export const zeroTestnet = {
+  id: 4457845,
+  name: 'Zero Testnet',
+  nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 },
+  rpcUrls: {
+    default: { http: ['https://rpc.zerion.io/v1/zero-sepolia'] },
+  },
+} as const satisfies Chain;
+
 export const wagmiConfig = createConfig(
   getDefaultConfig({
     // Your dApps chains
-    chains: [zeroNetwork],
+    chains: [zeroNetwork, zeroTestnet],
     connectors: [
       injected({
         target: 'metaMask',
@@ -15,6 +26,7 @@ export const wagmiConfig = createConfig(
     transports: {
       // RPC URL for each chain
       [zeroNetwork.id]: http('https://zero.drpc.org'),
+      [zeroTestnet.id]: http('https://rpc.zerion.io/v1/zero-sepolia'),
     },
 
     // Required API Keys

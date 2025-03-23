@@ -1,5 +1,17 @@
 /// <reference types="vite/client" />
 
+// Define the claim_land event interface
+interface ClaimLandEvent extends CustomEvent {
+  detail: {
+    tokenId: number;
+  };
+}
+
+// Add claim_land event to Window interface
+interface WindowEventMap {
+  claim_land: ClaimLandEvent;
+}
+
 // need var to work properly
 export declare global {
   var xweb3: any;

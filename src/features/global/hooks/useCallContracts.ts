@@ -3,18 +3,17 @@ import {
   GAME_MANAGER_CONTRACT,
   MC_CONTRACT,
 } from '@root/contracts';
-import { useMemo } from 'react';
-import { formatEther } from 'viem';
-
-import { readContract } from '@wagmi/core';
-
-import { wagmiConfig } from '@root/settings/wagmi';
+import { useQueryClient } from '@tanstack/react-query';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
+import { useToasts } from 'react-toast-notifications';
+import { formatEther, parseEther } from 'viem';
 import {
   useAccount,
   useBalance,
   useReadContract,
   useWriteContract,
 } from 'wagmi';
+import { createBatches } from '../utils/createBatches';
 
 export const useCLNYBalance = () => {
   const { address } = useAccount();
@@ -58,14 +57,13 @@ export const useEthBalance = () => {
   };
 };
 
-export const useMyTokens = () => {
+export const useMyLands = () => {
   const { address } = useAccount();
 
   const {
-    data: myTokens,
-    refetch: refetchMyTokens,
-    isLoading: isLoadingMyTokens,
-    error: errorMyTokens,
+    data: myLands,
+    refetch: refetchMyLands,
+    isLoading: isLoadingMyLands,
   } = useReadContract({
     ...MC_CONTRACT,
     functionName: 'allMyTokens',
@@ -78,94 +76,20 @@ export const useMyTokens = () => {
     },
   });
 
-  const hasNoTokens = useMemo(() => {
-    return myTokens?.length === 0 || (!myTokens && !isLoadingMyTokens);
-  }, [myTokens, isLoadingMyTokens]);
+  const hasNoLands = useMemo(() => {
+    return myLands?.length === 0 || (!myLands && !isLoadingMyLands);
+  }, [myLands, isLoadingMyLands]);
 
   return {
-    myTokens,
-    refetchMyTokens,
-    isLoadingMyTokens,
-    hasNoTokens,
-    errorMyTokens,
+    myLands: myLands,
+    refetchMyLands: refetchMyLands,
+    isLoadingMyLands: isLoadingMyLands,
+    hasNoLands: hasNoLands,
   };
 };
 
-export const useClaimToken = () => {
-  const { writeContractAsync } = useWriteContract();
-
-  const claimToken = async (tokenNumbers: number[]) => {
-    const feeValue = await readContract(wagmiConfig, {
-      ...GAME_MANAGER_CONTRACT,
-      functionName: 'getFee',
-      args: [BigInt(tokenNumbers.length)],
-    });
-
-    const tx = await writeContractAsync({
-      ...GAME_MANAGER_CONTRACT,
-      functionName: 'claim',
-      args: [tokenNumbers.map((token) => BigInt(token))],
-    });
-
-    console.log(tx);
-  };
-
-  return { claimToken };
-};
-// const claimToken = React.useCallback(
-//   async (tokenNumbers: number[], address: string, web3Instance: Web3) => {
-//     for (const tokenNumber of tokenNumbers) {
-//       if (Number.isNaN(tokenNumber)) return;
-//       const tokenId: string = tokenNumber.toString();
-//       if (tokenId === null) return;
-//     }
-
-//     let txHash: string | null = null;
-
-//     const feeValue = await makeRequest({
-//       method: CONTRACT_METHODS.getFee,
-//       params: [tokenNumbers.length],
-//       address,
-//       type: METAMASK_EVENTS.call,
-//       contract: gameManager ?? getGameManager(),
-//     });
-
-//     makeRequest({
-//       type: METAMASK_EVENTS.send,
-//       method: CONTRACT_METHODS.claim,
-//       contract: gameManager ?? getGameManager(),
-//       params: [tokenNumbers],
-//       onLoad: (hash: string) => {
-//         txHash = hash;
-
-//         window.view?.popup?.close?.();
-//         window.ogPopup?.setVisibility?.(false);
-//         fetchUserBalance(address, web3Instance);
-//       },
-//       onSuccess: () => {
-//         fetchUserBalance(address, web3Instance);
-
-//         if (tokens !== null) dispatch(setUserTokens([tokenNumbers.toString()]));
-//         if (allMintedTokens !== null)
-//           dispatch(setMintedTokens(tokenNumbers.toString()));
-
-//         // @ts-ignore
-//         window.openLinksPopup();
-//       },
-//       onError: () => {},
-//       transactionOptions: {
-//         value: feeValue,
-//         type: CURRENT_CHAIN.x2,
-//       },
-//       address,
-//       eventName: METHODS_LABELS.landClaim,
-//     });
-//   },
-//   [gameManager, tokens, allMintedTokens, dispatch]
-// );
-
-export const useUpdateEarnedAll = () => {
-  const { myTokens } = useMyTokens();
+export const useTotalEarning = () => {
+  const { myLands: myTokens } = useMyLands();
 
   const {
     data,
@@ -175,7 +99,8 @@ export const useUpdateEarnedAll = () => {
   } = useReadContract({
     ...GAME_MANAGER_CONTRACT,
     functionName: 'getEarningData',
-    args: [myTokens?.map((token) => BigInt(token)) ?? []],
+    // @ts-expect-error it's ok bro, everything is a string
+    args: [myTokens?.map((token) => token.toString()) ?? []],
     query: {
       enabled: !!myTokens,
     },
@@ -183,10 +108,11 @@ export const useUpdateEarnedAll = () => {
 
   const earnedAmountWei = useMemo(() => {
     if (!data) return undefined;
-    return data[0];
+    return data[0] ?? 0n;
   }, [data]);
 
   const earnedAmount = useMemo(() => {
+    if (earnedAmountWei === 0n) return (0).toString();
     if (!earnedAmountWei) return undefined;
     return Number(formatEther(earnedAmountWei)).toFixed(2);
   }, [earnedAmountWei]);
@@ -205,36 +131,385 @@ export const useUpdateEarnedAll = () => {
     refetchEarnedAmount,
   };
 };
-/*
-  const updateEarnedAll = React.useCallback(async () => {
-    if (!gameManager) return;
-    const allTokens = Array.from(plotTokens ?? []).flat();
 
-    let bunch: string[] = [];
-    let earnedAmount = 0;
-    let earnSpeed = 0;
-    for (let i = 0; i < allTokens.length; i++) {
-      bunch.push(allTokens[i]);
-      if (bunch.length >= 50 || i === allTokens.length - 1) {
-        await makeRequest({
-          type: METAMASK_EVENTS.call,
-          address: userAddress,
-          method: CONTRACT_METHODS.getEarningData,
-          params: [bunch],
-          contract: gameManager,
-          // eslint-disable-next-line no-loop-func
-          onSuccess: (earningData) => {
-            if (earningData) {
-              const { '0': earned, '1': speed } = earningData;
-              earnedAmount = earnedAmount + parseInt(earned) * 1e-18;
-              earnSpeed = earnSpeed + parseInt(speed);
-            }
-          },
+export const useResetLandStats = () => {
+  const { myLands } = useMyLands();
+
+  const queryClient = useQueryClient();
+
+  const resetLandStats = useCallback(() => {
+    const queries = queryClient.getQueryCache().getAll();
+    console.log('QUERIES', { queries });
+
+    queries.forEach((query) => {
+      const queryKey = query.queryKey;
+
+      const isReadContract = queryKey[0] === 'readContract';
+
+      // Check for getAttributesMany queries (single land stats)
+      const isGetAttributesMany =
+        typeof queryKey[1] === 'object' &&
+        queryKey[1] !== null &&
+        'functionName' in queryKey[1] &&
+        queryKey[1].functionName === 'getAttributesMany';
+
+      // Reset individual land stats
+      if (isReadContract && isGetAttributesMany) {
+        queryClient.setQueryData(queryKey, (data: any) => {
+          console.log('resetLandStats', {
+            isReadContract,
+            isGetAttributesMany,
+            args: queryKey[1].args,
+            queryKey,
+            previousData: data,
+          });
+          return [{ ...data[0], earned: 0 }];
         });
-        bunch = [];
       }
+
+      // Check for getEarningData queries (total earnings)
+      const isGetEarningData =
+        typeof queryKey[1] === 'object' &&
+        queryKey[1] !== null &&
+        'functionName' in queryKey[1] &&
+        queryKey[1].functionName === 'getEarningData';
+
+      // Reset total earnings
+      if (isReadContract && isGetEarningData) {
+        queryClient.setQueryData(queryKey, (data: any) => {
+          console.log('resetTotalEarnings', {
+            isReadContract,
+            isGetEarningData,
+            args: queryKey[1].args,
+            queryKey,
+            previousData: data,
+          });
+
+          // Keep the earning speed (data[1]) but reset the earned amount (data[0]) to 0
+          return [0, data[1]];
+        });
+      }
+    });
+  }, [queryClient]);
+
+  return { resetLandStats };
+};
+
+export const useLandStats = (id: number) => {
+  const {
+    data: attributesMany,
+    isLoading: isLoadingAttributes,
+    refetch: refetchLandStats,
+  } = useReadContract({
+    ...GAME_MANAGER_CONTRACT,
+    functionName: 'getAttributesMany',
+    // @ts-expect-error it's ok bro, everything is a string
+    args: [[id.toString()]],
+  });
+
+  const attributes = useMemo(() => {
+    if (!attributesMany) return null;
+    return attributesMany[0];
+  }, [attributesMany]);
+
+  const earned = useMemo(() => {
+    if (!attributes) return null;
+    return attributes.earned;
+  }, [attributes]);
+
+  const speed = useMemo(() => {
+    if (!attributes) return null;
+    return attributes.speed;
+  }, [attributes]);
+
+  const hasBaseStation = attributes?.baseStation.toString() === '1';
+  const robotAssemblyLevel = attributes?.robotAssembly;
+  const transportLevel = attributes?.transport;
+  const powerProductionLevel = attributes?.powerProduction;
+
+  return {
+    speed,
+    earned,
+    isLoadingAttributes,
+    hasBaseStation,
+    robotAssemblyLevel,
+    transportLevel,
+    powerProductionLevel,
+    refetchLandStats,
+  };
+};
+
+export const useBuyLand = () => {
+  const { addToast } = useToasts();
+  const { refetchMyLands } = useMyLands();
+  const { refetchEthBalance } = useEthBalance();
+
+  const { writeContractAsync } = useWriteContract({
+    mutation: {
+      onError: (error) => {
+        addToast(error.message);
+      },
+      onSuccess: () => {
+        addToast('Land bought successfully');
+        refetchMyLands();
+        refetchEthBalance();
+      },
+    },
+  });
+
+  const claimToken = async (
+    token: number,
+    { onSuccess }: { onSuccess?: () => void } = {}
+  ) => {
+    await writeContractAsync({
+      ...GAME_MANAGER_CONTRACT,
+      functionName: 'claim',
+      // @ts-expect-error it's ok bro, everything is a string
+      args: [[token.toString()]],
+      value: parseEther('0.009'),
+    });
+
+    onSuccess?.();
+  };
+
+  return { claimToken };
+};
+
+export const useClaimEarned = () => {
+  const { addToast } = useToasts();
+  const { resetLandStats } = useResetLandStats();
+  const { refetchCLNYBalance } = useCLNYBalance();
+
+  const { writeContractAsync, isPending: isClaimingEarned } = useWriteContract({
+    mutation: {
+      onError: (error) => {
+        addToast(error.message);
+      },
+      onSuccess: () => {
+        addToast('Earnings claimed successfully');
+        resetLandStats();
+        refetchCLNYBalance();
+      },
+    },
+  });
+  const { myLands: myTokens } = useMyLands();
+
+  const claimEarned = async () => {
+    if (!myTokens) return;
+
+    const batches = createBatches(myTokens, 50);
+
+    for (const batch of batches) {
+      await writeContractAsync({
+        ...GAME_MANAGER_CONTRACT,
+        functionName: 'claimEarned',
+        // @ts-expect-error it's ok bro, everything is a string
+        args: [batch.map((token) => token.toString())],
+      });
     }
-    dispatch(setEarnedAmount(earnedAmount));
-    dispatch(setEarnSpeed(earnSpeed));
-  }, [plotTokens, dispatch, gameManager]);
-*/
+  };
+
+  return { claimEarned, isClaimingEarned };
+};
+
+export const useBuildBaseStation = (id: number) => {
+  const { addToast } = useToasts();
+  const { refetchCLNYBalance } = useCLNYBalance();
+  const { refetchLandStats } = useLandStats(id);
+
+  const { writeContractAsync, isPending: isPendingBuildBaseStation } =
+    useWriteContract({
+      mutation: {
+        onError: (error) => {
+          addToast(error.message);
+        },
+        onSuccess: () => {
+          addToast('Base station built successfully');
+          refetchCLNYBalance();
+          refetchLandStats();
+        },
+      },
+    });
+
+  const buildBaseStation = async () => {
+    await writeContractAsync({
+      ...GAME_MANAGER_CONTRACT,
+      functionName: 'buildBaseStation',
+      // @ts-expect-error it's ok bro, everything is a string
+      args: [id.toString()],
+    });
+  };
+
+  return { buildBaseStation, isPendingBuildBaseStation };
+};
+
+export const useBuildRobotAssembly = (id: number) => {
+  const { addToast } = useToasts();
+  const { refetchCLNYBalance } = useCLNYBalance();
+  const { refetchLandStats } = useLandStats(id);
+
+  const { writeContractAsync, isPending: isPendingBuildRobotAssembly } =
+    useWriteContract({
+      mutation: {
+        onError: (error) => {
+          addToast(error.message);
+        },
+        onSuccess: () => {
+          addToast('Robot assembly built successfully');
+          refetchCLNYBalance();
+          refetchLandStats();
+        },
+      },
+    });
+  const buildRobotAssembly = async (level: number) => {
+    await writeContractAsync({
+      ...GAME_MANAGER_CONTRACT,
+      functionName: 'buildRobotAssembly',
+      // @ts-expect-error it's ok bro, everything is a string
+      args: [id.toString(), level],
+    });
+  };
+
+  return { buildRobotAssembly, isPendingBuildRobotAssembly };
+};
+
+export const useBuildTransport = (id: number) => {
+  const { addToast } = useToasts();
+  const { refetchCLNYBalance } = useCLNYBalance();
+  const { refetchLandStats } = useLandStats(id);
+
+  const { writeContractAsync, isPending: isPendingBuildTransport } =
+    useWriteContract({
+      mutation: {
+        onError: (error) => {
+          addToast(error.message);
+        },
+        onSuccess: () => {
+          addToast('Transport built successfully');
+          refetchCLNYBalance();
+          refetchLandStats();
+        },
+      },
+    });
+
+  const buildTransport = async (level: number) => {
+    await writeContractAsync({
+      ...GAME_MANAGER_CONTRACT,
+      functionName: 'buildTransport',
+      // @ts-expect-error it's ok bro, everything is a string
+      args: [id.toString(), level],
+    });
+  };
+
+  return { buildTransport, isPendingBuildTransport };
+};
+
+export const useBuildPowerProduction = (id: number) => {
+  const { addToast } = useToasts();
+  const { refetchCLNYBalance } = useCLNYBalance();
+  const { refetchLandStats } = useLandStats(id);
+
+  const { writeContractAsync, isPending: isPendingBuildPowerProduction } =
+    useWriteContract({
+      mutation: {
+        onError: (error) => {
+          addToast(error.message);
+        },
+        onSuccess: () => {
+          addToast('Power production built successfully');
+          refetchCLNYBalance();
+          refetchLandStats();
+        },
+      },
+    });
+  const buildPowerProduction = async (level: number) => {
+    await writeContractAsync({
+      ...GAME_MANAGER_CONTRACT,
+      functionName: 'buildPowerProduction',
+      // @ts-expect-error it's ok bro, everything is a string
+      args: [id.toString(), level],
+    });
+  };
+
+  return { buildPowerProduction, isPendingBuildPowerProduction };
+};
+
+export const useUpdateEarnedInterval = () => {
+  const queryClient = useQueryClient();
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+
+  useEffect(() => {
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+    }
+
+    intervalRef.current = setInterval(() => {
+      const queries = queryClient.getQueryCache().getAll();
+
+      queries.forEach((query) => {
+        const queryKey = query.queryKey;
+        const isReadContract = queryKey[0] === 'readContract';
+
+        const isGetAttributesMany =
+          typeof queryKey[1] === 'object' &&
+          queryKey[1] !== null &&
+          'functionName' in queryKey[1] &&
+          queryKey[1].functionName === 'getAttributesMany';
+
+        const id = isGetAttributesMany ? queryKey[1].args[0] : null;
+
+        if (isReadContract && isGetAttributesMany) {
+          queryClient.setQueryData(queryKey, (data: unknown) => {
+            if (!data || !Array.isArray(data) || data.length === 0) return data;
+
+            const landData = data[0];
+            if (
+              !landData ||
+              typeof landData !== 'object' ||
+              !('speed' in landData) ||
+              !('earned' in landData)
+            ) {
+              return data;
+            }
+            const speed = Number(landData.speed || 0);
+            const currentEarned = BigInt(landData.earned || 0);
+            const newEarned =
+              currentEarned + parseEther(speed.toString()) / BigInt(86400);
+
+            return [{ ...landData, earned: newEarned }];
+          });
+        }
+
+        const isGetEarningData =
+          typeof queryKey[1] === 'object' &&
+          queryKey[1] !== null &&
+          'functionName' in queryKey[1] &&
+          queryKey[1].functionName === 'getEarningData';
+
+        if (isReadContract && isGetEarningData) {
+          queryClient.setQueryData(queryKey, (data: unknown) => {
+            if (!data || !Array.isArray(data) || data.length < 2) return data;
+
+            const currentEarnedAmount = BigInt(data[0] || 0);
+            const earnSpeed = Number(data[1] || 0);
+
+            const newEarnedAmount =
+              currentEarnedAmount +
+              parseEther(earnSpeed.toString()) / BigInt(86400);
+
+            return [newEarnedAmount, data[1]];
+          });
+        }
+      });
+    }, 1000);
+
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
+    };
+  }, [queryClient]);
+
+  return null;
+};

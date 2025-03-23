@@ -2,19 +2,11 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import path from 'path';
 import { nodePolyfills } from 'vite-plugin-node-polyfills';
+import tailwindcss from '@tailwindcss/vite';
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [
-    react(),
-    nodePolyfills({
-      globals: {
-        Buffer: true,
-        process: true,
-        global: true,
-      },
-    }),
-  ],
+  plugins: [react(), nodePolyfills(), tailwindcss()],
 
   resolve: {
     alias: {
@@ -32,6 +24,7 @@ export default defineConfig({
       '@pages': path.resolve(__dirname, './src/pages'),
       '@classes': path.resolve(__dirname, './src/classes'),
       '@images': path.resolve(__dirname, './src/images'),
+      '@lib': path.resolve(__dirname, './src/lib'),
     },
   },
 });

@@ -1,12 +1,5 @@
-import React, {
-  ElementType,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { useLocation, useNavigate } from 'react-router-dom';
+import useMediaQuery from '@features/global/hooks/useMediaQuery';
+import { Leaderboard } from '@global/components/leaderboard';
 import {
   SidebarBackOverlay,
   SidebarItemCounter,
@@ -19,21 +12,22 @@ import {
   SidebarWrapper,
 } from '@global/components/sidebar/sidebar.styles';
 import { LINKS } from '@global/constants';
-import usePersonalInfo from '@global/hooks/usePersonalInfo';
 import { LIGHT_GREY, TOXIC_GREEN, WHITE } from '@global/styles/variables';
 import { SIDEBAR_ROUTES_NAMES } from '@global/types';
 import { CloseIcon } from '@images/icons/CloseIcon';
 import { DexIcon } from '@images/icons/sidebarIcons/DexIcon';
 import { LandsIcon } from '@images/icons/sidebarIcons/LandsIcon';
 import { SidebarOpenIcon } from '@images/icons/sidebarIcons/SidebarOpenIcon';
+import { LeaderboardIcon } from '@root/images/icons/sidebarIcons/LeaderboardIcon';
 import { landsMissionsLimitsSelector } from '@selectors/userStatsSelectors';
 import {
-  toggleMyLandsPopup,
   toggleLeaderboardPopup,
+  toggleMyLandsPopup,
 } from '@slices/appPartsSlice';
-import { LeaderboardIcon } from '@root/images/icons/sidebarIcons/LeaderboardIcon';
-import { Leaderboard } from '@global/components/leaderboard';
-import useMediaQuery from '@features/global/hooks/useMediaQuery';
+import { ElementType, useEffect, useMemo, useRef, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { useAccount } from 'wagmi';
 
 type SideBarItemType = {
   route: string;
@@ -59,7 +53,7 @@ const SideBarItem = ({
 }: SideBarItemType) => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { address } = usePersonalInfo();
+  const { address } = useAccount();
 
   const isCurrentRoute = useMemo(() => {
     if (location.pathname === '/' && route === '/') return true;
@@ -108,7 +102,7 @@ const Sidebar = () => {
   const sidebarRef = useRef<HTMLDivElement>(null);
   const isMobile = useMediaQuery('(max-width: 768px)');
 
-  const { address } = usePersonalInfo();
+  const { address } = useAccount();
   const navigate = useNavigate();
   const location = useLocation();
   const [isLeaderboardOpen, setIsLeaderboardOpen] = useState(false);

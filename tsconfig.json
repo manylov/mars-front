@@ -30,6 +30,7 @@
       "@slices/*": ["redux/slices/*"],
       "@root/*": ["./*"],
       "@utils/*": ["utils/*"],
+      "@lib/*": ["lib/*"],
       "@api/*": ["api/*"],
       "@crypto/*": ["crypto/*"],
       "@components/*": ["components/*"],

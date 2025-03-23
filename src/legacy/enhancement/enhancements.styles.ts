@@ -92,6 +92,7 @@ const EnhOldNew = styled.div`
   line-height: 10px;
   color: rgba(52, 255, 97, 0.8);
   margin-bottom: 21px;
+  margin-top: 4px;
 `;
 
 const CounterBlockWrapper = styled.div`
@@ -126,5 +127,5 @@ export {
   EnhButtonOuterWrapper,
   EnhImageWrapper,
   EnhOldNew,
-  EnhTitle
+  EnhTitle,
 };

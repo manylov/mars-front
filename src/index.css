@@ -1,7 +1,15 @@
 @import 'https://js.arcgis.com/4.20/@arcgis/core/assets/esri/themes/dark/main.css';
-@import url('https://fonts.googleapis.com/css2?family=Play:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Play:wght@400;500;600;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+@import 'tailwindcss';
+
+@theme {
+  --font-sans: 'Play', 'sans-serif';
+
+  --color-primary: rgb(254, 81, 97);
+}
 
 /*Leftovers */
 :root {
@@ -16,6 +24,19 @@ html {
 
 body::-webkit-scrollbar {
   width: 0;
+}
+
+.esri-widget__heading {
+  padding-left: 14px;
+  padding-right: 14px;
+  padding-top: 12px;
+  padding-bottom: 12px;
+  margin-bottom: 0px !important;
+}
+
+.esri-feature-content {
+  padding: 16px;
+  padding-top: 8px;
 }
 
 button {

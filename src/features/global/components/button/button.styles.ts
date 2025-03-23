@@ -26,7 +26,7 @@ const ButtonWrapper = styled.button<{
     if (variant === 'common') {
       return css`
         background-color: ${TOXIC_GREEN};
-        border-radius: 4px;
+        border-radius: 6px;
       `;
     }
 

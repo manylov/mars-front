@@ -1,23 +1,19 @@
-import { useEffect, useMemo, useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { useToasts } from 'react-toast-notifications';
-import Backend from '@root/api/backend';
+import { StatsBar } from '@features/global/components/statsBar';
 import { LandPlot } from '@features/lands/components/land/LandPlot';
-import SocialIconsBar from './SocialIconsBar';
-import useLands from '@features/lands/hooks/useLands';
 import { FlexedPlotDivider } from '@features/lands/styles/landPlot.styles';
 import { getClnySpeedLabel } from '@features/lands/utils/formating';
 import Button from '@global/components/button';
+import { Leaderboard } from '@global/components/leaderboard';
 import { Loader } from '@global/components/loader/loader';
 import { GAP_TEXT, MOBILE_BREAKPOINT } from '@global/constants';
 import useAppParts from '@global/hooks/useAppParts';
 import { useBalance } from '@global/hooks/useBalance';
 import useMediaQuery from '@global/hooks/useMediaQuery';
-import usePersonalInfo from '@global/hooks/usePersonalInfo';
 import { MarsNavMyLandClose, TokensWrapper } from '@global/styles/app.styles';
 import { fromWeiValue } from '@global/utils/fromWei';
 import { ArrowLeft, ArrowRight } from '@images/icons/ArrowDown';
 import { CloseIcon } from '@images/icons/CloseIcon';
+import Backend from '@root/api/backend';
 import { CartCloseIconWrapper } from '@root/legacy/navbar.styles';
 import { NETWORK_DATA } from '@root/settings';
 import {
@@ -25,38 +21,41 @@ import {
   toggleLeaderboardPopup,
   toggleMyLandsPopup,
 } from '@slices/appPartsSlice';
-import { StatsBar } from '@features/global/components/statsBar';
-import { Leaderboard } from '@global/components/leaderboard';
+import { useEffect, useMemo, useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { useToasts } from 'react-toast-notifications';
+import SocialIconsBar from './SocialIconsBar';
 
+import { useAllLands } from '@features/global/hooks/useApi';
+import {
+  useClaimEarned,
+  useCLNYBalance,
+  useMyLands,
+  useTotalEarning,
+} from '@features/global/hooks/useCallContracts';
 import {
   ActiveLandsControlWrapper,
   ActiveLandsFirstLine,
   ActiveLandsTitle,
   BorderedDiv,
+  ButtonNoLandsSubText,
   ButtonSubText,
+  CollectSpan,
   LandsBlock,
-  LandsSidebarHeaderWrapper,
-  LandsSidebarWrapper,
-  NoLandsTitle,
   LandsContentWrapper,
   LandsSection,
-  SpanWrapper,
+  LandsSidebarHeaderWrapper,
+  LandsSidebarWrapper,
   LandsSpan,
-  CollectSpan,
-  PrizeSpanWrapper,
-  PrizeSpan,
-  PrizePoolText,
-  PrizeAmountText,
   LearnMoreLink,
-  ButtonNoLandsSubText,
+  NoLandsTitle,
+  PrizeAmountText,
   PrizeLinksSpan,
+  PrizePoolText,
+  PrizeSpan,
+  PrizeSpanWrapper,
+  SpanWrapper,
 } from './landsSidebar.styles';
-import {
-  useCLNYBalance,
-  useMyTokens,
-  useUpdateEarnedAll,
-} from '@features/global/hooks/useCallContracts';
-import { useAllTokens } from '@features/global/hooks/useApi';
 
 export const LandsSidebar = () => {
   const dispatch = useDispatch();
@@ -65,7 +64,7 @@ export const LandsSidebar = () => {
   // const { tokens } = useBalance();
   const isMobile = useMediaQuery(`(max-width: ${MOBILE_BREAKPOINT}px)`);
 
-  const { myTokens: tokens } = useMyTokens();
+  const { myLands: tokens } = useMyLands();
 
   const getContent = () => {
     if (sidebarType) {
@@ -102,44 +101,25 @@ export const LandsSidebar = () => {
 };
 
 export const NoLandsSidebarView = () => {
-  const { addToast } = useToasts();
-  const { isLoadingTokens, tokens } = useBalance();
-  const { isInitialized } = usePersonalInfo();
-  const [maxClnyIncome, setMaxClnyIncome] = useState<string | null>(null);
   const [isLeaderboardOpen, setIsLeaderboardOpen] = useState(false);
-  const [isLocalLoading, setIsLocalLoading] = useState(true);
+  const { addToast } = useToasts();
+  const { isLoadingMyLands: isLoadingMyTokens } = useMyLands();
+
+  const isLocalLoading = false;
   const { isLeaderboardPopupOpened } = useAppParts();
   const dispatch = useDispatch();
+
+  const maxClnyIncome = 14;
 
   const onBuyLandClick = () => {
     addToast('You can buy new lands on the globe', { appearance: 'info' });
   };
 
   useEffect(() => {
-    try {
-      (async () => {
-        const data = await Backend.getHeaderStats();
-        const stat = data.max ?? 0;
-        setMaxClnyIncome(stat);
-      })();
-    } catch (e) {}
-  }, []);
-
-  useEffect(() => {
     if (isLeaderboardPopupOpened) {
       setIsLeaderboardOpen(true);
     }
   }, [isLeaderboardPopupOpened]);
-
-  useEffect(() => {
-    if (!isInitialized) {
-      setIsLocalLoading(false);
-    }
-
-    if (Array.isArray(tokens)) {
-      setIsLocalLoading(false);
-    }
-  }, [tokens, isInitialized]);
 
   const [prizeStats, setPrizeStats] = useState({ prizeEth: 0, prizeUsd: 0 });
 
@@ -175,7 +155,7 @@ export const NoLandsSidebarView = () => {
           <SpanWrapper>
             <LandsSpan>
               <NoLandsTitle>
-                {isLoadingTokens || isLocalLoading ? (
+                {isLoadingMyTokens || isLocalLoading ? (
                   'Loading...'
                 ) : (
                   <>
@@ -183,8 +163,8 @@ export const NoLandsSidebarView = () => {
                   </>
                 )}
               </NoLandsTitle>
-              {(isLoadingTokens || isLocalLoading) && <Loader />}
-              {!isLoadingTokens && !isLocalLoading && (
+              {(isLoadingMyTokens || isLocalLoading) && <Loader />}
+              {!isLoadingMyTokens && !isLocalLoading && (
                 <>
                   <Button
                     onClick={onBuyLandClick}
@@ -236,9 +216,9 @@ export const NoLandsSidebarView = () => {
 };
 
 export const ActiveLandsSidebarView = () => {
-  const { isAllTokensLoading } = useAllTokens();
-  const { myTokens } = useMyTokens();
-  const { earnedAmount, earnSpeed: dailySpeed } = useUpdateEarnedAll();
+  const { isAllTokensLoading } = useAllLands();
+  const { myLands: myTokens } = useMyLands();
+  const { earnedAmount, earnSpeed: dailySpeed } = useTotalEarning();
 
   const { clnyBalanceWei } = useCLNYBalance();
 
@@ -248,10 +228,8 @@ export const ActiveLandsSidebarView = () => {
   const [prizeStats, setPrizeStats] = useState({ prizeEth: 0, prizeUsd: 0 });
   const [isLeaderboardOpen, setIsLeaderboardOpen] = useState(false);
 
-  const { address, web3Instance } = usePersonalInfo();
   const { currentLandsPage } = useAppParts();
   const { isLeaderboardPopupOpened } = useAppParts();
-  const { landsMissionsLimits } = useLands(myTokens, web3Instance);
 
   const title = useMemo(
     () =>
@@ -264,11 +242,10 @@ export const ActiveLandsSidebarView = () => {
   const isLandPaginated = (index: number) =>
     index >= (currentLandsPage - 1) * 10 && index < currentLandsPage * 10;
 
-  const getMissionsLimit = (token: string) =>
-    landsMissionsLimits?.[`${token}`] ?? '...';
-
   const allTimeStats = useMemo(() => {
-    const earned = `${earnedAmount} ${NETWORK_DATA.TOKEN_NAME} earned`;
+    const earned = !earnedAmount
+      ? `0 ${NETWORK_DATA.TOKEN_NAME} earned`
+      : `${earnedAmount} ${NETWORK_DATA.TOKEN_NAME} earned`;
 
     const speed = () => {
       if (dailySpeed) {
@@ -300,6 +277,8 @@ export const ActiveLandsSidebarView = () => {
     }
   }, [isLeaderboardPopupOpened]);
 
+  const { claimEarned, isClaimingEarned } = useClaimEarned();
+
   return (
     <div>
       <LandsSidebarHeaderWrapper isMobile={isMobile}>
@@ -323,15 +302,14 @@ export const ActiveLandsSidebarView = () => {
                 </ActiveLandsFirstLine>
               </LandsSpan>
               <CollectSpan>
-                {isCollectAvailable && (
-                  <Button
-                    disabled={isCollectInProgress}
-                    onClick={() => collectAllStats(address, web3Instance)}
-                    text="COLLECT ALL"
-                    variant="common"
-                    disabledText="Collecting..."
-                  />
-                )}
+                <Button
+                  disabled={isClaimingEarned}
+                  onClick={() => claimEarned()}
+                  text="COLLECT ALL"
+                  variant="common"
+                  disabledText="Collecting..."
+                />
+
                 <ButtonSubText>{allTimeStats}</ButtonSubText>
               </CollectSpan>
             </SpanWrapper>
@@ -372,7 +350,6 @@ export const ActiveLandsSidebarView = () => {
                 <div key={`${token}-${index}`}>
                   {isLandPaginated(index) && (
                     <LandPlot
-                      missionsLimit={getMissionsLimit(token ?? '')}
                       key={`${token}-${index}`}
                       id={parseInt(token ?? '')}
                       CLNYBalanceWei={clnyBalanceWei}

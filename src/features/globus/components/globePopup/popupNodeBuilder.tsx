@@ -98,12 +98,15 @@ export const buildPopup = async ({
   currency,
   claim,
   address,
-}: Props): Promise<HTMLDivElement> => {
-  window.dataLayer.push({
-    event: 'popup.render',
+}: Props) => {
+  console.log('buildPopup', {
+    longitudes,
+    latitudes,
     token,
     occupied,
     balance,
+    currency,
+    claim,
     address,
   });
 

@@ -12,12 +12,11 @@ import Web3 from 'web3';
 const polylineSymbol = {
   type: 'simple-line',
   color: [0, 0, 0],
-  width: 0.5
+  width: 0.5,
 };
 
 export const initView = (
   tokenRef: React.MutableRefObject<string | null>,
-  handleClaim: (tokens: number[], address: string, web3: Web3) => void,
   setCurToken: React.Dispatch<React.SetStateAction<string | null>>
 ): {
   tokenLayer: GraphicsLayer;
@@ -32,20 +31,20 @@ export const initView = (
     return {
       tokenLayer,
       hoverLayer,
-      view: new SceneView()
+      view: new SceneView(),
     };
   }
 
   const marsImagery = new TileLayer({
     url: 'https://astro.arcgis.com/arcgis/rest/services/OnMars/MDIM/MapServer',
     title: 'Imagery',
-    copyright: 'USGS Astrogeology Science Center, NASA, JPL, Esri'
+    copyright: 'USGS Astrogeology Science Center, NASA, JPL, Esri',
   });
 
   const marsElevation = new ElevationLayer({
     url: 'https://astro.arcgis.com/arcgis/rest/services/OnMars/MDEM200M/ImageServer',
     copyright:
-      'NASA, ESA, HRSC, Goddard Space Flight Center, USGS Astrogeology Science Center, Esri'
+      'NASA, ESA, HRSC, Goddard Space Flight Center, USGS Astrogeology Science Center, Esri',
   });
 
   const cratersLayer = new FeatureLayer({
@@ -63,11 +62,11 @@ export const initView = (
             material: { color: [255, 255, 255, 0.1] },
             outline: {
               color: [0, 0, 0, 0.4],
-              size: 2
-            }
-          }
-        ]
-      }
+              size: 2,
+            },
+          },
+        ],
+      },
     },
     labelingInfo: [
       {
@@ -80,33 +79,33 @@ export const initView = (
               // @ts-ignore
               type: 'text',
               material: {
-                color: [255, 255, 255, 0.9]
+                color: [255, 255, 255, 0.9],
               },
               halo: {
                 size: 0.5,
-                color: [0, 0, 0, 0.7]
+                color: [0, 0, 0, 0.7],
               },
               font: {
-                size: 8
-              }
-            }
+                size: 8,
+              },
+            },
           ],
           verticalOffset: {
             screenLength: 40,
             maxWorldLength: 500000,
-            minWorldLength: 0
+            minWorldLength: 0,
           },
           callout: {
             type: 'line',
             size: 0.5,
             color: [255, 255, 255, 0.9],
             border: {
-              color: [0, 0, 0, 0.3]
-            }
-          }
-        }
-      }
-    ]
+              color: [0, 0, 0, 0.3],
+            },
+          },
+        },
+      },
+    ],
   });
 
   for (let x = 0; x < 150; x++) {
@@ -115,13 +114,13 @@ export const initView = (
       type: 'polyline',
       paths: [
         [long, toLat(0)],
-        [long, -toLat(0)]
+        [long, -toLat(0)],
       ],
-      spatialReference: { wkid: 104971 }
+      spatialReference: { wkid: 104971 },
     };
     const polygonGraphic = new Graphic({
       geometry: polyline,
-      symbol: polylineSymbol
+      symbol: polylineSymbol,
     });
     gridLayer.add(polygonGraphic);
   }
@@ -132,20 +131,20 @@ export const initView = (
       type: 'polyline',
       paths: [
         [toLong(0), lat],
-        [-toLong(0), lat]
+        [-toLong(0), lat],
       ],
-      spatialReference: { wkid: 104971 }
+      spatialReference: { wkid: 104971 },
     };
     const polygonGraphic = new Graphic({
       geometry: polyline,
-      symbol: polylineSymbol
+      symbol: polylineSymbol,
     });
     gridLayer.add(polygonGraphic);
   }
 
   const map = new Map({
     ground: { layers: [marsElevation] },
-    layers: [marsImagery, gridLayer]
+    layers: [marsImagery, gridLayer],
   });
 
   map.add(tokenLayer);
@@ -162,24 +161,26 @@ export const initView = (
         x: -51,
         y: -29.6,
         z: 6000000,
-        spatialReference: { wkid: 104971 }
+        spatialReference: { wkid: 104971 },
       },
       heading: 350,
-      tilt: 12.3
+      tilt: 12.3,
     },
     environment: {
       lighting: {
         directShadowsEnabled: false,
-        ambientOcclusionEnabled: false
+        ambientOcclusionEnabled: false,
         // cameraTrackingEnabled: false,
-      }
-    }
+      },
+    },
   });
   // @ts-ignore
   window.view = view;
   view.on('pointer-move', (evt) => {
     const point = view.toMap({ x: evt.x, y: evt.y }) ?? {};
+
     const { latitude, longitude } = point;
+
     const token = toTokenNumber(latitude, longitude);
     setCurToken(token === null ? null : token.toString());
     tokenRef.current = token === null ? null : token.toString();
@@ -188,6 +189,6 @@ export const initView = (
   return {
     tokenLayer,
     hoverLayer,
-    view
+    view,
   };
 };

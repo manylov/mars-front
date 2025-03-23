@@ -1,10 +1,9 @@
-import React from 'react';
-import { useSelector } from 'react-redux';
 import Graphic from '@arcgis/core/Graphic';
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
+import PopupTemplate from '@arcgis/core/PopupTemplate';
 import PolygonSymbol3D from '@arcgis/core/symbols/PolygonSymbol3D';
 import SceneView from '@arcgis/core/views/SceneView';
-import { buildPopup } from '@features/globus/components/globePopup/popupNodeBuilder';
+import { createLandPlotPopupTemplate } from '@features/global/utils/createPopupTemplate';
 import {
   PartedMarsMainWrapper,
   PartedMarsViewWrapper,
@@ -15,17 +14,38 @@ import {
   simpleFillSymbol,
   toLat,
   toLong,
+  toTokenNumber,
 } from '@features/globus/utils/methods';
 import { NETWORK_DATA } from '@root/settings';
 import { addressSelector } from '@selectors/userStatsSelectors';
+import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import Web3 from 'web3';
+import {
+  useFloating,
+  offset,
+  autoUpdate,
+  arrow,
+  FloatingArrow,
+  flip,
+  shift,
+} from '@floating-ui/react';
+import styled from 'styled-components';
+import { generateBlockie } from '@features/global/utils/blockie.canvas';
+import { Badge } from '@root/components/ui/badge';
+import { CloseIcon } from '@root/images/icons/CloseIcon';
+import { parseEther } from 'viem';
+import { cn } from '@root/lib/utils';
 
 interface Props {
   allTokens: string[] | null;
   myTokens: string[] | null;
   height: string;
-  handleClaim: (tokens: number[], address: string, web3: Web3) => void;
-  balance: number | bigint;
+  handleClaim: (
+    token: number,
+    { onSuccess }: { onSuccess?: () => void }
+  ) => Promise<void>;
+  balanceInWei: number | bigint;
   currency: string;
   web3?: React.MutableRefObject<Web3 | null>;
 }
@@ -34,9 +54,9 @@ export const PartedMars = ({
   height,
   allTokens,
   myTokens,
-  handleClaim,
-  balance,
+  balanceInWei,
   currency,
+  handleClaim,
 }: Props) => {
   const [curToken, setCurToken] = React.useState<string | null>(null);
   const tokenRef = React.useRef<string | null>(null);
@@ -44,15 +64,116 @@ export const PartedMars = ({
   const view = React.useRef<SceneView | null>(null);
   const tokensLayer = React.useRef<GraphicsLayer | null>(null);
   const address = useSelector(addressSelector);
+  const arrowRef = React.useRef(null);
 
-  React.useEffect(() => {
-    if (!hoverLayer.current) {
-      return;
+  // Tooltip state
+  const [isTooltipOpen, setIsTooltipOpen] = useState(false);
+  const [tooltipData, setTooltipData] = useState<{
+    longitudes: number[];
+    latitudes: number[];
+    token: number;
+  } | null>(null);
+
+  // Setup floating UI
+  const { refs, floatingStyles, context, update } = useFloating({
+    placement: 'bottom',
+    middleware: [
+      offset(10),
+      flip({
+        fallbackPlacements: ['top', 'left', 'right'],
+        padding: 10,
+      }),
+      shift({
+        padding: { left: 82, top: 10, right: 10, bottom: 10 },
+      }),
+      arrow({
+        element: arrowRef,
+      }),
+    ],
+    whileElementsMounted: autoUpdate,
+    open: isTooltipOpen,
+    onOpenChange: setIsTooltipOpen,
+  });
+
+  useEffect(() => {
+    if (view.current && view.current.popup) {
+      view.current.popup.defaultPopupTemplateEnabled = false;
+      view.current.popup.dockOptions = {
+        buttonEnabled: false, // Disables the dock button
+        breakpoint: false, // Prevents responsive docking
+      };
     }
+  }, []);
+
+  useEffect(() => {
+    if (!view.current) return;
+    const realView = view.current;
+
+    realView.on('click', (evt) => {
+      const point = realView.toMap({ x: evt.x, y: evt.y });
+
+      if (!point) return;
+      const { latitude, longitude } = point;
+
+      if (
+        latitude === undefined ||
+        latitude === null ||
+        longitude === undefined ||
+        longitude === null
+      )
+        return;
+
+      const token = toTokenNumber(latitude, longitude) as number;
+
+      setTooltipData({
+        longitudes: [longitude, longitude + 1],
+        latitudes: [latitude, latitude + 1],
+        token: token,
+      });
+
+      refs.setPositionReference({
+        getBoundingClientRect() {
+          return {
+            width: 0,
+            height: 0,
+            x: evt.x,
+            y: evt.y,
+            top: evt.y,
+            right: evt.x,
+            bottom: evt.y,
+            left: evt.x,
+          };
+        },
+      });
+
+      setIsTooltipOpen(true);
+    });
+
+    realView.on('drag', () => {
+      setIsTooltipOpen(false);
+    });
+
+    realView.on('mouse-wheel', () => {
+      setIsTooltipOpen(false);
+    });
+
+    realView.on('key-down', (event) => {
+      // Hide tooltip on arrow keys, +/- keys, etc.
+      if (
+        event.key.includes('Arrow') ||
+        event.key === '+' ||
+        event.key === '-'
+      ) {
+        setIsTooltipOpen(false);
+      }
+    });
+  }, []);
+
+  useEffect(() => {
+    if (myTokens === null || allTokens === null) return;
+    if (!hoverLayer.current) return;
     hoverLayer.current.removeAll();
-    if (myTokens === null || allTokens === null) {
-      return;
-    }
+
     if (curToken !== null) {
       const { x, y } = parseTokenNumber(curToken) ?? {};
       if (x !== undefined && y !== undefined) {
@@ -70,37 +191,33 @@ export const PartedMars = ({
           spatialReference: { wkid: 104971 },
         };
 
-        console.log(curToken);
-
         const simpleFillSymbolHover = !allTokens?.includes(curToken)
           ? simpleFillSymbol([33, 222, 33, 0.5]) // Green
           : simpleFillSymbol([200, 0, 0, 0.6]); // Red
 
-        const _curToken = curToken;
+        // Hide tooltip when moving or zooming
+
         const polygonGraphic = new Graphic({
+          // @ts-expect-error some types
           geometry: polygon,
           symbol: simpleFillSymbolHover,
-          popupTemplate: {
-            title: `Land Plot #${_curToken}`,
-            content: () =>
-              buildPopup({
-                longitudes,
-                latitudes,
-                token: +curToken,
-                occupied: allTokens.includes(`${curToken}`),
-                balance,
-                currency,
-                claim,
-                address,
-              }),
-          },
         });
+
         hoverLayer.current.add(polygonGraphic);
       }
     }
-  }, [curToken, hoverLayer, allTokens, balance, myTokens, currency, address]);
+  }, [
+    curToken,
+    hoverLayer,
+    allTokens,
+    myTokens,
+    currency,
+    address,
+    refs,
+    update,
+  ]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     tokensLayer.current?.removeAll();
     // STEP 1 - render a view as soon as possible
     if (view.current === null) {
@@ -108,7 +225,7 @@ export const PartedMars = ({
         tokenLayer: _tl,
         hoverLayer: _hl,
         view: _view,
-      } = initView(tokenRef, handleClaim, setCurToken);
+      } = initView(tokenRef, setCurToken);
       tokensLayer.current = _tl;
       hoverLayer.current = _hl;
       view.current = _view;
@@ -149,14 +266,11 @@ export const PartedMars = ({
             };
 
             const polygonGraphic = new Graphic({
+              // @ts-expect-error some ts error again
               geometry: polygon,
               symbol: myTokens.includes(token)
                 ? simpleFillSymbolGreen
                 : simpleFillSymbolOrange,
-              // popupTemplate: {
-              //   title: `Token #1${y.toString().padStart(3, '0')}${x.toString().padStart(3, '0')}`,
-              //   content: geoText(longitudes, latitudes),
-              // },
             });
             tokensLayer.current?.add(polygonGraphic);
           }
@@ -165,9 +279,126 @@ export const PartedMars = ({
     }
   }, [allTokens, myTokens, tokensLayer]);
 
+  const isMyToken =
+    tooltipData?.token && myTokens?.includes(tooltipData.token.toString());
+
+  const isAvailable =
+    tooltipData?.token && !allTokens?.includes(tooltipData.token.toString());
+
+  const isEnoughBalance = balanceInWei >= parseEther('0.009');
+
+  const handleClaimToken = () => {
+    if (!tooltipData?.token) return;
+
+    handleClaim(tooltipData.token, {
+      onSuccess: () => {
+        setIsTooltipOpen(false);
+      },
+    });
+  };
+
   return (
     <PartedMarsMainWrapper>
-      <PartedMarsViewWrapper id="viewDiv" height={height} />
+      <PartedMarsViewWrapper
+        id="viewDiv"
+        height={height}
+        ref={refs.setReference}
+      />
+
+      {/* Tooltip */}
+      {isTooltipOpen && tooltipData && (
+        <div
+          className="bg-black/75 relative rounded-lg backdrop-blur-xs text-white p-4"
+          ref={refs.setFloating}
+          style={floatingStyles}
+        >
+          <FloatingArrow
+            ref={arrowRef}
+            context={context}
+            fill="rgba(0, 0, 0, 0.75)"
+          />
+
+          <button
+            className="absolute top-0 right-0 p-4 cursor-pointer"
+            onClick={() => setIsTooltipOpen(false)}
+          >
+            <svg
+              className="size-4 text-zinc-400"
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M18 6 6 18" />
+              <path d="m6 6 12 12" />
+            </svg>
+          </button>
+
+          <div className="flex flex-col gap-4">
+            <div className="font-bold text-lg leading-none">
+              Land plot #{tooltipData.token}
+            </div>
+
+            <div className="flex gap-6">
+              <img
+                src={generateBlockie(tooltipData.token).toDataURL()}
+                className="h-40 w-40"
+              />
+
+              <div className="flex flex-col gap-4 justify-between">
+                <div className="grid grid-cols-2 gap-x-6 gap-y-2 font-medium">
+                  <div>
+                    <div className="text-sm text-zinc-400 font-normal">
+                      Longitudes
+                    </div>
+                    {tooltipData.longitudes[0].toFixed(2)} ..{' '}
+                    {tooltipData.longitudes[1].toFixed(2)}
+                  </div>
+                  <div>
+                    <div className="text-sm text-zinc-400 font-normal">
+                      Latitudes
+                    </div>
+                    {tooltipData.latitudes[0].toFixed(2)} ..{' '}
+                    {tooltipData.latitudes[1].toFixed(2)}
+                  </div>
+
+                  <div>
+                    <div className="text-sm text-zinc-400 font-normal">
+                      Status
+                    </div>
+                    {isAvailable && !isMyToken && 'Available'}
+                    {isAvailable && isMyToken && 'Your land'}
+                    {!isAvailable && !isMyToken && 'Occupied'}
+                  </div>
+                </div>
+
+                <div>
+                  {isAvailable && !isMyToken && (
+                    <button
+                      className={cn(
+                        'bg-primary cursor-pointer font-bold uppercase w-full px-4 py-2 rounded-md',
+                        !isEnoughBalance &&
+                          'bg-white/10 !text-white/50 cursor-not-allowed text-sm'
+                      )}
+                      disabled={!isEnoughBalance}
+                      onClick={handleClaimToken}
+                    >
+                      {isEnoughBalance
+                        ? 'Claim for 0.009 ETH'
+                        : 'Insufficient balance'}
+                    </button>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </PartedMarsMainWrapper>
   );
 };
