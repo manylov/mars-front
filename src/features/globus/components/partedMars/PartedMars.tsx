@@ -285,6 +285,8 @@ export const PartedMars = ({
   const isAvailable =
     tooltipData?.token && !allTokens?.includes(tooltipData.token.toString());
 
+  console.log('isMyToken', {});
+
   const isEnoughBalance = balanceInWei >= parseEther('0.009');
 
   const handleClaimToken = () => {
@@ -372,7 +374,7 @@ export const PartedMars = ({
                       Status
                     </div>
                     {isAvailable && !isMyToken && 'Available'}
-                    {isAvailable && isMyToken && 'Your land'}
+                    {isMyToken && 'Your land'}
                     {!isAvailable && !isMyToken && 'Occupied'}
                   </div>
                 </div>
